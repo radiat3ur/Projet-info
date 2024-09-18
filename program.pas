@@ -8,4 +8,3 @@ begin
 	menu(choix)
 end.
 
-
