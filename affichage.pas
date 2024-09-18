@@ -2,11 +2,7 @@ Unit affichage;
 
 interface 
 
-Uses Crt;
-
-const
-  MAX_PERSONNAGES = 6;
-  Personnages: array[1..MAX_PERSONNAGES] of string = ('Prof 1', 'Prof 2', 'Prof 3', 'Prof 4', 'Prof 5', 'Prof 6');
+Uses Crt, T&Cte;
 
 procedure afficherMenu();
 procedure afficherRegles();
