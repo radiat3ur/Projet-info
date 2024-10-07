@@ -2,16 +2,20 @@ Unit affichage;
 
 interface 
 
-Uses Crt, T&Cte;
+Uses Crt, TypeEtCte, gestion;
 
-procedure afficherMenu();
-procedure afficherRegles();
-procedure choixDebutJeu(var nbJoueur : Word);
-procedure menu(var choix : Word);
+procedure affichageMenu();
+procedure affichageRegles();
+procedure choixDebutJeu(var nbJoueurs : Integer ; var joueurs : TJoueurs);
+procedure menu(var choix, nbJoueurs : Integer; var joueurs : TJoueurs);
+
+procedure preventionTourJoueur(joueurs : TJoueurs);
+procedure affichageCarte(carte : TCarte);
+procedure affichagePaquet(paquet: TPaquet);
 
 implementation
 
-procedure afficherMenu();
+procedure affichageMenu();
 begin
   writeln('--- Menu du Cluedo ---');
   writeln('1. Afficher les règles du jeu');
@@ -20,85 +24,103 @@ begin
   write('Votre choix : ');
 end;
 
-procedure afficherRegles();
+procedure affichageRegles();
 begin
   writeln('--- Règles du Cluedo ---');
   writeln('Blabla des règles');
 end;
 
-procedure choixDebutJeu(var nbJoueur : Word);
-var i, choix: integer;
-	joueurs: array[1..6] of string;
-	personnagesDisponibles: array[1..MAX_PERSONNAGES] of Boolean;
-	
+procedure choixDebutJeu(var nbJoueurs : Integer ; var joueurs : TJoueurs);
+var 
+  i, j, choixPersonnage : Integer;
+  personnagesDisponibles: array[0..MAX_PERSONNAGES-1] of Boolean;
 begin
-  // Initialisation des personnages disponibles
-  for i := 1 to MAX_PERSONNAGES do
-    personnagesDisponibles[i] := True;
-
-  // Saisie du nombre de joueurs
   repeat
     write('Entrez le nombre de joueurs (2 à 6) : ');
-    readln(nbJoueur);
-  until (nbJoueur >= 2) and (nbJoueur <= MAX_PERSONNAGES);
+    readln(nbJoueurs);
+  until (nbJoueurs >= 2) and (nbJoueurs <= MAX_PERSONNAGES);
 
-  // Choix des personnages pour chaque joueur
-  for i := 1 to nbJoueur do
+  joueurs.taille := nbJoueurs;
+  SetLength(joueurs.listeJoueurs,joueurs.taille);
+
+  // Initialisation des personnages disponibles
+  for i := 0 to MAX_PERSONNAGES - 1 do
+    personnagesDisponibles[i] := True; // Tous les personnages sont disponibles
+
+  for i := 0 to nbJoueurs - 1 do
   begin
-    writeln('Joueur ', i, ', choisissez votre personnage :');
+    writeln('Joueur ', i + 1, ', choisissez un personnage : ');
     
-    // Affichage des personnages disponibles
-    for choix := 1 to MAX_PERSONNAGES do
+    // Afficher les personnages disponibles
+    for j:= 0 to MAX_PERSONNAGES - 1 do
     begin
-      if personnagesDisponibles[choix] then
-        writeln(choix, '. ', Personnages[choix]);
+      if personnagesDisponibles[j] then
+        writeln(j + 1, '. ', TPersonnages(j));
     end;
-
-    // Saisie du choix du personnage
+    
+    // Lire le choix du joueur
     repeat
-      write('Votre choix (1-', MAX_PERSONNAGES, ') : ');
-      readln(choix);
-    until (choix >= 1) and (choix <= MAX_PERSONNAGES) and personnagesDisponibles[choix];
+      write('Votre choix (1-6) : ');
+      readln(choixPersonnage);
+    until (choixPersonnage >= 1) and (choixPersonnage <= MAX_PERSONNAGES) and personnagesDisponibles[choixPersonnage - 1];
 
-    joueurs[i] := Personnages[choix];
-    personnagesDisponibles[choix] := False;  // Marque le personnage comme choisi
-    writeln('Vous avez choisi : ', Personnages[choix]);
-    ClrScr;
+    // Assigner le personnage au joueur
+    joueurs.listeJoueurs[i].nom := TPersonnages(choixPersonnage - 1);
+    personnagesDisponibles[choixPersonnage - 1] := False; // Marquer le personnage comme utilisé
   end;
-
-  // Affichage des joueurs et de leurs personnages
-  writeln('--- Liste des joueurs et de leurs personnages ---');
-  for i := 1 to nbJoueur do
-    writeln('Joueur ', i, ': ', joueurs[i]);
-
-  writeln('Appuyez sur une touche pour revenir au menu.');
-  readln;
 end;
 
-procedure menu(var choix : Word);
-var quitter:Boolean;nbJoueur:Word;
+
+procedure menu(var choix, nbJoueurs : Integer ; var joueurs : TJoueurs ; var fin : Boolean);
+
 begin
   quitter := false;
-  repeat
+  //repeat
     ClrScr;
-    afficherMenu();
+    affichageMenu();
     readln(choix);
 	
     case choix of
       1: begin
              ClrScr;
-             afficherRegles();
+             affichageRegles();
            end;
       2: begin
              ClrScr;
-             choixDebutJeu(nbJoueur);
+             choixDebutJeu(nbJoueurs, joueurs);
            end;
-      3: quitter := true;
+      3: fin := true;
     else
       writeln('Choix invalide, veuillez réessayer.');
     end;
-  until quitter;
-  writeln('Merci d''avoir joué !');
+  //until fin;
+end;
+
+procedure preventionTourJoueur(fin : Boolean ; joueurs : TJoueurs ; var i : Integer);
+begin
+  while (fin=False) do
+  begin
+    i:=i+1;
+    if i>joueurs.taille then
+      i:=1
+  end;
+end;
+
+begin
+  while quitter=False do
+end;
+
+procedure affichageCarte(carte : TCarte);
+begin
+    writeln(carte.nom)
+end;
+
+procedure affichagePaquet(paquet : TPaquet);
+var i : Integer;
+
+begin
+  for i:=0 paquet.taille-1 do
+    afficherCarte(paquet.liste[i])
 end;
 
 end.
