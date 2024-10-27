@@ -7,7 +7,7 @@ const
     MAX_CARTES = 21;
 
 Type TPersonnages = (ProfAA, ProfBB, ProfCC, ProfDD, ProfEE, ProfFF); // Type pour les joueurs
-Type TTout = (PieceA, PieceB, PieceC, PieceD, PieceE, PieceF, PieceG, PieceH, PieceI,ArmeA, ArmeB, ArmeC, ArmeD, ArmeE, ArmeF, ProfA, ProfB, ProfC, ProfD, ProfE, ProfF);
+Type TTout = (PieceA, PieceB, PieceC, PieceD, PieceE, PieceF, PieceG, PieceH, PieceI,ArmeA, ArmeB, ArmeC, ArmeD, ArmeE, ArmeF, ProfA, ProfB, ProfC, ProfD, ProfE, ProfF); //Type pour les cartes
 Type TCategorie = (Piece, Arme, Personnage);
 
 Type TCarte = Record
