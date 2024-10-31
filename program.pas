@@ -5,22 +5,23 @@ Uses Crt, affichage, gestion, TypeEtCte;
 var
     choix, nbJoueurs, currentPlayer, i, action: Integer;
     paquetPieces, paquetArmes, paquetPersonnages, solution, paquetSansCartesCrime, cartesChoisies: TPaquet;
+    carteChoisie : TCarte;
     joueurs: TJoueurs;
-    fin: Boolean;
     resultatAction: Boolean;
 
 begin
-    fin := False;
-    menu(choix, nbJoueurs, joueurs, fin);
+    menu(choix, nbJoueurs, joueurs);
     currentPlayer:=nbJoueurs-1;
-    // Initialize the game
+    // Initialise le jeu
     initialisationPartie(nbJoueurs, joueurs, paquetPieces, paquetArmes, paquetPersonnages, paquetSansCartesCrime, solution);
+    narration();
+    ClrScr;
     for i:=0 to nbJoueurs-1 do
     begin
-        // Announce the current player's turn
+        // Annonce le tour du joueur actuel
         preventionTourJoueur(joueurs, currentPlayer);
 
-        // Display the current player's hand
+        // Affiche la main du joueur actuel
         affichagePaquet(joueurs.listeJoueurs[i].main); 
         finTourJoueur();
     end;
@@ -32,11 +33,11 @@ begin
         resultatAction:=choixAction(action);
 
         if resultatAction then
-        begin
-            writeln('Accusation en cours...');
-            hypothese(paquetPieces, paquetArmes, paquetPersonnages, joueurs.listeJoueurs[currentPlayer], cartesChoisies,joueurs);
-        end
+            affichageResultatHypothese(paquetPieces, paquetArmes, paquetPersonnages, joueurs.listeJoueurs[currentPlayer], joueurs, cartesChoisies, carteChoisie)
         else
-        finTourJoueur();
-    until False;  // Condition de fin à implémenter selon les règles du jeu
+        begin
+            affichageResultatAccusation(paquetPieces, paquetArmes, paquetPersonnages, solution, joueurs.listeJoueurs[currentPlayer]);
+            halt;
+        end;
+    until False;
 end.

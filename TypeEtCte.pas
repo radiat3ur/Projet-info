@@ -6,8 +6,8 @@ const
     MAX_PERSONNAGES = 6;
     MAX_CARTES = 21;
 
-Type TPersonnages = (ProfAA, ProfBB, ProfCC, ProfDD, ProfEE, ProfFF); // Type pour les joueurs
-Type TTout = (PieceA, PieceB, PieceC, PieceD, PieceE, PieceF, PieceG, PieceH, PieceI,ArmeA, ArmeB, ArmeC, ArmeD, ArmeE, ArmeF, ProfA, ProfB, ProfC, ProfD, ProfE, ProfF); //Type pour les cartes
+Type TPersonnages = (Duval, Jerome_YON, Yohann, Diane_Duval, Thomas_LECOURT, Jerome_Thibaut); // Type pour les joueurs
+Type TTout = (Amphi_Tillion, Labo, Cafeteria, Parking_visiteur, MAGRC_02_04_06, BDE, Bibliotheque, Infirmerie, Residence, Blouse, Stylo, Ordinateur_portable, Leocarte, Rapport_de_stage, Calculatrice, Dudu, Yon, Lepailleur, Diane, Lecourt, THIBAUT); //Type pour les cartes
 Type TCategorie = (Piece, Arme, Personnage);
 
 Type TCarte = Record
