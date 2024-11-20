@@ -68,8 +68,6 @@ begin
   writeln('Bon jeu ! :)')
 end;
 
-
-
 procedure choixDebutJeu(var nbJoueurs : Integer ; var joueurs : TJoueurs);
 
 begin

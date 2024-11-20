@@ -13,8 +13,8 @@ procedure initialisationPartie(nbJoueurs : Integer ; var joueurs : TJoueurs ; va
 function choixAction(choix : Integer) : Boolean;
 procedure choixCarte(paquet: TPaquet; var carteChoisie: TCarte);
 procedure choixCartes(paquetPieces, paquetArmes, paquetPersonnages : TPaquet ; var cartesChoisies : TPaquet);
-procedure recupererCarteJoueur(compare, comparant : TPaquet ; var carteChoisie : TCarte);
 procedure comparaisonCartes(compare, comparant : TPaquet ; var cartesCommunes : TPaquet);
+procedure recupererCarteJoueur(compare, comparant : TPaquet ; var carteChoisie : TCarte);
 procedure hypothese(paquetPieces, paquetArmes, paquetPersonnages: TPaquet; joueurActuel : TJoueur; joueurs : TJoueurs; var cartesChoisies : TPaquet ; var carteChoisie : TCarte);
 function accusation(paquetPieces, paquetArmes, paquetPersonnages, solution : TPaquet; joueurActuel : TJoueur):Boolean;
 
@@ -130,40 +130,40 @@ var personnagesDisponibles: array[0..MAX_PERSONNAGES - 1] of Boolean;
     i, j, choixPersonnage, cartesParJoueur, joueursAvecNbCartesStandard: Integer;
 
 begin
-  // Initialisz les personnages disponibles
-  for i := 0 to MAX_PERSONNAGES - 1 do
-    personnagesDisponibles[i] := True; // Tous les personnages sont disponibles
+    // Initialisz les personnages disponibles
+    for i := 0 to MAX_PERSONNAGES - 1 do
+        personnagesDisponibles[i] := True; // Tous les personnages sont disponibles
 
-  // Initialise le nombre de joueurs, soit la taille du tableau
-  joueurs.taille := nbJoueurs;
-  SetLength(joueurs.listeJoueurs, nbJoueurs);
+    // Initialise le nombre de joueurs, soit la taille du tableau
+    joueurs.taille := nbJoueurs;
+    SetLength(joueurs.listeJoueurs, nbJoueurs);
 
-  // Les joueurs sélectionnent leur personnage
-  for i := 0 to nbJoueurs - 1 do
-  begin
-    ClrScr;
-    writeln('Joueur ', i + 1, ', choisissez un personnage : ');
-    
-    // Affiche les personnages disponibles
-    for j := 0 to MAX_PERSONNAGES - 1 do
+    // Les joueurs sélectionnent leur personnage
+    for i := 0 to nbJoueurs - 1 do
     begin
-      if personnagesDisponibles[j] then
-        writeln(j + 1, '. ', TPersonnages(j));
-    end;
-    
-    // Saisi du choix du joueur
-    repeat
-      write('Votre choix (1-', MAX_PERSONNAGES, ') : ');
-      readln(choixPersonnage);
-    until (choixPersonnage >= 1) and (choixPersonnage <= MAX_PERSONNAGES) and personnagesDisponibles[choixPersonnage - 1];
+        ClrScr;
+        writeln('Joueur ', i + 1, ', choisissez un personnage : ');
+        
+        // Affiche les personnages disponibles
+        for j := 0 to MAX_PERSONNAGES - 1 do
+        begin
+        if personnagesDisponibles[j] then
+            writeln(j + 1, '. ', TPersonnages(j));
+        end;
+        
+        // Saisi du choix du joueur
+        repeat
+        write('Votre choix (1-', MAX_PERSONNAGES, ') : ');
+        readln(choixPersonnage);
+        until (choixPersonnage >= 1) and (choixPersonnage <= MAX_PERSONNAGES) and personnagesDisponibles[choixPersonnage - 1];
 
-    // Assigne le personnage au joueur
-    joueurs.listeJoueurs[i].nom := TPersonnages(choixPersonnage - 1);
-    personnagesDisponibles[choixPersonnage - 1] := False; // Marquer le personnage comme utilisé
-    write('Vous avez choisi : ', joueurs.listeJoueurs[i].nom);
-    readln;
-    ClrScr;
-  end;
+        // Assigne le personnage au joueur
+        joueurs.listeJoueurs[i].nom := TPersonnages(choixPersonnage - 1);
+        personnagesDisponibles[choixPersonnage - 1] := False; // Marquer le personnage comme utilisé
+        write('Vous avez choisi : ', joueurs.listeJoueurs[i].nom);
+        readln;
+        ClrScr;
+    end;
 
     // Défini la taille de la main pour chaque joueur
     cartesParJoueur := 18 div nbJoueurs; // Nombre de cartes par joueur (de base, change si 4 ou 5 joueurs)
@@ -172,7 +172,7 @@ begin
     // S'il y a 4 ou 5 joueurs, les deux premiers joueurs ont une carte en moins
     if (nbJoueurs = 4) or (nbJoueurs = 5) then
         joueursAvecNbCartesStandard := 2; // Deux premiers joueurs auront une carte en moins
-
+    
     // Attribution des cartes
     for i := 0 to nbJoueurs-1 do
     begin
@@ -229,7 +229,7 @@ begin
     for i:=0 to paquet.taille-1 do
         writeln(i+1, '. ', paquet.liste[i].nom);
     readln(choix);
-    until (choix >= 1) and (choix <= MAX_PERSONNAGES);
+    until (choix >= 1) and (choix <= paquet.taille);
     carteChoisie.categorie:=paquet.liste[choix-1].categorie;
     carteChoisie.nom:=paquet.liste[choix-1].nom;
 end;
@@ -241,12 +241,10 @@ begin
     cartesChoisies.taille := 3;
     SetLength(cartesChoisies.liste, cartesChoisies.taille);
 
-    writeln('--- Formulation d''une hypothèse ---');
-
-	ClrScr;
     // Choix du suspect
     writeln('Choisissez un suspect :');
     choixCarte(paquetPersonnages, cartesChoisies.liste[0]);
+    ClrScr;
 
     // Choix de l'arme
     writeln('Choisissez une arme :');
@@ -257,14 +255,6 @@ begin
     writeln('Choisissez un lieu :');
     choixCarte(paquetPieces, cartesChoisies.liste[2]);
     ClrScr;
-end;
-
-procedure recupererCarteJoueur(compare, comparant : TPaquet ; var carteChoisie : TCarte);
-var cartesCommunes : TPaquet;
-
-begin
-    comparaisonCartes(compare,comparant,cartesCommunes);
-    choixCarte(cartesCommunes, carteChoisie);
 end;
 
 procedure comparaisonCartes(compare, comparant : TPaquet ; var cartesCommunes : TPaquet);
@@ -285,6 +275,14 @@ begin
             end;
         end;
     end;
+end;
+
+procedure recupererCarteJoueur(compare, comparant : TPaquet ; var carteChoisie : TCarte);
+var cartesCommunes : TPaquet;
+
+begin
+    comparaisonCartes(compare,comparant,cartesCommunes);
+    choixCarte(cartesCommunes, carteChoisie);
 end;
 
 procedure hypothese(paquetPieces, paquetArmes, paquetPersonnages: TPaquet; joueurActuel : TJoueur; joueurs : TJoueurs; var cartesChoisies : TPaquet ; var carteChoisie : TCarte);
@@ -310,7 +308,7 @@ begin
 
     choixCartes(paquetPieces, paquetArmes, paquetPersonnages, cartesChoisies);
     writeln('C''est ', cartesChoisies.liste[0].nom, ' dans ', cartesChoisies.liste[2].nom, ' avec ', cartesChoisies.liste[1].nom);
-	Delay(2000);
+	Delay(5000);
 	
     ClrScr;
     writeln('Appuyez sur Entree lorsque le joueur ', joueurs.listeJoueurs[choix-1].nom, ' est pret.'); // Prévention pour le témoin de joueur
@@ -319,7 +317,7 @@ begin
 
     recupererCarteJoueur(joueurs.listeJoueurs[choix-1].main, cartesChoisies, carteChoisie);
     ClrScr;
-    writeln('Appuyez sur Entrese lorsque le joueur ', joueurActuel.nom, ' est prt.'); // Prévention pour joueur actuel de voir la carte
+    writeln('Appuyez sur Entree lorsque le joueur ', joueurActuel.nom, ' est pret.'); // Prévention pour joueur actuel de voir la carte
     readln;
     ClrScr;
 end;

@@ -1,21 +1,24 @@
 program cluedo;
 
-Uses Crt, affichage, gestion, TypeEtCte;
+Uses Crt, affichage, TypeEtCte, gestion, affichage_plateau, gestion_plateau;
 
 var
-    choix, nbJoueurs, currentPlayer, i, action: Integer;
+    choix, nbJoueurs, currentPlayer, i, action, deplacement : Integer;
     paquetPieces, paquetArmes, paquetPersonnages, solution, paquetSansCartesCrime, cartesChoisies: TPaquet;
     carteChoisie : TCarte;
     joueurs: TJoueurs;
     resultatAction: Boolean;
+    plateau : TPlateau;
 
 begin
+    write('smlkdjfmsldjfmlsjfsjflsjflsjfsjfmsjdfjsfjsdfjsm');
     menu(choix, nbJoueurs, joueurs);
     currentPlayer:=nbJoueurs-1;
     // Initialise le jeu
     initialisationPartie(nbJoueurs, joueurs, paquetPieces, paquetArmes, paquetPersonnages, paquetSansCartesCrime, solution);
     narration();
-    ClrScr;
+    initilisationPositionsJoueurs(joueurs, plateau);
+
     for i:=0 to nbJoueurs-1 do
     begin
         // Annonce le tour du joueur actuel
@@ -26,18 +29,11 @@ begin
         finTourJoueur();
     end;
 
+    initialiserPlateau(plateau);
+    
     repeat
         preventionTourJoueur(joueurs, currentPlayer);
-        writeln('1. Hypothese');
-        writeln('2. Accusation');
-        resultatAction:=choixAction(action);
-
-        if resultatAction then
-            affichageResultatHypothese(paquetPieces, paquetArmes, paquetPersonnages, joueurs.listeJoueurs[currentPlayer], joueurs, cartesChoisies, carteChoisie)
-        else
-        begin
-            affichageResultatAccusation(paquetPieces, paquetArmes, paquetPersonnages, solution, joueurs.listeJoueurs[currentPlayer]);
-            halt;
-        end;
+        afficherPlateau(plateau, joueurs, currentPlayer, deplacement);
+        jouerTour(joueurs, plateau, paquetPieces, paquetArmes, paquetPersonnages, solution, joueurs.listeJoueurs[currentPlayer], cartesChoisies, carteChoisie)
     until False;
 end.
