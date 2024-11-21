@@ -16,6 +16,13 @@ procedure affichagePaquet(paquet: TPaquet);
 procedure affichageResultatHypothese(paquetPieces, paquetArmes, paquetPersonnages: TPaquet; joueurActuel : TJoueur; joueurs : TJoueurs; cartesChoisies : TPaquet; carteChoisie : TCarte);
 procedure affichageResultatAccusation(paquetPieces, paquetArmes, paquetPersonnages, solution : TPaquet; joueurActuel : TJoueur);
 
+procedure attributionCouleur(couleur: TCouleur);
+procedure affichagePlateau(var plateau: TPlateau; joueurs: TJoueurs; joueurActuel: Integer; deplacementRestant: Integer);
+procedure deplacerJoueur(var joueurs: TJoueurs; currentPlayer: Integer; var plateau: TPlateau; var deplacement: Integer);
+procedure jouerTour(var joueurs: TJoueurs; var plateau: TPlateau; paquetPieces, paquetArmes, paquetPersonnages, solution: TPaquet; joueurActuel : TJoueur; cartesChoisies : TPaquet; carteChoisie : TCarte);
+
+
+
 implementation
 
 procedure narration(); // Affiche la narration
@@ -155,6 +162,224 @@ begin
     writeln(joueurActuel.nom, ' remporte la partie ! Les autres joueurs ont perdu.')
   else
     writeln(joueurActuel.nom, ' a perdu la partie. Les autres joueurs gagnent !')
+end;
+
+
+// Procédure pour attribuer une couleur au texte de fond
+procedure attributionCouleur(couleur: TCouleur);
+
+begin
+  case couleur of
+    Black: TextBackground(0);
+    Blue: TextBackground(1);
+    Green: TextBackground(2);
+    Cyan: TextBackground(3);
+    Red: TextBackground(4);
+    Magenta: TextBackground(5);
+    Yellow: TextBackground(14);
+    White: TextBackground(15);
+  end;
+end;
+
+// Procédure pour afficher le plateau avec les joueurs
+procedure affichagePlateau(var plateau: TPlateau; joueurs: TJoueurs; joueurActuel: Integer; deplacementRestant: Integer);
+var
+  i, j, k: Integer;
+  caseJoueur: Boolean;
+begin
+  ClrScr;
+  writeln('Plateau de jeu :');
+  for i := 1 to 16 do
+  begin
+    for j := 1 to 21 do
+    begin
+      // Ajuster la couleur uniquement si Mur ou Couloir
+      if plateau[i, j].typePiece = Mur then
+        plateau[i, j].couleur := White
+      else if plateau[i, j].typePiece = Couloir then
+        plateau[i, j].couleur := Black;
+
+      attributionCouleur(plateau[i, j].couleur);
+
+      if plateau[i, j].joueurID > 0 then
+        write(plateau[i, j].joueurID) // Afficher le numéro du joueur
+      else if plateau[i, j].typePiece = Mur then
+        write(' ') // Mur marqué par "x"
+      else
+        write('.'); // Couloirs et pièces marqués par '.'
+    end;
+
+    case i of
+          1: begin
+                TextBackground(0);
+                write('  Legende :');
+              end;
+          2: write();
+          3: begin
+                TextBackground(0);
+                write('  ');
+                TextBackground(1);
+                write('   ');
+                TextBackground(0);
+                write(' - Amphi Tillion');
+              end;
+          4: begin
+                TextBackground(0);
+                write('  ');
+                TextBackground(4);
+                write('   ');
+                TextBackground(0);
+                write(' - BU');
+              end;
+          5: begin
+                TextBackground(0);
+                write('  ');
+                TextBackground(2);
+                write('   ');
+                TextBackground(0);
+                write(' - Labo');
+              end;
+          6: begin
+                TextBackground(0);
+                write('  ');
+                TextBackground(5);
+                write('   ');
+                TextBackground(0);
+                write(' - Parking visiteurs');
+              end;
+          7: begin
+                TextBackground(0);
+                write('  ');
+                TextBackground(14);
+                write('   ');
+                TextBackground(0);
+                write(' - RU');
+              end;
+          8: begin
+              TextBackground(0);
+              write('  ');
+              TextBackground(1);
+              write('   ');
+              TextBackground(0);
+              write(' - BDE');
+              end;
+          9: begin  
+              TextBackground(0);
+              write('  ');
+              TextBackground(3);
+              write('   ');
+              TextBackground(0);
+              write(' - Residence');
+              end;
+          10: begin
+              TextBackground(0);
+              write('  ');
+              TextBackground(4);
+              write('   ');
+              TextBackground(0);
+              write(' - Infirmerie');
+              end;
+          11: begin
+              TextBackground(0);
+              write('  ');
+              TextBackground(14);
+              write('   ');
+              TextBackground(0);
+              write(' - Cafeteria');
+              end;
+      end;
+    writeln;
+  end;
+
+  TextBackground(0);
+  writeln('Tour du Joueur ', joueurActuel, '.');
+  writeln('Déplacements restants : ', deplacementRestant);
+end;
+
+// Procédure pour déplacer un joueur
+procedure deplacerJoueur(var joueurs: TJoueurs; currentPlayer: Integer; var plateau: TPlateau; var deplacement: Integer);
+var
+  oldX,oldY,newX, newY: Integer;
+  key: Char;
+begin
+  while deplacement > 0 do
+  begin
+    key := ReadKey;
+
+    // Calculer la nouvelle position en fonction de la touche
+    newX := joueurs.listeJoueurs[currentPlayer].x;
+    newY := joueurs.listeJoueurs[currentPlayer].y;
+    oldX := newX;
+    oldY := newY;
+
+    case key of
+      #72: Dec(newX); // Haut
+      #80: Inc(newX); // Bas
+      #75: Dec(newY); // Gauche
+      #77: Inc(newY); // Droite
+    end;
+
+    // Vérifier si la nouvelle position est valide
+    if (plateau[newX, newY].typePiece <> Mur) and (not plateau[newX, newY].estOccupee) then
+    begin
+      // Libérer l'ancienne position
+      plateau[joueurs.listeJoueurs[currentPlayer].x, joueurs.listeJoueurs[currentPlayer].y].estOccupee := False;
+      plateau[joueurs.listeJoueurs[currentPlayer].x, joueurs.listeJoueurs[currentPlayer].y].joueurID := 0;
+
+      // Déplacer le joueur
+      joueurs.listeJoueurs[currentPlayer].x := newX;
+      joueurs.listeJoueurs[currentPlayer].y := newY;
+
+      // Occuper la nouvelle position
+      plateau[newX, newY].estOccupee := True;
+      plateau[newX, newY].joueurID := currentPlayer + 1; // ID de joueur commence à 1
+
+      Dec(deplacement); // Réduire le nombre de déplacements restants
+
+      GotoXY(oldY,oldX+1);
+      attributionCouleur(plateau[oldX,oldY].couleur);
+      write('.');
+
+      GotoXY(newY,newX+1);
+      attributionCouleur(plateau[newX,newY].couleur);
+      write(currentPlayer+1);
+
+      GotoXY(1,20);
+      attributionCouleur(Black);
+      ClrEol();
+      GotoXY(1,21);
+      ClrEol();
+      GotoXY(1,20);
+    end;
+  end;
+end;
+
+// Procédure principale pour gérer les tours
+procedure jouerTour(var joueurs: TJoueurs; var plateau: TPlateau; paquetPieces, paquetArmes, paquetPersonnages, solution: TPaquet; joueurActuel : TJoueur; cartesChoisies : TPaquet; carteChoisie : TCarte);
+
+var
+  currentPlayer, deplacement: Integer;
+  action : Integer;
+  resultatAction : Boolean;
+begin
+  for currentPlayer := 0 to joueurs.taille - 1 do
+  begin
+    // Nombre de déplacements pour le joueur actuel
+    deplacement := 7; // Exemple : 5 déplacements par tour
+    writeln('Joueur ', currentPlayer + 1, ', c''est votre tour !');
+    deplacerJoueur(joueurs, currentPlayer, plateau, deplacement);
+  end;
+    writeln('1. Hypothese');
+    writeln('2. Accusation');
+    resultatAction:=choixAction(action);
+
+    if resultatAction then
+        affichageResultatHypothese(paquetPieces, paquetArmes, paquetPersonnages, joueurs.listeJoueurs[currentPlayer], joueurs, cartesChoisies, carteChoisie)
+    else
+    begin
+        affichageResultatAccusation(paquetPieces, paquetArmes, paquetPersonnages, solution, joueurs.listeJoueurs[currentPlayer]);
+        halt;
+    end;
 end;
 
 end.

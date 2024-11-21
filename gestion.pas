@@ -18,6 +18,10 @@ procedure recupererCarteJoueur(compare, comparant : TPaquet ; var carteChoisie :
 procedure hypothese(paquetPieces, paquetArmes, paquetPersonnages: TPaquet; joueurActuel : TJoueur; joueurs : TJoueurs; var cartesChoisies : TPaquet ; var carteChoisie : TCarte);
 function accusation(paquetPieces, paquetArmes, paquetPersonnages, solution : TPaquet; joueurActuel : TJoueur):Boolean;
 
+procedure initilisationPositionsJoueurs(var joueurs : TJoueurs ; var plateau : TPlateau);
+procedure initialisationPiece(var plateau: TPlateau; debutX, finX, debutY, finY: Integer; piece: TPiece; couleur: TCouleur);
+procedure initialisationPlateau(var plateau: TPlateau);
+
 implementation
 
 procedure initialisationPaquets(var paquetPieces, paquetArmes, paquetPersonnages : TPaquet);
@@ -332,6 +336,103 @@ begin
         accusation:=True
     else
         accusation:=False
+end;
+
+
+procedure initilisationPositionsJoueurs(var joueurs : TJoueurs ; var plateau : TPlateau);
+var i : Integer;
+
+begin
+  for i:=0 to joueurs.taille-1 do
+    begin
+      // Position initiale dans un couloir
+      joueurs.listeJoueurs[i].x := 2; 
+      joueurs.listeJoueurs[i].y := 2+4*i;
+
+      // Placer le joueur sur le plateau
+      plateau[joueurs.listeJoueurs[i].x, joueurs.listeJoueurs[i].y].estOccupee := True;
+      plateau[joueurs.listeJoueurs[i].x, joueurs.listeJoueurs[i].y].joueurID := i+1;
+
+      // Vérifiez que la case est un couloir et n'est pas occupée
+    end;
+end;
+
+// Procédure pour initialiser les pièces et leurs couleurs
+procedure initialisationPiece(var plateau: TPlateau; debutX, finX, debutY, finY: Integer; piece: TPiece; couleur: TCouleur);
+var i, j: Integer;
+
+begin
+  for i := debutX to finX do
+    for j := debutY to finY do
+    begin
+      plateau[i, j].typePiece := piece;
+      plateau[i, j].couleur := couleur;
+      plateau[i, j].estOccupee := False;
+    end;
+
+  for i := debutX - 1 to finX + 1 do
+  begin
+    plateau[i, debutY - 1].typePiece := Mur;
+    plateau[i, debutY - 1].couleur := White;
+    plateau[i, finY + 1].typePiece := Mur;
+    plateau[i, finY + 1].couleur := White;
+  end;
+
+  for j := debutY to finY do
+  begin
+    plateau[debutX - 1, j].typePiece := Mur;
+    plateau[debutX - 1, j].couleur := White;
+    plateau[finX + 1, j].typePiece := Mur;
+    plateau[finX + 1, j].couleur := White;
+  end;
+end;
+
+// Procédure pour initialiser le plateau avec des couloirs par défaut
+procedure initialisationPlateau(var plateau: TPlateau);
+var i, j: Integer;
+
+begin
+  for i := 1 to 16 do
+    for j := 1 to 21 do
+    begin
+      plateau[i, j].typePiece := Couloir;
+      plateau[i, j].couleur := Black;
+      plateau[i, j].estOccupee := False;
+    end;
+
+  for i := 1 to 16 do
+  begin
+    plateau[i, 1].typePiece := Mur;
+    plateau[i, 21].typePiece := Mur;
+  end;
+  for j := 1 to 21 do
+  begin
+    plateau[1, j].typePiece := Mur;
+    plateau[16, j].typePiece := Mur;
+  end;
+
+  initialisationPiece(plateau, 2, 3, 2, 4, Amphi_Tillionn, Blue);
+  initialisationPiece(plateau, 2, 3, 10, 12, Laboo, Green);
+  initialisationPiece(plateau, 2, 3, 18, 20, BUU, Red);
+  initialisationPiece(plateau, 8, 9, 2, 4, RUU, Yellow);
+  initialisationPiece(plateau, 8, 9, 10, 12, Parking_visiteurs, Magenta);
+  initialisationPiece(plateau, 8, 9, 18, 20, Cafeteriaa, Yellow);
+  initialisationPiece(plateau, 14, 15, 2, 4, Infirmeriee, Red);
+  initialisationPiece(plateau, 14, 15, 10, 12, Residencee, Cyan);
+  initialisationPiece(plateau, 14, 15, 18, 20, BDEE, Blue);
+
+  plateau[4, 3].typePiece:= Couloir;
+  plateau[3, 9].typePiece:= Couloir;
+  plateau[4, 11].typePiece:= Couloir;
+  plateau[2, 17].typePiece:= Couloir;
+  plateau[8, 5].typePiece:= Couloir;
+  plateau[9, 9].typePiece:= Couloir;
+  plateau[7, 12].typePiece:= Couloir;
+  plateau[7, 18].typePiece:= Couloir;
+  plateau[10, 20].typePiece:= Couloir;
+  plateau[13, 3].typePiece:= Couloir;
+  plateau[13, 10].typePiece:= Couloir;
+  plateau[15, 17].typePiece:= Couloir;
 end;
 
 end.

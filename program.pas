@@ -1,6 +1,6 @@
 program cluedo;
 
-Uses Crt, affichage, TypeEtCte, gestion, affichage_plateau, gestion_plateau;
+Uses Crt, affichage, TypeEtCte, gestion;
 
 var
     choix, nbJoueurs, currentPlayer, i, action, deplacement : Integer;
@@ -29,11 +29,11 @@ begin
         finTourJoueur();
     end;
 
-    initialiserPlateau(plateau);
+    initialisationPlateau(plateau);
     
     repeat
         preventionTourJoueur(joueurs, currentPlayer);
-        afficherPlateau(plateau, joueurs, currentPlayer, deplacement);
+        affichagePlateau(plateau, joueurs, currentPlayer, deplacement);
         jouerTour(joueurs, plateau, paquetPieces, paquetArmes, paquetPersonnages, solution, joueurs.listeJoueurs[currentPlayer], cartesChoisies, carteChoisie)
     until False;
 end.
