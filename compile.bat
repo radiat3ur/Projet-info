@@ -1,2 +1,2 @@
-fpc program.pas
-program
+fpc main
+main

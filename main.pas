@@ -1,4 +1,4 @@
-program cluedo;
+program main;
 
 Uses Crt, affichage, TypeEtCte, gestion;
 
@@ -31,9 +31,6 @@ begin
 
     initialisationPlateau(plateau);
     
-    repeat
-        preventionTourJoueur(joueurs, currentPlayer);
-        affichagePlateau(plateau, joueurs, currentPlayer, deplacement);
-        jouerTour(joueurs, plateau, paquetPieces, paquetArmes, paquetPersonnages, solution, joueurs.listeJoueurs[currentPlayer], cartesChoisies, carteChoisie)
-    until False;
+    affichagePlateau(plateau, joueurs, currentPlayer);
+    jouerTour(joueurs, plateau, paquetPieces, paquetArmes, paquetPersonnages, solution, joueurs.listeJoueurs[currentPlayer], cartesChoisies, carteChoisie)
 end.

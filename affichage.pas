@@ -13,15 +13,13 @@ procedure preventionTourJoueur(joueurs: TJoueurs; var i: Integer);
 procedure finTourJoueur();
 procedure affichageCarte(carte : TCarte);
 procedure affichagePaquet(paquet: TPaquet);
-procedure affichageResultatHypothese(paquetPieces, paquetArmes, paquetPersonnages: TPaquet; joueurActuel : TJoueur; joueurs : TJoueurs; cartesChoisies : TPaquet; carteChoisie : TCarte);
-procedure affichageResultatAccusation(paquetPieces, paquetArmes, paquetPersonnages, solution : TPaquet; joueurActuel : TJoueur);
+procedure affichageResultatHypothese(plateau : TPlateau ;paquetPieces, paquetArmes, paquetPersonnages: TPaquet; joueurActuel : TJoueur; joueurs : TJoueurs; cartesChoisies : TPaquet; carteChoisie : TCarte);
+procedure affichageResultatAccusation(plateau : TPlateau ; paquetPieces, paquetArmes, paquetPersonnages, solution : TPaquet; joueurActuel : TJoueur);
 
 procedure attributionCouleur(couleur: TCouleur);
-procedure affichagePlateau(var plateau: TPlateau; joueurs: TJoueurs; joueurActuel: Integer; deplacementRestant: Integer);
+procedure affichagePlateau(var plateau: TPlateau; joueurs: TJoueurs; joueurActuel: Integer);
 procedure deplacerJoueur(var joueurs: TJoueurs; currentPlayer: Integer; var plateau: TPlateau; var deplacement: Integer);
 procedure jouerTour(var joueurs: TJoueurs; var plateau: TPlateau; paquetPieces, paquetArmes, paquetPersonnages, solution: TPaquet; joueurActuel : TJoueur; cartesChoisies : TPaquet; carteChoisie : TCarte);
-
-
 
 implementation
 
@@ -146,18 +144,18 @@ begin
   end;
 end;
 
-procedure affichageResultatHypothese(paquetPieces, paquetArmes, paquetPersonnages: TPaquet; joueurActuel : TJoueur; joueurs : TJoueurs; cartesChoisies : TPaquet; carteChoisie : TCarte);
+procedure affichageResultatHypothese(plateau : TPlateau ; paquetPieces, paquetArmes, paquetPersonnages: TPaquet; joueurActuel : TJoueur; joueurs : TJoueurs; cartesChoisies : TPaquet; carteChoisie : TCarte);
 
 begin
-  hypothese(paquetPieces, paquetArmes, paquetPersonnages, joueurActuel, joueurs, cartesChoisies, carteChoisie);
+  hypothese(plateau, paquetPieces, paquetArmes, paquetPersonnages, joueurActuel, joueurs, cartesChoisies, carteChoisie);
   affichageCarte(carteChoisie)
 end;
 
-procedure affichageResultatAccusation(paquetPieces, paquetArmes, paquetPersonnages, solution : TPaquet; joueurActuel : TJoueur);
+procedure affichageResultatAccusation(plateau : TPlateau ; paquetPieces, paquetArmes, paquetPersonnages, solution : TPaquet; joueurActuel : TJoueur);
 var resultat:Boolean;
 
 begin
-  resultat:=accusation(paquetPieces, paquetArmes, paquetPersonnages, solution, joueurActuel);
+  resultat:=accusation(plateau, paquetPieces, paquetArmes, paquetPersonnages, solution, joueurActuel);
   if (resultat) then
     writeln(joueurActuel.nom, ' remporte la partie ! Les autres joueurs ont perdu.')
   else
@@ -182,7 +180,7 @@ begin
 end;
 
 // Procédure pour afficher le plateau avec les joueurs
-procedure affichagePlateau(var plateau: TPlateau; joueurs: TJoueurs; joueurActuel: Integer; deplacementRestant: Integer);
+procedure affichagePlateau(var plateau: TPlateau; joueurs: TJoueurs; joueurActuel: Integer);
 var
   i, j, k: Integer;
   caseJoueur: Boolean;
@@ -290,10 +288,6 @@ begin
       end;
     writeln;
   end;
-
-  TextBackground(0);
-  writeln('Tour du Joueur ', joueurActuel, '.');
-  writeln('Déplacements restants : ', deplacementRestant);
 end;
 
 // Procédure pour déplacer un joueur
@@ -304,6 +298,10 @@ var
 begin
   while deplacement > 0 do
   begin
+    TextBackground(0);
+    GotoXY(1,19);
+    writeln('Deplacements restants : ', deplacement);
+
     key := ReadKey;
 
     // Calculer la nouvelle position en fonction de la touche
@@ -344,12 +342,7 @@ begin
       attributionCouleur(plateau[newX,newY].couleur);
       write(currentPlayer+1);
 
-      GotoXY(1,20);
-      attributionCouleur(Black);
-      ClrEol();
-      GotoXY(1,21);
-      ClrEol();
-      GotoXY(1,20);
+      TextBackground(0)
     end;
   end;
 end;
@@ -362,24 +355,31 @@ var
   action : Integer;
   resultatAction : Boolean;
 begin
-  for currentPlayer := 0 to joueurs.taille - 1 do
-  begin
+  currentPlayer:=0;
+  repeat
+    TextBackground(0);
+    
+    supprimerLignes(18, 4);
     // Nombre de déplacements pour le joueur actuel
-    deplacement := 7; // Exemple : 5 déplacements par tour
+    lancerDeDes(deplacement); // Exemple : 5 déplacements par tour
+    GotoXY(1,18);
+    TextBackground(0);
     writeln('Joueur ', currentPlayer + 1, ', c''est votre tour !');
     deplacerJoueur(joueurs, currentPlayer, plateau, deplacement);
-  end;
+
+    GotoXY(1,19);
+    TextBackground(0);
+    ClrEol();
     writeln('1. Hypothese');
     writeln('2. Accusation');
     resultatAction:=choixAction(action);
-
     if resultatAction then
-        affichageResultatHypothese(paquetPieces, paquetArmes, paquetPersonnages, joueurs.listeJoueurs[currentPlayer], joueurs, cartesChoisies, carteChoisie)
-    else
-    begin
-        affichageResultatAccusation(paquetPieces, paquetArmes, paquetPersonnages, solution, joueurs.listeJoueurs[currentPlayer]);
-        halt;
-    end;
+      affichageResultatHypothese(plateau, paquetPieces, paquetArmes, paquetPersonnages, joueurs.listeJoueurs[currentPlayer], joueurs, cartesChoisies, carteChoisie);
+    currentPlayer:=(currentPlayer+1) mod joueurs.taille
+  until (resultatAction=False);
+
+  affichageResultatAccusation(plateau, paquetPieces, paquetArmes, paquetPersonnages, solution, joueurs.listeJoueurs[currentPlayer]);
+  halt;
 end;
 
 end.
