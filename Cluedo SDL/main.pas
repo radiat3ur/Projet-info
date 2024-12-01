@@ -8,15 +8,25 @@ var
   Renderer: PSDL_Renderer;
   IsRunning: Boolean;
   Board: PSDL_Texture;
-  personnages: TCharacters;
-  DiceTextures: array[1..6] of PSDL_Texture;
+  personnages: TJoueurs;
+  DiceTextures: array[0..5] of PSDL_Texture;
   CurrentPlayer: Integer;
   DiceResults: TTabInt;
   nbrDeplacement: Integer;
   pieces : TPieces;
+  text : String;
+  textWidth, textHeight: Integer;
+  font : PTTF_Font;
+  Event : TSDL_Event;
+  CurrentSelection: Integer;
+  colorNormal, colorHighlight: TSDL_Color;
+  DestRect : TSDL_Rect;
+  MenuTexture: PSDL_Texture; // Texture pour l'image de fond
 
 begin
   InitSDL(Window, Renderer);
+  menu(Renderer);
+
   LoadAssets(Board, Renderer);
   LoadDiceTextures(Renderer, DiceTextures);
   LoadPionTextures(Renderer, personnages); // Charger les sprites des joueurs
@@ -30,7 +40,14 @@ begin
     HandleEvents(pieces, personnages, CurrentPlayer, DiceResults,nbrDeplacement);
     Render(Renderer, Board, personnages, DiceResults, DiceTextures, nbrDeplacement);
     SDL_Delay(16); // ~60 FPS
+    if Event.type_ = SDL_QUITEV then
+    begin
+      IsRunning := False; // Arrêtez la boucle principale
+      Halt;
+    end;
   end;
 
+  TTF_CloseFont(font);
+  TTF_Quit;
   CleanUp(DiceTextures, Board, personnages, Renderer, Window);
 end.

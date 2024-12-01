@@ -7,9 +7,9 @@ uses SDL2;
 const
     MAX_PERSONNAGES = 6;
     MAX_CARTES = 21;
-    SCREEN_WIDTH = 1100;  // Largeur de la fenêtre (espace supplémentaire pour les dés)
-    SCREEN_HEIGHT = 880;  // Hauteur de la fenêtre
-    TILE_SIZE = 30;       // Taille d'une case (réduit pour adapter le plateau)
+    SCREEN_WIDTH = 1920;  // Largeur de la fenêtre (espace supplémentaire pour les dés)
+    SCREEN_HEIGHT = 1080;  // Hauteur de la fenêtre
+    TILE_SIZE = 40;       // Taille d'une case (réduit pour adapter le plateau)
     GRID_WIDTH = 22;      // Nombre de colonnes sur la grille
     GRID_HEIGHT = 22;     // Nombre de lignes sur la grille
 
@@ -30,7 +30,7 @@ const
         (8, 0, 0, 0, 2, 8, 0, 2, 8, 0, 0, 0, 2, 8, 2, 8, 0, 0, 0, 0, 0, 2),
         (8, 0, 0, 0, 0, 0, 0, 2, 8, 0, 0, 0, 2, 8, 2, 12, 4, 4, 4, 4, 4, 6),
         (8, 0, 0, 0, 2, 8, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 3),
-        (12, 4, 4, 4, 6, 8, 0, 4, 0, 4, 4, 4, 4, 0, 4, 0, 0, 0, 0, 0, 0, 2),
+        (12, 4, 4, 4, 6, 8, 0, 4, 0, 4, 4, 4, 4, 0, 4, 0, 0, 0, 0, 0, 0, 6),
         (8, 1, 1, 1, 1, 0, 2, 9, 0, 1, 1, 1, 1, 0, 3, 8, 0, 0, 4, 4, 4, 2),
         (8, 4, 4, 4, 4, 0, 2, 8, 0, 0, 0, 0, 0, 0, 2, 8, 2, 8, 1, 1, 1, 2),
         (8, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 8, 0, 0, 0, 2),
@@ -59,12 +59,10 @@ Type TJoueur = Record
 	nom : TPersonnages;
 	main : TPaquet;
 	x, y : Integer;
+    PionTextures: PSDL_Texture;
 end;
 
-Type TJoueurs = Record
-	listeJoueurs : Array of TJoueur;
-	taille : Integer;
-end;
+Type TJoueurs = Array[0..5] of TJoueur;
 
 Type TCase = record
     estOccupee: Boolean;
@@ -79,13 +77,6 @@ Type TPiece = record
 end;
 
 Type TPieces = array of TPiece;
-
-Type TCharacter = record
-    x, y: Integer;
-    PionTextures: PSDL_Texture;
-  end;
-
-Type TCharacters = array[1..6] of TCharacter;
 
 Type TTabInt = array of Integer;
 

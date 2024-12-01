@@ -6,10 +6,10 @@ uses SDL2, TypeEtCte;
 
 function creerPiece(x,y,w,h:Integer;salle:TNomPiece):TPiece;
 procedure InitPieces(var pieces : TPieces);
-procedure InitCharacters(var personnages: TCharacters; var CurrentPlayer: Integer);
+procedure InitCharacters(var joueurs: TJoueurs; var CurrentPlayer: Integer);
 function estDansPiece(pieces : TPieces ; xJ, yJ : Integer):Boolean;
 procedure RollDice(var DiceResults: TTabInt);
-procedure HandleEvents(pieces : TPieces ; var personnages: TCharacters; var CurrentPlayer: Integer; var DiceResults: TTabInt; var nbrDeplacement: Integer);
+procedure HandleEvents(pieces : TPieces ; var joueurs: TJoueurs; var CurrentPlayer: Integer; var DiceResults: TTabInt; var nbrDeplacement: Integer);
 
 implementation
 
@@ -37,20 +37,20 @@ begin
   pieces[8] := creerPiece(15,8,7,6,Residence);
 end;
 
-procedure InitCharacters(var personnages: TCharacters; var CurrentPlayer: Integer);
+procedure InitCharacters(var joueurs: TJoueurs; var CurrentPlayer: Integer);
 begin
-  personnages[1].x := 0;
-  personnages[1].y := 4;
-  personnages[2].x := 0;
-  personnages[2].y := 17;
-  personnages[3].x := 14;
-  personnages[3].y := 2;
-  personnages[4].x := 21;
-  personnages[4].y := 14;
-  personnages[5].x := 21;
-  personnages[5].y := 7;
-  personnages[6].x := 15;
-  personnages[6].y := 1;
+  joueurs[0].x := 15;
+  joueurs[0].y := 1;
+  joueurs[1].x := 0;
+  joueurs[1].y := 4;
+  joueurs[2].x := 0;
+  joueurs[2].y := 17;
+  joueurs[3].x := 14;
+  joueurs[3].y := 2;
+  joueurs[4].x := 21;
+  joueurs[4].y := 14;
+  joueurs[5].x := 21;
+  joueurs[5].y := 7;
   CurrentPlayer := 1;
 end;
 
@@ -79,7 +79,7 @@ begin
   DiceResults[1] := Random(6); // Résultat du second dé
 end;
 
-procedure HandleEvents(pieces : TPieces ; var personnages: TCharacters; var CurrentPlayer: Integer; var DiceResults: TTabInt; var nbrDeplacement: Integer);
+procedure HandleEvents(pieces : TPieces ; var joueurs: TJoueurs; var CurrentPlayer: Integer; var DiceResults: TTabInt; var nbrDeplacement: Integer);
 var
   NewX, NewY: Integer;
   CurrentCell: Integer;
@@ -92,43 +92,43 @@ begin
       SDL_QUITEV: IsRunning := False;
       SDL_KEYDOWN:
         begin
-          NewX := personnages[CurrentPlayer].x;
-          NewY := personnages[CurrentPlayer].y;
-          CurrentCell := GRID[personnages[CurrentPlayer].y, personnages[CurrentPlayer].x];
+          NewX := joueurs[CurrentPlayer].x;
+          NewY := joueurs[CurrentPlayer].y;
+          CurrentCell := GRID[joueurs[CurrentPlayer].y, joueurs[CurrentPlayer].x];
           case Event.key.keysym.sym of
             SDLK_UP: if not (CurrentCell in [1, 3, 5, 9]) and (nbrDeplacement>0) then
             begin
               if not (estDansPiece(pieces,newX,newY) and estDansPiece(pieces,newX,newY-1)) then
                 Dec(nbrDeplacement);
               Dec(NewY);
-              personnages[CurrentPlayer].y := NewY;
+              joueurs[CurrentPlayer].y := NewY;
             end;
             SDLK_RIGHT: if not (CurrentCell in [2, 3, 6, 10]) and (nbrDeplacement>0) then
             begin
               if not (estDansPiece(pieces,newX,newY) and estDansPiece(pieces,newX+1,newY)) then
                 Dec(nbrDeplacement);
               Inc(NewX);
-              personnages[CurrentPlayer].X := NewX;
+              joueurs[CurrentPlayer].X := NewX;
             end;
             SDLK_DOWN: if not (CurrentCell in [4, 5, 6, 12]) and (nbrDeplacement>0) then
             begin
               if not (estDansPiece(pieces,newX,newY) and estDansPiece(pieces,newX,newY+1)) then
                 Dec(nbrDeplacement);
               Inc(NewY);
-              personnages[CurrentPlayer].y := NewY;
+              joueurs[CurrentPlayer].y := NewY;
             end;
             SDLK_LEFT: if not (CurrentCell in [8, 9, 10, 12]) and (nbrDeplacement>0) then
             begin
               if not (estDansPiece(pieces,newX,newY) and estDansPiece(pieces,newX-1,newY)) then
                 Dec(nbrDeplacement);
               Dec(NewX);
-              personnages[CurrentPlayer].x := NewX;
+              joueurs[CurrentPlayer].x := NewX;
             end;
             SDLK_RETURN :
             begin
               RollDice(DiceResults); // Relancer les dés pour le joueur suivant
               nbrDeplacement := DiceResults[0] + DiceResults[1] + 2;
-              CurrentPlayer := (CurrentPlayer mod 6) + 1; // Passer au joueur suivant
+              CurrentPlayer := (CurrentPlayer + 1) mod 6; // Passer au joueur suivant
             end;
           end;      
         end;
