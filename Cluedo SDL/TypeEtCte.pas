@@ -80,6 +80,23 @@ Type TPieces = array of TPiece;
 
 Type TTabInt = array of Integer;
 
+const
+  positionsInitiales: array[0..5] of record
+    x, y: Integer;
+  end = (
+    (x: 15; y: 1), // Position prédéfinie pour Duval
+    (x: 0; y: 4),  // Position prédéfinie pour Jerome_YON
+    (x: 0; y: 17), // Position prédéfinie pour Yohann
+    (x: 14; y: 2), // Position prédéfinie pour Diane_Duval
+    (x: 21; y: 14),// Position prédéfinie pour Thomas_LECOURT
+    (x: 21; y: 7)  // Position prédéfinie pour Jerome_Thibaut
+  );
+
+  personnagesDisponibles: array[0..5] of TPersonnages = (
+    Duval, Jerome_YON, Yohann, Diane_Duval, Thomas_LECOURT, Jerome_Thibaut
+  );
+
+
 implementation
 
 end.

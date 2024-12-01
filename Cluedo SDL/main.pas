@@ -12,21 +12,17 @@ var
   DiceTextures: array[0..5] of PSDL_Texture;
   CurrentPlayer: Integer;
   DiceResults: TTabInt;
-  nbrDeplacement: Integer;
+  nbrDeplacement, nbJoueurs : Integer;
   pieces : TPieces;
-  text : String;
-  textWidth, textHeight: Integer;
   font : PTTF_Font;
   Event : TSDL_Event;
-  CurrentSelection: Integer;
-  colorNormal, colorHighlight: TSDL_Color;
-  DestRect : TSDL_Rect;
-  MenuTexture: PSDL_Texture; // Texture pour l'image de fond
+  joueursSelectionnes : Array of Integer;
 
 begin
   InitSDL(Window, Renderer);
   menu(Renderer);
-
+  ChoixNbJoueurs(Renderer, nbJoueurs);
+  SelectionJoueurs(Renderer, joueursSelectionnes, nbJoueurs);
   LoadAssets(Board, Renderer);
   LoadDiceTextures(Renderer, DiceTextures);
   LoadPionTextures(Renderer, personnages); // Charger les sprites des joueurs

@@ -37,6 +37,20 @@ begin
   pieces[8] := creerPiece(15,8,7,6,Residence);
 end;
 
+procedure InitCharacters(var joueurs: TJoueurs; var CurrentPlayer: Integer; nombreDeJoueurs: Integer);
+var
+  i: Integer;
+begin
+  for i := 0 to nombreDeJoueurs - 1 do
+  begin
+    joueurs[i].x := positionsInitiales[i].x;
+    joueurs[i].y := positionsInitiales[i].y;
+    joueurs[i].nom := personnagesDisponibles[i]; // Nom du joueur choisi
+  end;
+  CurrentPlayer := 0;
+end;
+
+
 procedure InitCharacters(var joueurs: TJoueurs; var CurrentPlayer: Integer);
 begin
   joueurs[0].x := 15;
