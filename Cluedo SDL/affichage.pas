@@ -278,7 +278,7 @@ begin
   
   DestRect.x := 0;
   DestRect.y := SCREEN_HEIGHT-175;
-  DestRect.w := 175;
+  DestRect.w := 125;
   DestRect.h := 175;
   SDL_RenderCopy(Renderer, chargerTexture(Renderer, 'Eleve'), nil, @DestRect); // Là !!!
   SDL_RenderPresent(Renderer);
