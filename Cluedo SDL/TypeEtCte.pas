@@ -39,8 +39,8 @@ const
         (12, 4, 4, 4, 6, 12, 6, 12, 4, 4, 4, 4, 4, 4, 6, 12, 6, 12, 4, 4, 4, 12)
     );
 
-Type TPersonnages = (Duval, Jerome_YON, Yohann, Diane_Duval, Thomas_LECOURT, Jerome_Thibaut); // Type pour les joueurs
-Type TTout = (Blouse, Stylo, Ordinateur_portable, Leocarte, Rapport_de_stage, Calculatrice, Dudu, Yon, Lepailleur, Diane, Lecourt, THIBAUT, Amphi_Tillion, Laboratoire, Gymnase, Parking_visiteurs, RU, INSA_Shop, BU, Inf, Resid, Couloir, Mur); //Type pour les cartes
+Type TPersonnage = (Duval, Eleve, Boutigny, Lecourt, Yohann, Yon); // Type pour les joueurs
+Type TTout = (Blouse, Stylo, Ordinateur_portable, Leocarte, Rapport_de_stage, Calculatrice, Dudu, Jerome_Yon, Lepailleur, Diane, LLecourt, THIBAUT, Amphi_Tillion, Laboratoire, Gymnase, Parking_visiteurs, RU, INSA_Shop, BU, Inf, Resid, Couloir, Mur); //Type pour les cartes
 Type TCategorie = (Piece, Arme, Personnage);
 Type TCouleur = (Black, Blue, Green, Cyan, Red, Magenta, Yellow, White);
 Type TNomPiece = (Tillion, Labo, Gym, Parking, Self, Shop, Biblio, Infirmerie, Residence);  
@@ -56,17 +56,17 @@ Type TPaquet = Record
 end;
 
 Type TJoueur = Record
-	nom : TPersonnages;
+	nom : TPersonnage;
 	main : TPaquet;
 	x, y : Integer;
     PionTextures: PSDL_Texture;
 end;
 
-Type TJoueurs = Array[0..5] of TJoueur;
+Type TJoueurs = Array of TJoueur;
 
 Type TCase = record
     estOccupee: Boolean;
-    typePiece: TTout;
+    typePiece: TNomPiece;
     couleur: TCouleur;
     joueurID : Integer; // 0 si pas de joueur, sinon numéro du joueur
 end;
@@ -81,7 +81,7 @@ Type TPieces = array of TPiece;
 Type TTabInt = array of Integer;
 
 const
-  positionsInitiales: array[0..5] of record
+  positionsInitiales: array[Duval..Yon] of record
     x, y: Integer;
   end = (
     (x: 15; y: 1), // Position prédéfinie pour Duval
@@ -92,10 +92,11 @@ const
     (x: 21; y: 7)  // Position prédéfinie pour Jerome_Thibaut
   );
 
-  personnagesDisponibles: array[0..5] of TPersonnages = (
-    Duval, Jerome_YON, Yohann, Diane_Duval, Thomas_LECOURT, Jerome_Thibaut
+  personnagesDisponibles: array[0..5] of TPersonnage = (
+    Duval, Eleve, Boutigny, Lecourt, Yohann, Yon
   );
 
+Type TabTextures = array of PSDL_Texture;
 
 implementation
 

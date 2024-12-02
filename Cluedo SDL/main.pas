@@ -7,34 +7,34 @@ var
   Window: PSDL_Window;
   Renderer: PSDL_Renderer;
   IsRunning: Boolean;
-  Board: PSDL_Texture;
-  personnages: TJoueurs;
-  DiceTextures: array[0..5] of PSDL_Texture;
+  plateau: PSDL_Texture;
+  joueurs: TJoueurs;
+  DiceTextures: TabTextures;
   CurrentPlayer: Integer;
   DiceResults: TTabInt;
-  nbrDeplacement, nbJoueurs : Integer;
+  nbrDeplacement : Integer;
   pieces : TPieces;
   font : PTTF_Font;
   Event : TSDL_Event;
-  joueursSelectionnes : Array of Integer;
 
 begin
   InitSDL(Window, Renderer);
   menu(Renderer);
-  ChoixNbJoueurs(Renderer, nbJoueurs);
-  SelectionJoueurs(Renderer, joueursSelectionnes, nbJoueurs);
-  LoadAssets(Board, Renderer);
-  LoadDiceTextures(Renderer, DiceTextures);
-  LoadPionTextures(Renderer, personnages); // Charger les sprites des joueurs
-  InitCharacters(personnages, CurrentPlayer);       // Initialiser les positions des joueurs
+  ChoixNbJoueurs(Renderer, joueurs);
+  SelectionJoueurs(Renderer, joueurs);
+  InitCharacters(joueurs, CurrentPlayer);
+  chargerPlateau(plateau, Renderer);
+  SetLength(DiceTextures,6);
+  chargerTexturesDices(Renderer, DiceTextures);
+  chargerTexturesPions(Renderer,joueurs); // Charger les sprites des joueurs
   RollDice(DiceResults); // Initialiser avec un premier lancer de dés
 
   IsRunning := True;
   InitPieces(pieces);
   while IsRunning do
   begin
-    HandleEvents(pieces, personnages, CurrentPlayer, DiceResults,nbrDeplacement);
-    Render(Renderer, Board, personnages, DiceResults, DiceTextures, nbrDeplacement);
+    HandleEvents(pieces, joueurs, CurrentPlayer, DiceResults,nbrDeplacement);
+    Render(Renderer, plateau, joueurs, DiceResults, DiceTextures, nbrDeplacement, CurrentPlayer);
     SDL_Delay(16); // ~60 FPS
     if Event.type_ = SDL_QUITEV then
     begin
@@ -45,5 +45,5 @@ begin
 
   TTF_CloseFont(font);
   TTF_Quit;
-  CleanUp(DiceTextures, Board, personnages, Renderer, Window);
+  CleanUp(DiceTextures, plateau, joueurs, Renderer, Window);
 end.

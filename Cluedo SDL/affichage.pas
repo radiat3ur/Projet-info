@@ -5,19 +5,19 @@ interface
 uses SDL2, SDL2_image, SDL2_ttf, TypeEtCte, sysUtils;
 
 procedure InitSDL(var Window: PSDL_Window; var Renderer: PSDL_Renderer);
-procedure LoadAssets(var Board: PSDL_Texture ; var Renderer: PSDL_Renderer);
+procedure chargerPlateau(var plateau: PSDL_Texture ; var Renderer: PSDL_Renderer);
 function chargerTexture(Renderer: PSDL_Renderer; filename: String): PSDL_Texture;
 function LoadTextureFromText(renderer:PSDL_Renderer; police:PTTF_Font; text:String; color: TSDL_Color):PSDL_Texture;
 function Couleur(r, g, b, a: Integer): TSDL_Color;
 procedure afficherTexte(Renderer: PSDL_Renderer; text: String; taille, x, y: Integer; couleur: TSDL_Color);
 procedure menu(Renderer: PSDL_Renderer);
-procedure LoadDiceTextures(Renderer: PSDL_Renderer ; var DiceTextures: array of PSDL_Texture);
-procedure LoadPionTextures(Renderer : PSDL_Renderer ; var joueurs : TJoueurs);
-procedure RenderDice(Renderer: PSDL_Renderer; DiceTextures: array of PSDL_Texture; DiceResults: TTabInt);
-procedure Render(Renderer: PSDL_Renderer; Board: PSDL_Texture; joueurs: TJoueurs; DiceResults: TTabInt; DiceTextures: array of PSDL_Texture; nbrDeplacement: Integer);
-procedure ChoixNbJoueurs(Renderer: PSDL_Renderer; var nbJoueurs: Integer);
-procedure SelectionJoueurs(Renderer: PSDL_Renderer; var joueursSelectionnes: array of Integer; nbJoueurs: Integer);
-procedure CleanUp(DiceTextures: array of PSDL_Texture; Board: PSDL_Texture; joueurs : TJoueurs; Renderer: PSDL_Renderer; Window: PSDL_Window);
+procedure chargerTexturesDices(Renderer: PSDL_Renderer ; var DiceTextures: TabTextures);
+procedure chargerTexturesPions(Renderer : PSDL_Renderer ; var joueurs : TJoueurs);
+procedure RenderDice(Renderer: PSDL_Renderer; DiceTextures: TabTextures; DiceResults: TTabInt);
+procedure Render(Renderer: PSDL_Renderer; plateau: PSDL_Texture; joueurs: TJoueurs; DiceResults: TTabInt; DiceTextures: TabTextures; nbrDeplacement, CurrentPlayer: Integer);
+procedure ChoixNbJoueurs(Renderer: PSDL_Renderer; var joueurs: TJoueurs);
+procedure SelectionJoueurs(Renderer: PSDL_Renderer; var joueurs: TJoueurs);
+procedure CleanUp(DiceTextures: TabTextures; plateau: PSDL_Texture; joueurs : TJoueurs; Renderer: PSDL_Renderer; Window: PSDL_Window);
 
 implementation
 
@@ -45,7 +45,7 @@ begin
   end;
 end;
 
-procedure LoadAssets(var Board: PSDL_Texture ; var Renderer: PSDL_Renderer);
+procedure chargerPlateau(var plateau : PSDL_Texture ; var Renderer: PSDL_Renderer);
 var
   Surface: PSDL_Surface;
 begin
@@ -56,7 +56,7 @@ begin
     Writeln('Erreur de chargement de l''image du plateau: ', IMG_GetError);
     Halt(1);
   end;
-  Board := SDL_CreateTextureFromSurface(Renderer, Surface);
+  plateau := SDL_CreateTextureFromSurface(Renderer, Surface);
   SDL_FreeSurface(Surface);
 end;
 
@@ -198,6 +198,8 @@ begin
                 end; // Quitter
             end;
         end;
+        if event.type_ = SDL_QUITEV then
+          HALT;
       end;
     end;
     SDL_Delay(16); // Pour limiter la boucle (~60 FPS)
@@ -208,7 +210,7 @@ begin
 end; 
 
 // Charger les textures des dés
-procedure LoadDiceTextures(Renderer: PSDL_Renderer ; var DiceTextures: array of PSDL_Texture);
+procedure chargerTexturesDices(Renderer: PSDL_Renderer ; var DiceTextures: TabTextures);
 var
   i: Integer;
 begin
@@ -217,15 +219,22 @@ begin
 end;
 
 // Charger les textures des pions
-procedure LoadPionTextures(Renderer : PSDL_Renderer ; var joueurs : TJoueurs);
+procedure chargerTexturesPions(Renderer : PSDL_Renderer ; var joueurs : TJoueurs);
 var
   i: Integer;
 begin
-  for i := 0 to 5 do
-    joueurs[i].PionTextures := chargerTexture(Renderer, 'pion '+IntToStr(i+1));
+  for i := 0 to length(joueurs) do
+    case joueurs[i].nom of
+      Duval: joueurs[i].PionTextures := chargerTexture(Renderer, 'pion 1');
+      Eleve: joueurs[i].PionTextures := chargerTexture(Renderer, 'pion 2');
+      Boutigny: joueurs[i].PionTextures := chargerTexture(Renderer, 'pion 3');
+      Lecourt: joueurs[i].PionTextures := chargerTexture(Renderer, 'pion 4');
+      Yohann: joueurs[i].PionTextures := chargerTexture(Renderer, 'pion 5');
+      Yon: joueurs[i].PionTextures := chargerTexture(Renderer, 'pion 6');
+    end;
 end;
 
-procedure RenderDice(Renderer: PSDL_Renderer; DiceTextures: array of PSDL_Texture; DiceResults: TTabInt);
+procedure RenderDice(Renderer: PSDL_Renderer; DiceTextures: TabTextures; DiceResults: TTabInt);
 var
   DestRect: TSDL_Rect;
   Angle1, Angle2 : DOuble;
@@ -238,11 +247,11 @@ begin
   SDL_RenderCopyEx(Renderer, DiceTextures[DiceResults[0]], nil, @DestRect, Angle1, nil, SDL_FLIP_NONE);
 
   Angle2 := 10.0;
-  DestRect.x := SCREEN_WIDTH div 2 + 40;
+  DestRect.x := SCREEN_WIDTH div 2 + 80;
   SDL_RenderCopyEx(Renderer, DiceTextures[DiceResults[1]], nil, @DestRect, Angle2, nil, SDL_FLIP_NONE);
 end;
 
-procedure Render(Renderer: PSDL_Renderer; Board: PSDL_Texture; joueurs: TJoueurs; DiceResults: TTabInt; DiceTextures: array of PSDL_Texture; nbrDeplacement: Integer);
+procedure Render(Renderer: PSDL_Renderer; plateau: PSDL_Texture; joueurs: TJoueurs; DiceResults: TTabInt; DiceTextures: TabTextures; nbrDeplacement, CurrentPlayer: Integer);
 var
   DestRect: TSDL_Rect;
   i: Integer;
@@ -254,9 +263,8 @@ begin
   DestRect.y := 0;
   DestRect.w := TILE_SIZE * GRID_WIDTH;
   DestRect.h := TILE_SIZE * GRID_HEIGHT;
-  SDL_RenderCopy(Renderer, Board, nil, @DestRect);
-
-  for i := 0 to 5 do
+  SDL_RenderCopy(Renderer, plateau, nil, @DestRect);
+  for i := 0 to length(joueurs)-1 do
   begin
     DestRect.x := joueurs[i].x * TILE_SIZE;
     DestRect.y := joueurs[i].y * TILE_SIZE;
@@ -266,15 +274,21 @@ begin
   end;
 
   RenderDice(Renderer, DiceTextures, DiceResults);
-  afficherTexte(Renderer, 'Deplacements restants: ' + IntToStr(nbrDeplacement), 14, SCREEN_WIDTH div 2 - 40, 60, Couleur(0, 0, 0, 0));
-
+  afficherTexte(Renderer, 'Deplacements restants : ' + IntToStr(nbrDeplacement), 14, SCREEN_WIDTH div 2, 60, Couleur(0, 0, 0, 0));
+  
+  DestRect.x := 0;
+  DestRect.y := SCREEN_HEIGHT-175;
+  DestRect.w := 175;
+  DestRect.h := 175;
+  SDL_RenderCopy(Renderer, chargerTexture(Renderer, 'Eleve'), nil, @DestRect); // Là !!!
   SDL_RenderPresent(Renderer);
 end;
 
-procedure ChoixNbJoueurs(Renderer: PSDL_Renderer; var nbJoueurs: Integer);
+procedure ChoixNbJoueurs(Renderer: PSDL_Renderer; var joueurs: TJoueurs);
 var
   Event: TSDL_Event;
   IsRunning: Boolean;
+  nbJoueurs: Integer;
 begin
   IsRunning := True;
   nbJoueurs := 2; // Nombre par défaut
@@ -283,7 +297,7 @@ begin
     SDL_SetRenderDrawColor(Renderer, 255, 255, 255, 255); // Blanc
     SDL_RenderClear(Renderer);
 
-    afficherTexte(Renderer, 'Choisir le nombre de joueurs (2-6):', 50, SCREEN_WIDTH div 2 - 300, 200, Couleur(0, 0, 0, 255));
+    afficherTexte(Renderer, 'Choisir le nombre de joueurs (2-6) :', 50, SCREEN_WIDTH div 2 - 390, 200, Couleur(0, 0, 0, 255));
     afficherTexte(Renderer, IntToStr(nbJoueurs), 50, SCREEN_WIDTH div 2, 300, Couleur(0, 0, 255, 255));
 
     SDL_RenderPresent(Renderer);
@@ -298,41 +312,44 @@ begin
           SDLK_RETURN: IsRunning := False; // Valider le choix
         end;
       end;
+      if event.type_ = SDL_QUITEV then
+          HALT;
     end;
   end;
+  SetLength(joueurs,nbJoueurs);
 end;
 
-procedure SelectionJoueurs(Renderer: PSDL_Renderer; var JoueursSelectionnes: array of Integer; nbJoueurs: Integer);
+procedure SelectionJoueurs(Renderer: PSDL_Renderer; var joueurs: TJoueurs);
 var
   Event: TSDL_Event;
   IsRunning: Boolean;
   SelectedCount: Integer;
-  PlayerRect: array[0..5] of TSDL_Rect; // Positions des images des joueurs
-  PlayerTextures: array[0..5] of PSDL_Texture;
+  JoueurRect: array[0..5] of TSDL_Rect; // Positions des images des joueurs
+  TexturesJoueurs: array[0..5] of PSDL_Texture;
   i: Integer;
   MouseX, MouseY: Integer;
-  SelectedFlags: array[0..5] of Boolean;
+  Selection: array[0..5] of Boolean;
 
 begin
   // Initialisation
   IsRunning := True;
   SelectedCount := 0;
   for i := 0 to 5 do
-    SelectedFlags[i] := False;
+    Selection[i] := False;
 
   // Charger les textures des joueurs
-  PlayerTextures[0] := chargerTexture(Renderer, 'Duval');
-  PlayerTextures[1] := chargerTexture(Renderer, 'Eleve');
-  PlayerTextures[2] := chargerTexture(Renderer, 'Boutigny');
-  PlayerTextures[3] := chargerTexture(Renderer, 'Lecourt');
-  PlayerTextures[4] := chargerTexture(Renderer, 'Yohann');
-  PlayerTextures[5] := chargerTexture(Renderer, 'Yon');
+  TexturesJoueurs[0] := chargerTexture(Renderer, 'Duval');
+  TexturesJoueurs[1] := chargerTexture(Renderer, 'Eleve');
+  TexturesJoueurs[2] := chargerTexture(Renderer, 'Boutigny');
+  TexturesJoueurs[3] := chargerTexture(Renderer, 'Lecourt');
+  TexturesJoueurs[4] := chargerTexture(Renderer, 'Yohann');
+  TexturesJoueurs[5] := chargerTexture(Renderer, 'Yon');
   for i := 0 to 5 do
   begin
-    PlayerRect[i].x := (i mod 2) * 200 + 100;  // Position en grille
-    PlayerRect[i].y := (i div 2) * 200 + 100;
-    PlayerRect[i].w := 150; // Largeur de l'image
-    PlayerRect[i].h := 150; // Hauteur de l'image
+    JoueurRect[i].x := (i mod 3) * 300 + 535;  // Position en grille
+    JoueurRect[i].y := (i div 3) * 400 + 235;
+    JoueurRect[i].w := 250; // Largeur de l'image
+    JoueurRect[i].h := 350; // Hauteur de l'image
   end;
 
   // Boucle d'affichage et de sélection
@@ -343,76 +360,71 @@ begin
 
     // Afficher les images des joueurs
     for i := 0 to 5 do
-    begin
-      if SelectedFlags[i] then
-        SDL_SetRenderDrawColor(Renderer, 0, 255, 0, 255) // Bordure verte si sélectionné
-      else
-        SDL_SetRenderDrawColor(Renderer, 0, 0, 0, 255); // Bordure noire sinon
-      SDL_RenderDrawRect(Renderer, @PlayerRect[i]); // Dessiner la bordure
-      SDL_RenderCopy(Renderer, PlayerTextures[i], nil, @PlayerRect[i]); // Dessiner l'image
-    end;
+      SDL_RenderCopy(Renderer, TexturesJoueurs[i], nil, @JoueurRect[i]); // Dessiner l'image
 
     // Afficher le texte d'instruction
-    afficherTexte(Renderer, 'Cliquez pour selectionner ' + IntToStr(nbJoueurs) + ' joueurs.', 40, 100, 50, Couleur(0, 0, 0, 255));
+    afficherTexte(Renderer, 'Cliquez pour selectionner ' + IntToStr(length(joueurs)) + ' joueurs.', 40, SCREEN_WIDTH div 2 - 325, 70, Couleur(163, 3, 3, 255));
 
     SDL_RenderPresent(Renderer);
 
     // Gérer les événements
-    while SDL_PollEvent(@Event) = 1 do
+    while IsRunning do
     begin
-      case Event.type_ of
-        SDL_QUITEV:
-          IsRunning := False;
+      SDL_SetRenderDrawColor(Renderer, 255, 255, 255, 255);
+      SDL_RenderClear(Renderer);
 
-        SDL_MOUSEBUTTONDOWN:
-          begin
-            MouseX := Event.button.x;
-            MouseY := Event.button.y;
+      for i := 0 to 5 do
+        SDL_RenderCopy(Renderer, TexturesJoueurs[i], nil, @JoueurRect[i]);
 
-            // Vérifier si un joueur a été cliqué
-            for i := 0 to 5 do
+      afficherTexte(Renderer, 'Cliquez pour selectionner ' + IntToStr(length(joueurs)) + ' joueurs.', 40, SCREEN_WIDTH div 2 - 325, 70, Couleur(0, 0, 0, 255));
+      SDL_RenderPresent(Renderer);
+
+      while SDL_PollEvent(@Event) = 1 do
+      begin
+        case Event.type_ of
+          SDL_MOUSEBUTTONDOWN:
             begin
-              if (MouseX >= PlayerRect[i].x) and (MouseX <= PlayerRect[i].x + PlayerRect[i].w) and
-                 (MouseY >= PlayerRect[i].y) and (MouseY <= PlayerRect[i].y + PlayerRect[i].h) then
+              MouseX := Event.button.x;
+              MouseY := Event.button.y;
+              for i := 0 to 5 do
               begin
-                if not SelectedFlags[i] then
+                if (MouseX >= JoueurRect[i].x) and (MouseX <= JoueurRect[i].x + JoueurRect[i].w) and
+                  (MouseY >= JoueurRect[i].y) and (MouseY <= JoueurRect[i].y + JoueurRect[i].h) then
                 begin
-                  if SelectedCount < nbJoueurs then
+                  if not Selection[i] then
                   begin
-                    SelectedFlags[i] := True;
-                    joueursSelectionnes[SelectedCount] := i;
-                    Inc(SelectedCount);
+                    if SelectedCount < length(joueurs) then
+                    begin
+                      Selection[i] := True;
+                      joueurs[SelectedCount].nom := TPersonnage(i); // Ajouter le joueur sélectionné
+                      Inc(SelectedCount);
+                      WriteLn('Joueur sélectionné : ', i); // Debug
+                    end
+                    else
+                      WriteLn('Nombre maximal de joueurs déjà sélectionné.');
                   end;
-                end
-                else
-                begin
-                  SelectedFlags[i] := False;
-                  Dec(SelectedCount);
                 end;
               end;
+              if SelectedCount = length(joueurs) then
+                IsRunning := False;
             end;
-
-            // Quitter la sélection si tous les joueurs sont sélectionnés
-            if SelectedCount = nbJoueurs then
-              IsRunning := False;
-          end;
+          SDL_QUITEV: halt();
+        end;
       end;
     end;
+    for i := 0 to 5 do
+      SDL_DestroyTexture(TexturesJoueurs[i]);
   end;
-
-  // Libérer les textures
-  for i := 0 to 5 do
-    SDL_DestroyTexture(PlayerTextures[i]);
 end;
 
 // Nettoyage
-procedure CleanUp(DiceTextures: array of PSDL_Texture; Board: PSDL_Texture; joueurs : TJoueurs; Renderer: PSDL_Renderer; Window: PSDL_Window);
+procedure CleanUp(DiceTextures: TabTextures; plateau: PSDL_Texture; joueurs : TJoueurs; Renderer: PSDL_Renderer; Window: PSDL_Window);
 var
   i: Integer;
 begin
   for i := 0 to 5 do
     SDL_DestroyTexture(DiceTextures[i]);
-  SDL_DestroyTexture(Board);
+  SDL_DestroyTexture(plateau);
   for i := 0 to 5 do
     SDL_DestroyTexture(joueurs[i].PionTextures);
   SDL_DestroyRenderer(Renderer);

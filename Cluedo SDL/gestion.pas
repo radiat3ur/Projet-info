@@ -37,35 +37,24 @@ begin
   pieces[8] := creerPiece(15,8,7,6,Residence);
 end;
 
-procedure InitCharacters(var joueurs: TJoueurs; var CurrentPlayer: Integer; nombreDeJoueurs: Integer);
+procedure InitCharacters(var joueurs: TJoueurs; var CurrentPlayer: Integer);
 var
   i: Integer;
 begin
-  for i := 0 to nombreDeJoueurs - 1 do
+  // if nbJoueurs > Length(joueurs) then
+  // begin
+  //   WriteLn('Erreur : Trop de joueurs. Maximum autorisé : ', Length(joueurs));
+  //   Exit;
+  // end;
+
+  for i := 0 to length(joueurs) - 1 do
   begin
-    joueurs[i].x := positionsInitiales[i].x;
-    joueurs[i].y := positionsInitiales[i].y;
-    joueurs[i].nom := personnagesDisponibles[i]; // Nom du joueur choisi
+    joueurs[i].x := positionsInitiales[joueurs[i].nom].x;
+    joueurs[i].y := positionsInitiales[joueurs[i].nom].y;
+    // joueurs[i].nom := personnagesDisponibles[i]; // Assurez-vous que l'index est valide
+    // WriteLn('Joueur initialisé : ', Ord(joueurs[i].nom), ' à (', joueurs[i].x, ', ', joueurs[i].y, ')'); // Debug
   end;
   CurrentPlayer := 0;
-end;
-
-
-procedure InitCharacters(var joueurs: TJoueurs; var CurrentPlayer: Integer);
-begin
-  joueurs[0].x := 15;
-  joueurs[0].y := 1;
-  joueurs[1].x := 0;
-  joueurs[1].y := 4;
-  joueurs[2].x := 0;
-  joueurs[2].y := 17;
-  joueurs[3].x := 14;
-  joueurs[3].y := 2;
-  joueurs[4].x := 21;
-  joueurs[4].y := 14;
-  joueurs[5].x := 21;
-  joueurs[5].y := 7;
-  CurrentPlayer := 1;
 end;
 
 function estDansPiece(pieces : TPieces ; xJ, yJ : Integer):Boolean;
@@ -98,12 +87,11 @@ var
   NewX, NewY: Integer;
   CurrentCell: Integer;
   Event: TSDL_Event;
-  IsRunning: Boolean;
 begin
   while SDL_PollEvent(@Event) <> 0 do
   begin
     case Event.type_ of
-      SDL_QUITEV: IsRunning := False;
+      SDL_QUITEV: HALT;
       SDL_KEYDOWN:
         begin
           NewX := joueurs[CurrentPlayer].x;
@@ -142,7 +130,7 @@ begin
             begin
               RollDice(DiceResults); // Relancer les dés pour le joueur suivant
               nbrDeplacement := DiceResults[0] + DiceResults[1] + 2;
-              CurrentPlayer := (CurrentPlayer + 1) mod 6; // Passer au joueur suivant
+              CurrentPlayer := (CurrentPlayer + 1) mod length(joueurs); // Passer au joueur suivant
             end;
           end;      
         end;
