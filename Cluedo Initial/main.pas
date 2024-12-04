@@ -1,13 +1,12 @@
-program main;
+program cluedo;
 
-Uses Crt, affichage, TypeEtCte, gestion;
+Uses Crt, affichage, TypeEtCte, gestion,SDL2_image, SDL2, SDL2_mixer;
 
 var
-    choix, nbJoueurs, currentPlayer, i, action, deplacement : Integer;
+    choix, nbJoueurs, currentPlayer, i : Integer;
     paquetPieces, paquetArmes, paquetPersonnages, solution, paquetSansCartesCrime, cartesChoisies: TPaquet;
     carteChoisie : TCarte;
     joueurs: TJoueurs;
-    resultatAction: Boolean;
     plateau : TPlateau;
 
 begin
@@ -30,6 +29,13 @@ begin
 
     initialisationPlateau(plateau);
     
-    affichagePlateau(plateau, joueurs, currentPlayer);
-    jouerTour(joueurs, plateau, paquetPieces, paquetArmes, paquetPersonnages, solution, joueurs.listeJoueurs[currentPlayer], cartesChoisies, carteChoisie)
+    repeat// for pour les tours des joueurs
+
+   begin;
+    
+        preventionTourJoueur(joueurs, currentPlayer);
+        affichagePlateau(plateau, joueurs, currentPlayer);
+        jouerTour(joueurs, plateau, paquetPieces, paquetArmes, paquetPersonnages, solution, joueurs.listeJoueurs[currentPlayer], cartesChoisies, carteChoisie, currentPlayer)
+    end;
+    until False;
 end.

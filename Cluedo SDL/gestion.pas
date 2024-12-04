@@ -18,6 +18,7 @@ procedure initialisationPartie(Renderer : PSDL_Renderer ; pieces : TPieces ; jou
 procedure LancerDes(Renderer: PSDL_Renderer; DiceTextures: TabTextures; var ResultatsDice: TTabInt);
 function estDansPiece(pieces : TPieces ; xJ, yJ : Integer):Boolean;
 procedure gestionTour(Renderer : PSDL_Renderer ; pieces : TPieces ; var joueurs: TJoueurs; var joueurActuel: Integer; var ResultatsDice : TTabInt; var nbDeplacement: Integer);
+procedure hypothese(Renderer: PSDL_Renderer; paquetPieces, paquetArmes, paquetPersonnages: TPaquet; joueurActuel: Integer; joueurs: TJoueurs; var cartesChoisies: TPaquet);
 
 implementation
 
@@ -453,6 +454,7 @@ var
   caseActuelle: Integer;
   Event: TSDL_Event;
   DiceTextures : TabTextures;
+  paquetPieces, paquetArmes, paquetPersonnages, cartesChoisies: TPaquet;
 begin
   while SDL_PollEvent(@Event) <> 0 do
   begin
@@ -505,11 +507,74 @@ begin
               LancerDes(Renderer, DiceTextures, ResultatsDice); // Relancer les dés pour le joueur suivant
               nbDeplacement := ResultatsDice[0] + ResultatsDice[1] + 2;
               joueurActuel := (joueurActuel + 1) mod length(joueurs); // Passer au joueur suivant
+              hypothese(Renderer, paquetPieces, paquetArmes, paquetPersonnages, joueurActuel, joueurs, cartesChoisies);
             end;
           end;      
         end;
     end;
   end;
 end;
+
+procedure hypothese(Renderer: PSDL_Renderer; paquetPieces, paquetArmes, paquetPersonnages: TPaquet; joueurActuel: Integer; joueurs: TJoueurs; var cartesChoisies: TPaquet);
+var
+  i, j, temoinChoisi: Integer;
+  JoueursRect: array[0..5] of TSDL_Rect;
+  Event: TSDL_Event;
+  MouseX, MouseY: Integer;
+  IsRunning: Boolean;
+begin
+  IsRunning := True; // Initialisation de IsRunning
+  temoinChoisi := -1; // Aucun témoin sélectionné au début
+
+  while IsRunning do
+  begin
+    afficherTexte(Renderer, 'Choisissez un temoin :', 30, SCREEN_WIDTH - 500 , 50, Couleur(163, 3, 3, 255));
+
+    // Affichage des cartes des autres joueurs
+    j := 0;
+    for i := 0 to Length(joueurs) - 1 do
+    begin
+      if i <> joueurActuel then
+      begin
+        JoueursRect[j].x := (j mod 3) * 205 + SCREEN_WIDTH - 650;  // Position en grille
+        JoueursRect[j].y := (j div 3) * 285 + 135; 
+        JoueursRect[j].w := 200; // Largeur de la carte
+        JoueursRect[j].h := 280; // Hauteur de la carte
+        afficherImage(Renderer, GetEnumName(TypeInfo(TPersonnage), Ord(joueurs[j].nom)), @JoueursRect[j]);
+        j := j + 1;
+      end;
+    end;
+
+    SDL_RenderPresent(Renderer); // Affiche le rendu
+
+    // Gestion des événements
+    while SDL_PollEvent(@Event) <> 0 do
+    begin
+      case Event.type_ of
+        SDL_MOUSEBUTTONDOWN:
+          begin
+            MouseX := Event.button.x;
+            MouseY := Event.button.y;
+            for i := 0 to j - 1 do
+            begin
+              if (MouseX >= JoueursRect[i].x) and (MouseX <= JoueursRect[i].x + JoueursRect[i].w) and
+                 (MouseY >= JoueursRect[i].y) and (MouseY <= JoueursRect[i].y + JoueursRect[i].h) then
+              begin
+                temoinChoisi := i;
+                IsRunning := False; // Sortir de la boucle
+                Break;
+              end;
+            end;
+          end;
+        SDL_QUITEV: Halt;
+      end;
+    end;
+  end;
+
+  if temoinChoisi <> -1 then
+    writeln('Témoin choisi : ', GetEnumName(TypeInfo(TPersonnage), Ord(joueurs[temoinChoisi].nom)))
+end;
+
+
 
 end.

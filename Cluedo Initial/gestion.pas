@@ -372,38 +372,37 @@ procedure hypothese(paquetPieces, paquetArmes, paquetPersonnages: TPaquet; joueu
 var i, choix, impossible : Integer;
     
 begin
-    repeat
-        writeln('Choisissez un temoin parmi les autres joueurs :');
-        for i:=0 to joueurs.taille-1 do
+  repeat
+    afficherTexte
+    writeln('Choisissez un temoin parmi les autres joueurs :');
+    for i:=0 to joueurs.taille-1 do
+    begin
+      begin
+        write(i+1, '. ', joueurs.listeJoueurs[i].nom);
+        if joueurs.listeJoueurs[i].nom=joueurActuel.nom then
         begin
-            begin
-                write(i+1, '. ', joueurs.listeJoueurs[i].nom);
-                if joueurs.listeJoueurs[i].nom=joueurActuel.nom then
-                begin
-                    impossible:=i;
-                    write(' (impossible)');
-                end;
-                 writeln();
-            end;
+          impossible:=i;
+          write(' (impossible)');
         end;
-        readln(choix);
-                         ClearLines(18,joueurs.taille+3);
-    until (choix >= 1) and (choix <= MAX_PERSONNAGES) and (choix-1<>impossible);
+          writeln();
+      end;
+    end;
+    readln(choix);
+    ClearLines(18,joueurs.taille+3);
+  until (choix >= 1) and (choix <= MAX_PERSONNAGES) and (choix-1<>impossible);
 
-    choixCartesHyp(paquetPieces, paquetArmes, paquetPersonnages, cartesChoisies,plateau,joueurs,currentPlayer);
-    writeln('Votre hypothese est : C''est ', cartesChoisies.liste[0].nom, ' dans ', cartesChoisies.liste[2].nom, ' avec ', cartesChoisies.liste[1].nom);
+  choixCartesHyp(paquetPieces, paquetArmes, paquetPersonnages, cartesChoisies,plateau,joueurs,currentPlayer);
+  writeln('Votre hypothese est : C''est ', cartesChoisies.liste[0].nom, ' dans ', cartesChoisies.liste[2].nom, ' avec ', cartesChoisies.liste[1].nom);
 	Delay(3000);//(pas besoin?)
 	ClearLines(18,2);
     
-    writeln('Appuyez sur Entree lorsque le joueur ', joueurs.listeJoueurs[choix-1].nom, ' est pret.'); // Prévention pour le témoin de joueur
-    readln;
-    recupererCarteJoueur(joueurs.listeJoueurs[choix-1].main, cartesChoisies, carteChoisie,presenceCarteCommune);
-    ClearLines(18,6);
-    
-    writeln('Appuyez sur Entree lorsque le joueur ', joueurActuel.nom, ' est pret.'); // Prévention pour joueur actuel de voir la carte
-    readln;
-    
-    
+  writeln('Appuyez sur Entree lorsque le joueur ', joueurs.listeJoueurs[choix-1].nom, ' est pret.'); // Prévention pour le témoin de joueur
+  readln;
+  recupererCarteJoueur(joueurs.listeJoueurs[choix-1].main, cartesChoisies, carteChoisie,presenceCarteCommune);
+  ClearLines(18,6);
+  
+  writeln('Appuyez sur Entree lorsque le joueur ', joueurActuel.nom, ' est pret.'); // Prévention pour joueur actuel de voir la carte
+  readln;
 end;
 
 function accusation(paquetPieces, paquetArmes, paquetPersonnages, solution : TPaquet; joueurActuel : TJoueur):Boolean;

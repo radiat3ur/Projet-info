@@ -1,38 +1,35 @@
-program SDL_WindowAndRenderer;
-
-uses SDL2;
-
+procedure hypothese(Renderer: PSDL_Renderer; paquetPieces, paquetArmes, paquetPersonnages: TPaquet; 
+    joueurActuel: Integer; joueurs: TJoueurs; var temoinChoisi: Integer);
 var
-  sdlWindow1: PSDL_Window;
-  sdlRenderer: PSDL_Renderer;
-
+  Event: TSDL_Event;
+  SelectionTerminee: Boolean;
 begin
+  SelectionTerminee := False;
+  temoinChoisi := -1;
 
-  //initilization of video subsystem
-  if SDL_Init(SDL_INIT_VIDEO) < 0 then Halt;
+  SDL_SetRenderDrawColor(Renderer, 255, 255, 255, 255); // Fond blanc
+  SDL_RenderClear(Renderer);
 
-  // full set up
-  sdlWindow1 := SDL_CreateWindow('Window1', 50, 50, 500, 500, SDL_WINDOW_SHOWN);
-  if sdlWindow1 = nil then Halt;
+  afficherTexte(Renderer, 'Choisissez un temoin :', 30, SCREEN_WIDTH - 500 , 150, Couleur(163, 3, 3, 255));
+  // Affichez les joueurs ici...
 
-  sdlRenderer := SDL_CreateRenderer(sdlWindow1, -1, 0);
-  if sdlRenderer = nil then Halt;
+  SDL_RenderPresent(Renderer);
 
-  // quick set up
-  {
-  if SDL_CreateWindowAndRenderer(500, 500, SDL_WINDOW_SHOWN, @sdlWindow1, @sdlRenderer) <> 0
-    then Halt;
-  }
+  // Gérer les événements
+  while SDL_PollEvent(@Event) <> 0 do
+  begin
+    case Event.type_ of
+      SDL_MOUSEBUTTONDOWN:
+        begin
+          // Vérifiez si un joueur est sélectionné
+          temoinChoisi := ...; // Logique pour trouver le joueur cliqué
+          SelectionTerminee := True;
+        end;
+      SDL_QUITEV: 
+        Halt;
+    end;
+  end;
 
-  // render to window for 2 seconds
-  SDL_RenderPresent(sdlRenderer);
-  SDL_Delay(2000);
-
-  // clear memory
-  SDL_DestroyRenderer(sdlRenderer);
-  SDL_DestroyWindow (sdlWindow1);
-
-  //closing SDL2
-  SDL_Quit;
-
-end.
+  if SelectionTerminee then
+    Exit;
+end;

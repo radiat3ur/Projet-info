@@ -9,10 +9,11 @@ var Window: PSDL_Window;
     DiceTextures : TabTextures;
     nbDeplacement, joueurActuel : Integer;
     pieces : TPieces;
-    paquetPieces, paquetArmes, paquetPersonnages, solution, paquetSansCartesCrime : TPaquet;
-    IsRunning : Boolean;
+    cartesChoisies, paquetPieces, paquetArmes, paquetPersonnages, solution, paquetSansCartesCrime : TPaquet;
+    IsRunning, presenceCarteCommune : Boolean;
     Event : TSDL_Event;
     Rect : TSDL_Rect;
+    carteChoisie : TCarte;
 
 begin
   InitSDL(Window, Renderer);
@@ -28,6 +29,7 @@ begin
   begin
     gestionTour(Renderer, pieces, joueurs, joueurActuel, ResultatsDice, nbDeplacement);
     afficherTour(Renderer, joueurs, ResultatsDice, DiceTextures, nbDeplacement, joueurActuel);
+    //hypothese(Renderer, paquetPieces, paquetArmes, paquetPersonnages, joueurActuel, joueurs, cartesChoisies);
     SDL_RenderPresent(Renderer);
     SDL_Delay(16);
     if Event.type_ = SDL_QUITEV then

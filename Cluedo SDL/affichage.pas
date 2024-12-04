@@ -140,7 +140,7 @@ begin
   DestRect.y := 100;
   DestRect.w := TILE_SIZE * 3;
   DestRect.h := TILE_SIZE * 3;
-  SDL_RenderCopyEx(Renderer, chargerTexture(Renderer, 'dé ' + IntToStr(ResultatsDice[1] + 1)), nil, @DestRect, Angle, nil, SDL_FLIP_NONE);
+  SDL_RenderCopyEx(Renderer, chargerTexture(Renderer, 'dé ' + IntToStr(ResultatsDice[0] + 1)), nil, @DestRect, Angle, nil, SDL_FLIP_NONE);
     
   // Définir le rectangle pour le deuxième dé
   DestRect.x := SCREEN_WIDTH div 2 + 80;
@@ -200,7 +200,7 @@ begin
     afficherImage(Renderer, 'cartes/' + GetEnumName(TypeInfo(TNomCarte), Ord(joueurs[joueurActuel].main[i].nom)), @carteRect[i]);
   end;
 
-  SDL_RenderPresent(Renderer);
+  //SDL_RenderPresent(Renderer);
 end;
 
 
