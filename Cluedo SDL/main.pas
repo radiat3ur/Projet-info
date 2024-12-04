@@ -1,41 +1,35 @@
 program main;
 
-uses
-  crt, SDL2, SDL2_image, SDL2_ttf, TypeEtCte, affichage, gestion;
+uses crt, SDL2, SDL2_image, SDL2_ttf, TypeEtCte, affichage, gestion;
 
-var
-  Window: PSDL_Window;
-  Renderer: PSDL_Renderer;
-  IsRunning: Boolean;
-  plateau: PSDL_Texture;
-  joueurs: TJoueurs;
-  DiceTextures: TabTextures;
-  CurrentPlayer: Integer;
-  DiceResults: TTabInt;
-  nbrDeplacement : Integer;
-  pieces : TPieces;
-  font : PTTF_Font;
-  Event : TSDL_Event;
+var Window: PSDL_Window;
+    Renderer: PSDL_Renderer;
+    joueurs : TJoueurs;
+    ResultatsDice : TTabInt;
+    DiceTextures : TabTextures;
+    nbDeplacement, joueurActuel : Integer;
+    pieces : TPieces;
+    paquetPieces, paquetArmes, paquetPersonnages, solution, paquetSansCartesCrime : TPaquet;
+    IsRunning : Boolean;
+    Event : TSDL_Event;
+    Rect : TSDL_Rect;
 
 begin
   InitSDL(Window, Renderer);
   menu(Renderer);
-  ChoixNbJoueurs(Renderer, joueurs);
-  SelectionJoueurs(Renderer, joueurs);
-  InitCharacters(joueurs, CurrentPlayer);
-  chargerPlateau(plateau, Renderer);
-  SetLength(DiceTextures,6);
-  chargerTexturesDices(Renderer, DiceTextures);
-  chargerTexturesPions(Renderer,joueurs); // Charger les sprites des joueurs
-  RollDice(DiceResults); // Initialiser avec un premier lancer de dés
+  InitPieces(Renderer, pieces);
+  choixNbJoueurs(Renderer, joueurs);
+  selectionJoueurs(Renderer, joueurs);
+  SDL_Delay(750);
+  initialisationPartie(Renderer, pieces, joueurs, joueurActuel, paquetPieces, paquetArmes, paquetPersonnages, solution, paquetSansCartesCrime);
 
-  IsRunning := True;
-  InitPieces(pieces);
+  IsRunning:=True;
   while IsRunning do
   begin
-    HandleEvents(pieces, joueurs, CurrentPlayer, DiceResults,nbrDeplacement);
-    Render(Renderer, plateau, joueurs, DiceResults, DiceTextures, nbrDeplacement, CurrentPlayer);
-    SDL_Delay(16); // ~60 FPS
+    gestionTour(Renderer, pieces, joueurs, joueurActuel, ResultatsDice, nbDeplacement);
+    afficherTour(Renderer, joueurs, ResultatsDice, DiceTextures, nbDeplacement, joueurActuel);
+    SDL_RenderPresent(Renderer);
+    SDL_Delay(16);
     if Event.type_ = SDL_QUITEV then
     begin
       IsRunning := False; // Arrêtez la boucle principale
@@ -43,7 +37,5 @@ begin
     end;
   end;
 
-  TTF_CloseFont(font);
-  TTF_Quit;
-  CleanUp(DiceTextures, plateau, joueurs, Renderer, Window);
+  CleanUp(Window, Renderer);
 end.

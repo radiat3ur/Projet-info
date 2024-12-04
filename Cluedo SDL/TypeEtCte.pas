@@ -39,27 +39,24 @@ const
         (12, 4, 4, 4, 6, 12, 6, 12, 4, 4, 4, 4, 4, 4, 6, 12, 6, 12, 4, 4, 4, 12)
     );
 
-Type TPersonnage = (Duval, Eleve, Boutigny, Lecourt, Yohann, Yon); // Type pour les joueurs
-Type TTout = (Blouse, Stylo, Ordinateur_portable, Leocarte, Rapport_de_stage, Calculatrice, Dudu, Jerome_Yon, Lepailleur, Diane, LLecourt, THIBAUT, Amphi_Tillion, Laboratoire, Gymnase, Parking_visiteurs, RU, INSA_Shop, BU, Inf, Resid, Couloir, Mur); //Type pour les cartes
+Type TPersonnage = (Duval, Eleve, Boutigny, Lecourt, Yohann, Yon, rien); // Type pour les joueurs
+Type TNomCarte = (Blouse, Livre, Panier, Plateau, Reveil, Stethoscope, Dudu, Etudiant, DuoBoutigny, ThomasLecourt, YohannLepailleur, JeromeYon, Amphi, Laboratoire, Gymnase, Parking, RU, Shop, Bibliotheque, Infirmerie, Residence); //Type pour les cartes
 Type TCategorie = (Piece, Arme, Personnage);
 Type TCouleur = (Black, Blue, Green, Cyan, Red, Magenta, Yellow, White);
-Type TNomPiece = (Tillion, Labo, Gym, Parking, Self, Shop, Biblio, Infirmerie, Residence);  
+Type TNomPiece = (Tillion, Labo, Gym, Parking_visiteurs, Self, INSA_Shop, Biblio, Inf, Chambre);  
 
 Type TCarte = Record
     categorie : TCategorie;
-    nom : TTout;
-end;
-  
-Type TPaquet = Record
-	liste : Array of TCarte;
-	taille : Integer;
+    nom : TNomCarte;
 end;
 
+Type TPaquet = Array of TCarte;
+  
 Type TJoueur = Record
 	nom : TPersonnage;
 	main : TPaquet;
 	x, y : Integer;
-    PionTextures: PSDL_Texture;
+  PionTextures: PSDL_Texture;
 end;
 
 Type TJoueurs = Array of TJoueur;
@@ -79,6 +76,8 @@ end;
 Type TPieces = array of TPiece;
 
 Type TTabInt = array of Integer;
+
+Type test = array of TSDL_Rect;
 
 const
   positionsInitiales: array[Duval..Yon] of record
