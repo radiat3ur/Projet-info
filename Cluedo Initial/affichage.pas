@@ -55,27 +55,58 @@ end;
 procedure affichageRegles(); // Affiche les règles
 
 begin
-  writeln('--- Regles du Jeu ---');
-  writeln(#27'[1mObjecitf :'#27'[0m');
-  writeln('Le but du jeu est d''etre le premier a resoudre l''enquete en decouvrant qui est le coupable, avec quelle arme, et dans quelle piece le crime a ete commis.');
-  writeln();
-  writeln(#27'[1mMise en place :'#27'[0m');
-  writeln('Les cartes sont reparties en trois categories : Suspects, Armes et Pieces.');
-  writeln('Une carte de chaque categorie est tiree au hasard. Ce sont les reponses a l''enquete.');
-  writeln('On distribue ensuite le reste des cartes aux autres joueurs qui representent des indices.');
-  writeln('A chaque tour, chaque joueur lance 2 des: la somme des des equivaut au nombre de deplacements qu''il peut fire sur le plateau');
-  writeln('Le plateau de jeu est compose de 9 pieces. Les joueurs peuvent formuler des hypotheses et des accusations uniquement lorsqu''ils sont dans une piece');
-  writeln();
-  writeln(#27'[1mDeroulement du jeu :'#27'[0m');
-  writeln('A tour de role, les joueurs font des hypotheses, en donnant une carte de chaque categorie. Le joueur actif choisit un autre joueur a qui poser une question. ');
-  write('Le joueur questionne doit verifier s''il possede l''une des cartes mentionnee (suspect, arme ou piece) dans l''hypothese. ');
-  writeln('S''il en possede une, il la montre secretement au joueur qui a fait l''hypothese. Cela permet d''eliminer des possibilites. ');
-  writeln();
-  writeln(#27'[1mAccusation finale :'#27'[0m');
-  writeln('Quand un joueur pense avoir trouve le coupable, l''arme et la piece, il peut faire une accusation finale. ');
-  writeln('Si l''accusation correspond à la solution, le joueur gagne la partie. Sinon, ce sont les autres joueurs qui gagnent.');
-  writeln();
-  writeln('Bon jeu ! :)')
+    writeln('--- Regles du Jeu ---');
+    writeln('Bienvenue a l''INSA, ou un crime odieux vient d''etre commis!');
+    writeln('Le professeur d''informatique, **Monsieur Lecomte**, a ete retrouve mort dans des circonstances mysterieuses.');
+
+    writeln('Votre mission : **remonter la piste** et decouvrir qui est le coupable, avec quelle arme, et dans quelle piece.');
+    writeln('**Saurez-vous resoudre ce mystere avant vos camarades ?**');
+    writeln;
+
+    writeln('--- Comment commencer une partie ? ---');
+    writeln(' • Chaque joueur choisit un pion pour incarner son personnage prefere. Ce sera votre **avatar d''enqueteur** tout au long de la partie.');
+    writeln(' • Le programme selectionne automatiquement une arme, un suspect et un lieu.');
+    writeln('   Ces elements sont places dans une **enveloppe virtuelle** qui contient la solution de l''enigme.');
+    writeln('   Les cartes restantes sont **reparties automatiquement** entre les joueurs.');
+    writeln(' • Munissez-vous d''une feuille d''enquete qui repertorie tous les suspects, armes, et lieux possibles.');
+    writeln;
+    writeln(#27'[3mAppuyez sur ENTREE pour afficher la suite'#27'[0m'); // Texte en italique (verifier à l'insa!)
+    readln;
+    
+    writeln('--- Comment jouer ? ---');
+    writeln('La partie commence dans les couloirs de l''INSA, chaque pion a un **emplacement predefini**.');
+    writeln;
+    writeln('A chaque tour :');
+    writeln(' • Vous lancez virtuellement les des (avec la touche **ENTREE**) pour avancer dans les couloirs de l''ecole.');
+    writeln(' • Sur le plateau, les pions se deplacent a l''aide des **fleches du clavier**.');
+    writeln(' • Si vous arrivez dans un couloir, votre tour est termine.');
+    writeln(' • Si vous entrez dans une piece, vous pouvez formuler une **hypothese** sur le crime.');
+    writeln;
+
+    writeln('Formuler une hypothese :');
+    writeln('   ◦ Vous choisissez un **suspect**, une **arme du crime**, et la **piece ou vous etes**.');
+    writeln('     (par exemple : Je pense que c''est **DuDu**, avec le **reveil**, dans la **bibliotheque**.)');
+    writeln('   ◦ Vous designer un joueur.');
+    writeln('   ◦ Si le joueur designe possede une ou plusieurs des cartes de l''hypothese, il en choisit une');
+    writeln('     et elle vous sera revelee en prive.');
+    writeln('   ◦ Si personne ne possede les cartes que vous avez mentionnees, vous etes peut-etre **proche de la solution**!');
+    writeln('   ◦ Votre tour est termine.');
+    writeln;
+    writeln('Continuez d''explorer d''autres pieces, de formuler des hypotheses, et d''eliminer des options');
+    writeln('sur votre **feuille d’enquete numerique**.');
+    writeln;
+
+    writeln('--- Comment gagner ? ---');
+    writeln('Formuler une **accusation finale** :');
+    writeln(' • Lorsque vous pensez avoir identifie les trois elements du crime, vous pouvez formuler une **accusation**.');
+    writeln('   Contrairement a l''hypothese, elle peut se faire depuis **n''importe quelle case** du plateau.');
+    writeln(' • Si votre accusation est correcte, le programme revelera la solution, et vous deviendrez');
+    writeln('   le **maitre enqueteur**. **Felicitations !**');
+    writeln(' • Si vous vous trompez, vous perdez la partie et les autres joueurs l''emportent.');
+    writeln('   **Ne vous loupez pas !**');
+    writeln;
+
+    writeln('Pret a resoudre le mystere ? L''INSA n''attend que vous... Que l''enquete commence !');
 end;
 
 procedure choixDebutJeu(var nbJoueurs : Integer ; var joueurs : TJoueurs);
@@ -86,8 +117,7 @@ begin
     readln(nbJoueurs); // Sélectionne le nombre de joueurs
   until (nbJoueurs >= 2) and (nbJoueurs <= MAX_PERSONNAGES); // Vérifie que le nombre est compris entre 2 et 6
 
-  joueurs.taille := nbJoueurs;
-  SetLength(joueurs.listeJoueurs,joueurs.taille); // Défini la taille du tableau des joueurs en fonction du nombre de joueurs
+  SetLength(joueurs,nbJoueurs); // Défini la taille du tableau des joueurs en fonction du nombre de joueurs
   initialisationJoueurs(joueurs, nbJoueurs); // (voir la procedure dans gestion.pas)
 end;
 
@@ -118,9 +148,9 @@ end;
 procedure preventionTourJoueur(joueurs: TJoueurs; var i: Integer);
 begin
   // Passe au joueur suivant
-  i := (i + 1) mod joueurs.taille;  // Parcourt les joueurs
+  i := (i + 1) mod length(joueurs);  // Parcourt les joueurs
   // Annonce du joueur dont c'est le tour
-  writeln('Appuyez sur Entree lorsque le joueur ', joueurs.listeJoueurs[i].nom, ' est pret.');
+  writeln('Appuyez sur Entree lorsque le joueur ', joueurs[i].nom, ' est pret.');
   readln;
   ClrScr;
 end;
@@ -143,9 +173,9 @@ procedure affichagePaquet(paquet: TPaquet);
 var  i: Integer;
 
 begin
-  for i := 0 to paquet.taille - 1 do // Parcourt le paquet
+  for i := 0 to length(paquet)-1 do // Parcourt le paquet
   begin
-    affichageCarte(paquet.liste[i]);
+    affichageCarte(paquet[i]);
   end;
 end;
 
@@ -156,8 +186,8 @@ begin
   writeln('Voici la "carte en commun" : ');
   if presenceCarteCommune= true then
   writeln(carteChoisie.nom)
-  else writeln('Aucune carte en commun');
-  //ClearLines(18,4); bug
+  else
+   writeln('Aucune carte en commun');
 end;
 
 procedure affichageResultatAccusation(paquetPieces, paquetArmes, paquetPersonnages, solution : TPaquet; joueurActuel : TJoueur);
@@ -169,9 +199,9 @@ begin
     writeln(joueurActuel.nom, ' remporte la partie ! Les autres joueurs ont perdu.')
   else
     writeln(joueurActuel.nom, ' a perdu la partie. Les autres joueurs gagnent !');
-    writeln('Le veritable coupable est : ',solution.liste[2].nom);
-    writeln('Les faits se sont deroules : ',solution.liste[0].nom);
-    writeln('Le''arme du crime etait : ',solution.liste[1].nom);
+    writeln('Le veritable coupable est : ',solution[2].nom);
+    writeln('Les faits se sont deroules : ',solution[0].nom);
+    writeln('L''arme du crime etait : ',solution[1].nom);
 end;
 
 
@@ -353,14 +383,15 @@ procedure deplacerJoueur(var joueurs: TJoueurs; currentPlayer: Integer; var plat
 var
   oldX,oldY,newX, newY: Integer;
   key: Char;
+  piece:TPiece;
 begin
-  while deplacement > 0 do
+  while deplacement >=0 do
   begin
     key := ReadKey;
-
+ 
     // Calculer la nouvelle position en fonction de la touche
-    newX := joueurs.listeJoueurs[currentPlayer].x;
-    newY := joueurs.listeJoueurs[currentPlayer].y;
+    newX := joueurs[currentPlayer].x;
+    newY := joueurs[currentPlayer].y;
     oldX := newX;
     oldY := newY;
 
@@ -375,18 +406,16 @@ begin
     if (plateau[newX, newY].typePiece <> Mur) and (not plateau[newX, newY].estOccupee) then
     begin
       // Libérer l'ancienne position
-      plateau[joueurs.listeJoueurs[currentPlayer].x, joueurs.listeJoueurs[currentPlayer].y].estOccupee := False;
-      plateau[joueurs.listeJoueurs[currentPlayer].x, joueurs.listeJoueurs[currentPlayer].y].joueurID := 0;
+      plateau[joueurs[currentPlayer].x, joueurs[currentPlayer].y].estOccupee := False;
+      plateau[joueurs[currentPlayer].x, joueurs[currentPlayer].y].joueurID := 0;
 
       // Déplacer le joueur
-      joueurs.listeJoueurs[currentPlayer].x := newX;
-      joueurs.listeJoueurs[currentPlayer].y := newY;
+      joueurs[currentPlayer].x := newX;
+      joueurs[currentPlayer].y := newY;
 
       // Occuper la nouvelle position
       plateau[newX, newY].estOccupee := True;
       plateau[newX, newY].joueurID := currentPlayer + 1; // ID de joueur commence à 1
-
-      Dec(deplacement); // Réduire le nombre de déplacements restants
 
       GotoXY(oldY,oldX+1);
       attributionCouleur(plateau[oldX,oldY].couleur);
@@ -403,6 +432,19 @@ begin
       ClrEol();
       GotoXY(1,20);
       writeln('Deplacements restants:', deplacement);
+      Dec(deplacement); // Réduire le nombre de déplacements restants
+      
+      if (plateau[newX, newY].typePiece <> Couloir) then
+      begin
+      deplacement:=-1;
+    //  currentPlayer:=plateau[newX, newY].joueurID;
+    //  piece:=plateau[newX, newY].typePiece;
+    //  PlacerPionDansPiece(plateau, currentPlayer,piece);
+    //  GotoXY(newY,newX+1);
+    //  attributionCouleur(plateau[newX,newY].couleur);
+    //  write('.');
+    //  attributionCouleur(Black);
+      end;
     end;
   end;
 end;
@@ -424,14 +466,14 @@ var
   audioFile: string;
 begin
   case currentPlayer of
-    1: audioFile := 'joueur1.mp3';
-    2: audioFile := 'joueur2.mp3';
-    3: audioFile := 'joueur3.mp3';
-    4: audioFile := 'joueur4.mp3';
-    5: audioFile := 'joueur5.mp3';
-    6: audioFile := 'joueur6.mp3';
-  else
-    exit; // Si joueur non valide, sortir
+    0: audioFile := 'joueur1.mp3';
+    1: audioFile := 'joueur2.mp3';
+    2: audioFile := 'joueur3.mp3';
+    3: audioFile := 'joueur4.mp3';
+    4: audioFile := 'joueur5.mp3';
+    5: audioFile := 'joueur6.mp3';
+  //else
+  //  exit; // Si joueur non valide, sortir
   end;
 
   if Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0 then exit;
@@ -457,29 +499,46 @@ var
 begin
 action:=1;
 deplacement := 0;
-      for currentPlayer := 0 to joueurs.taille - 1 do
+      for currentPlayer := 0 to length(joueurs)-1 do
   begin
    writeln('Joueur ', currentPlayer +1 , ', c''est votre tour !');
-   AnnonceTour(currentPlayer+1);
+   AnnonceTour(currentPlayer);
     LancerDes(deplacement);
     deplacerJoueur(joueurs, currentPlayer, plateau, deplacement);
   ClearLines(18,4);
- if (plateau[joueurs.listeJoueurs[currentPlayer].x, joueurs.listeJoueurs[currentPlayer].y].typePiece <> Mur) and
-   (plateau[joueurs.listeJoueurs[currentPlayer].x, joueurs.listeJoueurs[currentPlayer].y].typePiece <> Couloir) then
+ if (plateau[joueurs[currentPlayer].x, joueurs[currentPlayer].y].typePiece <> Mur) and
+   (plateau[joueurs[currentPlayer].x, joueurs[currentPlayer].y].typePiece <> Couloir) then
 begin
     writeln('1. Hypothese');
     writeln('2. Accusation');
     resultatAction:=choixAction(action);
- ClearLines(18,2);
+    ClearLines(18,2);
     if resultatAction then
-        affichageResultatHypothese(paquetPieces, paquetArmes, paquetPersonnages, joueurs.listeJoueurs[currentPlayer], joueurs, cartesChoisies, carteChoisie, presenceCarteCommune,currentPlayer,plateau)
+    begin
+        affichageResultatHypothese(paquetPieces, paquetArmes, paquetPersonnages, joueurs[currentPlayer], joueurs, cartesChoisies, carteChoisie, presenceCarteCommune,currentPlayer,plateau);
+        Delay(3000);
+        ClearLines(18,4);
+        end
     else
     begin
-        affichageResultatAccusation(paquetPieces, paquetArmes, paquetPersonnages, solution, joueurs.listeJoueurs[currentPlayer]);
+        affichageResultatAccusation(paquetPieces, paquetArmes, paquetPersonnages, solution, joueurs[currentPlayer]);
         halt;
     end;
-   end;
-    end;
+   end
+   else if (plateau[joueurs[currentPlayer].x, joueurs[currentPlayer].y].typePiece = Couloir) then
+         begin
+          writeln('Souhaitez vous faire une accusation?');
+          writeln('1. oui');
+          writeln('2. non');
+          resultatAction:=choixAction(action);
+          ClearLines(18,4);
+          if resultatAction then
+            begin
+            affichageResultatAccusation(paquetPieces, paquetArmes, paquetPersonnages, solution, joueurs[currentPlayer]);
+            halt;
+            end;
+          end;
 end;
 
+end;
 end.

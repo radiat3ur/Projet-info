@@ -24,19 +24,15 @@ begin
         preventionTourJoueur(joueurs, currentPlayer);
 
         // Affiche la main du joueur actuel
-        affichagePaquet(joueurs.listeJoueurs[i].main); 
+        affichagePaquet(joueurs[i].main); 
         finTourJoueur();
     end;
 
     initialisationPlateau(plateau);
     
-    repeat// for pour les tours des joueurs
-
-   begin;
-    
+    repeat
         preventionTourJoueur(joueurs, currentPlayer);
         affichagePlateau(plateau, joueurs, currentPlayer);
-        jouerTour(joueurs, plateau, paquetPieces, paquetArmes, paquetPersonnages, solution, joueurs.listeJoueurs[currentPlayer], cartesChoisies, carteChoisie, currentPlayer)
-    end;
+        jouerTour(joueurs, plateau, paquetPieces, paquetArmes, paquetPersonnages, solution, joueurs[currentPlayer], cartesChoisies, carteChoisie, currentPlayer)
     until False;
 end.
