@@ -29,7 +29,6 @@ begin
   begin
     gestionTour(Renderer, pieces, joueurs, joueurActuel, ResultatsDice, nbDeplacement);
     afficherTour(Renderer, joueurs, ResultatsDice, DiceTextures, nbDeplacement, joueurActuel);
-    //hypothese(Renderer, paquetPieces, paquetArmes, paquetPersonnages, joueurActuel, joueurs, cartesChoisies);
     SDL_RenderPresent(Renderer);
     SDL_Delay(16);
     if Event.type_ = SDL_QUITEV then

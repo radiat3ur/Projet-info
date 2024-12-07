@@ -10,7 +10,7 @@ begin
   SDL_SetRenderDrawColor(Renderer, 255, 255, 255, 255); // Fond blanc
   SDL_RenderClear(Renderer);
 
-  afficherTexte(Renderer, 'Choisissez un temoin :', 30, SCREEN_WIDTH - 500 , 150, Couleur(163, 3, 3, 255));
+  afficherTexte(Renderer, 'Choisissez un témoin :', 30, SCREEN_WIDTH - 500 , 150, Couleur(163, 3, 3, 255));
   // Affichez les joueurs ici...
 
   SDL_RenderPresent(Renderer);

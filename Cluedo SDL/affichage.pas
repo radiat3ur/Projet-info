@@ -5,15 +5,16 @@ interface
 uses SDL2, SDL2_image, SDL2_ttf, TypeEtCte, sysUtils, TypInfo;
 
 procedure InitSDL(var Window: PSDL_Window; var Renderer: PSDL_Renderer);
+function coordonnees(x, y, w, h : Integer): TSDL_Rect;
 function chargerTexture(Renderer: PSDL_Renderer; filename: String): PSDL_Texture;
 procedure afficherImage(Renderer: PSDL_Renderer; filename: string; DestRect: PSDL_Rect);
 function Couleur(r, g, b, a: Integer): TSDL_Color;
 function chargerTextureDepuisTexte(renderer:PSDL_Renderer; police:PTTF_Font; text:String; color: TSDL_Color):PSDL_Texture;
 procedure afficherTexte(Renderer: PSDL_Renderer; text: String; taille, x, y: Integer; couleur: TSDL_Color);
+procedure affichageMenu(Renderer : PSDL_Renderer ; CurrentSelection : Integer);
 procedure AfficherDes(Renderer: PSDL_Renderer; DiceTextures: TabTextures; ResultatsDice: TTabInt);
 procedure AfficherPions(Renderer : PSDL_Renderer ; joueurs : TJoueurs);
 procedure afficherTour(Renderer: PSDL_Renderer; joueurs: TJoueurs; ResultatsDice: TTabInt; DiceTextures: TabTextures; nbDeplacement, joueurActuel: Integer);
-
 
 procedure CleanUp(Window : PSDL_Window ; Renderer : PSDL_Renderer);
 
@@ -43,6 +44,14 @@ begin
     SDL_Quit;
     Halt;
   end;
+end;
+
+function coordonnees(x, y, w, h : Integer): TSDL_Rect;
+begin
+  coordonnees.x:=x;
+  coordonnees.y:=y;
+  coordonnees.w:=w;
+  coordonnees.h:=h;
 end;
 
 function chargerTexture(Renderer: PSDL_Renderer; filename: String): PSDL_Texture;
@@ -89,7 +98,7 @@ var surface: PSDL_Surface;
   text_compa: AnsiString;
 begin
   text_compa := text;
-  surface := TTF_RenderText_Solid(police,PChar(text_compa),color);
+  surface := TTF_RenderUTF8_Blended(police,PChar(text_compa),color);
   if surface = nil then
   begin
     Writeln('Erreur lors de la création de la surface de texte.');
@@ -107,10 +116,7 @@ var police : PTTF_Font;
   textRect: TSDL_Rect;
 
 begin
-  textRect.x := x;
-  textRect.y := y;
-  textRect.w := 0;
-  textRect.h := 0;
+  textRect := coordonnees(x, y, 0, 0);
 
   if TTF_INIT = -1 then halt;
 
@@ -136,10 +142,7 @@ begin
   SetLength(ResultatsDice, 2);
   // Définir le rectangle pour le premier dé
   Angle:=-10.0;
-  DestRect.x := SCREEN_WIDTH div 2 - 40;
-  DestRect.y := 100;
-  DestRect.w := TILE_SIZE * 3;
-  DestRect.h := TILE_SIZE * 3;
+  DestRect := coordonnees(SCREEN_WIDTH div 2 - 40, 100, TILE_SIZE * 3, TILE_SIZE * 3);
   SDL_RenderCopyEx(Renderer, chargerTexture(Renderer, 'dé ' + IntToStr(ResultatsDice[0] + 1)), nil, @DestRect, Angle, nil, SDL_FLIP_NONE);
     
   // Définir le rectangle pour le deuxième dé
@@ -157,10 +160,7 @@ begin
   begin
     if joueurs[i].nom <> rien then
     begin
-      DestRect.x := joueurs[i].x * TILE_SIZE;
-      DestRect.y := joueurs[i].y * TILE_SIZE;
-      DestRect.w := TILE_SIZE;
-      DestRect.h := TILE_SIZE;
+      DestRect := coordonnees(joueurs[i].x * TILE_SIZE, joueurs[i].y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
       afficherImage(Renderer, 'pion ' + IntToStr(Ord(joueurs[i].nom) + 1), @DestRect);
     end;
   end;
@@ -174,40 +174,59 @@ begin
   SDL_SetRenderDrawColor(Renderer, 255, 255, 255, 255);
   SDL_RenderClear(Renderer);
 
-  DestRect.x := 0;
-  DestRect.y := 0;
-  DestRect.w := TILE_SIZE * GRID_WIDTH;
-  DestRect.h := TILE_SIZE * GRID_HEIGHT;
+  DestRect := coordonnees(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT); 
+
+  afficherImage(Renderer, 'fond', @DestRect);
+
+  DestRect := coordonnees(0, 0, TILE_SIZE * GRID_WIDTH, TILE_SIZE * GRID_HEIGHT);
   afficherImage(Renderer, 'plateau', @DestRect);
 
   AfficherPions(Renderer, joueurs);  
   AfficherDes(Renderer, DiceTextures, ResultatsDice);
-  afficherTexte(Renderer, 'Deplacements restants : ' + IntToStr(nbDeplacement), 14, SCREEN_WIDTH div 2, 60, Couleur(0, 0, 0, 0));
+  afficherTexte(Renderer, 'Déplacements restants : ' + IntToStr(nbDeplacement), 14, SCREEN_WIDTH div 2, 60, Couleur(0, 0, 0, 0));
   
-  DestRect.x := 0;
-  DestRect.y := SCREEN_HEIGHT-230;
-  DestRect.w := 180;
-  DestRect.h := 252;
+  DestRect := coordonnees(0, SCREEN_HEIGHT-230, 180, 252);
   afficherImage(Renderer, GetEnumName(TypeInfo(TPersonnage), Ord(joueurs[joueurActuel].nom)), @DestRect);
 
   SetLength(carteRect, length(joueurs[joueurActuel].main));
   for i := 0 to length(joueurs[joueurActuel].main) - 1 do // Parcourt le paquet
   begin
-    carteRect[i].x := i * 137 + 210;  // Position en grille
-    carteRect[i].y := SCREEN_HEIGHT - 195;
-    carteRect[i].w := 135; // Largeur de l'image
-    carteRect[i].h := 189; // Hauteur de l'image
+    carteRect[i] := coordonnees(i * 137 + 210, SCREEN_HEIGHT - 195, 135, 189);
     afficherImage(Renderer, 'cartes/' + GetEnumName(TypeInfo(TNomCarte), Ord(joueurs[joueurActuel].main[i].nom)), @carteRect[i]);
   end;
 
   //SDL_RenderPresent(Renderer);
 end;
 
+procedure affichageMenu(Renderer : PSDL_Renderer ; CurrentSelection : Integer);
+var DestRect : TSDL_Rect;
+begin
+  SDL_RenderClear(Renderer); // Nettoyer l'écran
 
+  // Définir le rectangle pour afficher l'image
+  DestRect := coordonnees(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
 
+  // Afficher l'image de fond
+  afficherImage(Renderer, 'menu', @DestRect);
 
+  // Affichage du menu texte
+  if CurrentSelection = 0 then
+    afficherTexte(Renderer, '1. Afficher les règles du jeu', 75, SCREEN_WIDTH div 2 - 465, SCREEN_HEIGHT div 2 - 40, Couleur(163, 3, 3, 0))
+  else
+    afficherTexte(Renderer, '1. Afficher les règles du jeu', 70, SCREEN_WIDTH div 2 - 440, SCREEN_HEIGHT div 2 - 40, Couleur(0, 0, 0, 0));
 
+  if CurrentSelection = 1 then
+    afficherTexte(Renderer, '2. Commencer une nouvelle partie', 75, SCREEN_WIDTH div 2 - 570, SCREEN_HEIGHT div 2 + 80, Couleur(163, 3, 3, 0))
+  else
+    afficherTexte(Renderer, '2. Commencer une nouvelle partie', 70, SCREEN_WIDTH div 2 - 520, SCREEN_HEIGHT div 2 + 80 , Couleur(0, 0, 0, 0));
 
+  if CurrentSelection = 2 then
+    afficherTexte(Renderer, '3. Quitter', 75, SCREEN_WIDTH div 2 - 170, SCREEN_HEIGHT div 2 + 200 , Couleur(163, 3, 3, 0))
+  else
+    afficherTexte(Renderer, '3. Quitter', 70, SCREEN_WIDTH div 2 - 165, SCREEN_HEIGHT div 2 + 200 , Couleur(0, 0, 0, 0));
+
+  SDL_RenderPresent(Renderer);
+end;
 
 procedure CleanUp(Window : PSDL_Window ; Renderer : PSDL_Renderer);
 begin

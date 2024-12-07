@@ -39,8 +39,8 @@ const
         (12, 4, 4, 4, 6, 12, 6, 12, 4, 4, 4, 4, 4, 4, 6, 12, 6, 12, 4, 4, 4, 12)
     );
 
-Type TPersonnage = (Duval, Eleve, Boutigny, Lecourt, Yohann, Yon, rien); // Type pour les joueurs
-Type TNomCarte = (Blouse, Livre, Panier, Plateau, Reveil, Stethoscope, Dudu, Etudiant, DuoBoutigny, ThomasLecourt, YohannLepailleur, JeromeYon, Amphi, Laboratoire, Gymnase, Parking, RU, Shop, Bibliotheque, Infirmerie, Residence); //Type pour les cartes
+Type TPersonnage = (Duval, Eleve, Boutigny, Delaroche, Yohann, Yon, rien); // Type pour les joueurs
+Type TNomCarte = (Blouse, Livre, Panier, Plateau, Reveil, Stethoscope, Dudu, Etudiant, DuoBoutigny, IsabelleDelaroche, YohannLepailleur, JeromeYon, Amphi, Laboratoire, Gymnase, Parking, RU, Shop, Bibliotheque, Infirmerie, Residence); //Type pour les cartes
 Type TCategorie = (Piece, Arme, Personnage);
 Type TCouleur = (Black, Blue, Green, Cyan, Red, Magenta, Yellow, White);
 Type TNomPiece = (Tillion, Labo, Gym, Parking_visiteurs, Self, INSA_Shop, Biblio, Inf, Chambre);  
@@ -92,7 +92,7 @@ const
   );
 
   personnagesDisponibles: array[0..5] of TPersonnage = (
-    Duval, Eleve, Boutigny, Lecourt, Yohann, Yon
+    Duval, Eleve, Boutigny, Delaroche, Yohann, Yon
   );
 
 Type TabTextures = array of PSDL_Texture;
