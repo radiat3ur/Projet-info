@@ -17,10 +17,7 @@ Type TCarte = Record
     nom : TTout;
 end;
   
-Type TPaquet = Record
-	liste : Array of TCarte;
-	taille : Integer;
-end;
+Type TPaquet = Array of TCarte;
 
 Type TJoueur = Record
 	nom : TPersonnages;
@@ -28,10 +25,8 @@ Type TJoueur = Record
 	x, y : Integer;
 end;
 
-Type TJoueurs = Record
-	listeJoueurs : Array of TJoueur;
-	taille : Integer;
-end;
+Type TJoueurs =  Array of TJoueur;
+
 
 Type TPiece = (Amphi_Tillionn, Laboo, Cafeteriaa, Parking_visiteurs, RUU, BDEE, BUU, Infirmeriee, Residencee, Couloir, Mur);
 
