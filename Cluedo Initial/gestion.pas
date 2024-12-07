@@ -315,7 +315,7 @@ begin
 end;
 
 procedure comparaisonCartes(compare, comparant : TPaquet ; var cartesCommunes : TPaquet);
-var i, j, indexPaquet : Integer;
+var compare, comparant : TPaquet ; var cartesCommunes : TPaquet
 
 begin
     indexPaquet:=0;

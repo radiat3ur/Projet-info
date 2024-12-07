@@ -11,6 +11,7 @@ procedure afficherImage(Renderer: PSDL_Renderer; filename: string; DestRect: PSD
 function Couleur(r, g, b, a: Integer): TSDL_Color;
 function chargerTextureDepuisTexte(renderer:PSDL_Renderer; police:PTTF_Font; text:String; color: TSDL_Color):PSDL_Texture;
 procedure afficherTexte(Renderer: PSDL_Renderer; text: String; taille, x, y: Integer; couleur: TSDL_Color);
+procedure affichageRegles(Renderer : PSDL_Renderer);
 procedure affichageMenu(Renderer : PSDL_Renderer ; CurrentSelection : Integer);
 procedure AfficherDes(Renderer: PSDL_Renderer; DiceTextures: TabTextures; ResultatsDice: TTabInt);
 procedure AfficherPions(Renderer : PSDL_Renderer ; joueurs : TJoueurs);
@@ -196,6 +197,15 @@ begin
   end;
 
   //SDL_RenderPresent(Renderer);
+end;
+
+procedure affichageRegles(Renderer : PSDL_Renderer);
+var DestRect : TSDL_Rect;
+begin
+  SDL_RenderClear(Renderer);
+  DestRect := coordonnees(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+  afficherImage(Renderer, 'regles', @DestRect);
+  SDL_RenderPresent(Renderer);
 end;
 
 procedure affichageMenu(Renderer : PSDL_Renderer ; CurrentSelection : Integer);

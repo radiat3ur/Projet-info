@@ -68,7 +68,7 @@ end;
 
 Type TPiece = record
     x,y,w,h : Integer;
-    salle : TNomPiece;
+    nom : TNomPiece;
 end;
 
 Type TPieces = array of TPiece;

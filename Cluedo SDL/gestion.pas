@@ -7,7 +7,7 @@ uses SDL2, TypeEtCte, affichage, sysUtils, TypInfo;
 procedure menu(Renderer: PSDL_Renderer);
 procedure choixNbJoueurs(Renderer: PSDL_Renderer; var joueurs: TJoueurs);
 procedure selectionJoueurs(Renderer: PSDL_Renderer; var joueurs: TJoueurs);
-function creerPiece(x,y,w,h:Integer;salle:TNomPiece):TPiece;
+function creerPiece(x,y,w,h:Integer;nom:TNomPiece):TPiece;
 procedure InitPieces(Renderer : PSDL_Renderer ; var pieces : TPieces);
 procedure InitCharacters(var joueurs: TJoueurs; var joueurActuel: Integer);
 procedure InitPaquets(var paquetPieces, paquetArmes, paquetPersonnages : TPaquet);
@@ -16,10 +16,16 @@ procedure melangerPaquet(var paquetSansCartesCrime : TPaquet);
 procedure distributionCartesJoueurs(paquetSansCartesCrime: TPaquet ; var joueurs: TJoueurs);
 procedure initialisationPartie(Renderer : PSDL_Renderer ; pieces : TPieces ; joueurs : TJoueurs ; joueurActuel: Integer ; paquetPieces, paquetArmes, paquetPersonnages, solution, paquetSansCartesCrime : TPaquet);
 procedure LancerDes(Renderer: PSDL_Renderer; DiceTextures: TabTextures; var ResultatsDice: TTabInt);
-function estDansPiece(pieces : TPieces ; xJ, yJ : Integer):Boolean;
-procedure choixActionCouloir(Renderer : PSDL_Renderer ; paquetPieces, paquetArmes, paquetPersonnages, cartesChoisies : TPaquet ; joueurActuel, nbDeplacement : Integer ; joueurs : TJoueurs);
-procedure choixActionPiece(Renderer : PSDL_Renderer ; paquetPieces, paquetArmes, paquetPersonnages, cartesChoisies : TPaquet ; joueurActuel, nbDeplacement : Integer ; joueurs : TJoueurs);
-procedure hypothese(Renderer: PSDL_Renderer; paquetPieces, paquetArmes, paquetPersonnages: TPaquet; ResultatsDice : TTabInt ; DiceTextures : TabTextures ; joueurActuel, nbDeplacement: Integer; joueurs: TJoueurs; var cartesChoisies: TPaquet);
+
+function estDansPiece(pieces : TPieces ; xJ, yJ : Integer) : Boolean;
+function quellePiece(pieces : TPieces ; xJ, yJ : Integer) : TPiece;
+function TPieceToTNomCarte(piece: TNomPiece): TNomCarte;
+// function choixCarte(Renderer : PSDL_Renderer ; joueurs : TJoueurs ; ResultatsDice : TTabInt ; DiceTextures : TabTextures ; nbDeplacement, joueurActuel, indice : Integer ; paquet: TPaquet; objet : String) : TCarte;
+// procedure choixCartes(Renderer : PSDL_Renderer ; joueurs : TJoueurs ; ResultatsDice : TTabInt ; DiceTextures : TabTextures ; nbDeplacement, joueurActuel : Integer ; paquetPersonnages, paquetArmes : TPaquet ; pieces : TPieces ; var cartesChoisies : TPaquet);
+procedure hypothese(Renderer: PSDL_Renderer ; joueurs: TJoueurs ; ResultatsDice : TTabInt ; DiceTextures : TabTextures ; nbDeplacement, joueurActuel, x, y : Integer; pieces : TPieces ; var cartesChoisies : TPaquet ; var joueurChoisi : TJoueur);
+function comparaisonCartes(compare, comparant : TPaquet) : TPaquet;
+procedure choixActionCouloir(Renderer : PSDL_Renderer ; joueurActuel, nbDeplacement : Integer ; joueurs : TJoueurs);
+procedure choixActionPiece(Renderer : PSDL_Renderer ; joueurActuel, nbDeplacement, x, y : Integer ; pieces : TPieces ; joueurs : TJoueurs ; var cartesCommunes : TPaquet);
 procedure gestionTour(Renderer : PSDL_Renderer ; pieces : TPieces ; var joueurs: TJoueurs; var joueurActuel: Integer; var ResultatsDice : TTabInt; var nbDeplacement: Integer);
 
 implementation
@@ -56,9 +62,7 @@ begin
           SDLK_RETURN:
             case CurrentSelection of
               0: begin
-                  SDL_RenderClear(Renderer);
-                  afficherImage(Renderer, 'regles', @DestRect);
-                  SDL_RenderPresent(Renderer);
+                  affichageRegles(Renderer);
                   lecture := True;
                   while lecture do
                   begin
@@ -218,13 +222,13 @@ begin
   SDL_RenderClear(Renderer);
 end;
 
-function creerPiece(x,y,w,h:Integer;salle:TNomPiece):TPiece;
+function creerPiece(x,y,w,h:Integer;nom:TNomPiece):TPiece;
 begin
   creerPiece.x := x;
   creerPiece.y := y;
   creerPiece.w := w;
   creerPiece.h := h;
-  creerPiece.salle := salle
+  creerPiece.nom := nom
 end;
 
 procedure InitPieces(Renderer : PSDL_Renderer ; var pieces : TPieces);
@@ -410,7 +414,7 @@ begin
   afficherDes(Renderer, DiceTextures, ResultatsDice);
 end;
 
-function estDansPiece(pieces : TPieces ; xJ, yJ : Integer):Boolean;
+function estDansPiece(pieces : TPieces ; xJ, yJ : Integer) : Boolean;
 var i : Integer;
     valide : Boolean;
 
@@ -419,23 +423,50 @@ begin
   for i:=0 to 8 do
     if (xJ>=pieces[i].x) and (xJ<=pieces[i].x+pieces[i].w-1) and (yJ>=pieces[i].y) and (yJ<=pieces[i].y+pieces[i].h-1) then
     begin
-      valide:=True;
+      valide := True;
       break;
     end;
-  estDansPiece:=valide;
+  estDansPiece := valide;
 end;
 
-procedure hypothese(Renderer: PSDL_Renderer; paquetPieces, paquetArmes, paquetPersonnages: TPaquet; ResultatsDice : TTabInt ; DiceTextures : TabTextures ; joueurActuel, nbDeplacement: Integer; joueurs: TJoueurs; var cartesChoisies: TPaquet);
+function quellePiece(pieces : TPieces ; xJ, yJ : Integer) : TPiece;
+var i : Integer ;
+
+begin
+  for i:=0 to 8 do
+    if (xJ>=pieces[i].x) and (xJ<=pieces[i].x+pieces[i].w-1) and (yJ>=pieces[i].y) and (yJ<=pieces[i].y+pieces[i].h-1) then
+    begin
+      quellePiece:=pieces[i]
+    end;
+end;
+
+function TPieceToTNomCarte(piece: TNomPiece): TNomCarte;
+begin
+  case piece of
+    Tillion : TPieceToTNomCarte := TNomCarte(12);
+    Labo : TPieceToTNomCarte := TNomCarte(13);
+    Gym : TPieceToTNomCarte := TNomCarte(14);
+    Parking_visiteurs : TPieceToTNomCarte := TNomCarte(15);
+    Self : TPieceToTNomCarte := TNomCarte(16);
+    INSA_Shop : TPieceToTNomCarte := TNomCarte(17);
+    Biblio : TPieceToTNomCarte := TNomCarte(18);
+    Inf : TPieceToTNomCarte := TNomCarte(19);
+    Chambre : TPieceToTNomCarte := TNomCarte(20);
+  end;
+end;
+
+procedure hypothese(Renderer: PSDL_Renderer ; joueurs: TJoueurs ; ResultatsDice : TTabInt ; DiceTextures : TabTextures ; nbDeplacement, joueurActuel, x, y : Integer; pieces : TPieces ; var cartesChoisies : TPaquet ; var joueurChoisi : TJoueur);
 var
   i, j, temoinChoisi, carteChoisie: Integer;
-  JoueursRect, cartesRect : array[0..8] of TSDL_Rect;
+  JoueursRect, DestRect : array[0..8] of TSDL_Rect;
   Event: TSDL_Event;
   MouseX, MouseY: Integer;
   IsRunning: Boolean;
-  DestRect: TSDL_Rect;
+
 begin
   IsRunning := True; // Initialisation de IsRunning
   temoinChoisi := -1; // Aucun témoin sélectionné au début
+  SetLength(cartesChoisies, 3);
 
   SDL_RenderClear(Renderer);
   afficherTour(Renderer, joueurs, ResultatsDice, DiceTextures, nbDeplacement, joueurActuel);
@@ -484,48 +515,8 @@ begin
     end;
   end;
   writeln('Temoin choisi : ', GetEnumName(TypeInfo(TPersonnage), Ord(joueurs[temoinChoisi].nom)));
+  joueurChoisi := joueurs[temoinChoisi];
 
-  SDL_RenderClear(Renderer);
-  afficherTour(Renderer, joueurs, ResultatsDice, DiceTextures, nbDeplacement, joueurActuel);
-
-  IsRunning:=True;
-  while IsRunning do
-  begin
-    afficherTexte(Renderer, 'Choisissez une arme :', 30, SCREEN_WIDTH - 500 , 50, Couleur(163, 3, 3, 255));
-
-    // Affichage des cartes des autres joueurs
-    for j := 0 to 5 do
-    begin
-      cartesRect[j] := coordonnees((j mod 3) * 205 + SCREEN_WIDTH - 650, (j div 3) * 285 + 135, 200, 280);
-      afficherImage(Renderer, 'cartes/' + GetEnumName(TypeInfo(TNomCarte), Ord(TNomCarte(j))), @cartesRect[j]);
-    end;
-
-    SDL_RenderPresent(Renderer); // Affiche le rendu
-
-    // Gestion des événements
-    while SDL_PollEvent(@Event) <> 0 do
-    begin
-      case Event.type_ of
-        SDL_MOUSEBUTTONDOWN:
-          begin
-            MouseX := Event.button.x;
-            MouseY := Event.button.y;
-            for j := 0 to 5 do
-            begin
-              if (MouseX >= cartesRect[j].x) and (MouseX <= cartesRect[j].x + cartesRect[j].w) and
-                (MouseY >= cartesRect[j].y) and (MouseY <= cartesRect[j].y + cartesRect[j].h) then
-              begin
-                carteChoisie := j;
-                IsRunning := False;
-              end;
-            end;
-          end;
-        SDL_QUITEV: Halt;
-      end;
-    end;
-  end;
-  writeln('Arme choisie : ', GetEnumName(TypeInfo(TNomCarte), Ord(TNomCarte(carteChoisie))));
-  
   SDL_RenderClear(Renderer);
   afficherTour(Renderer, joueurs, ResultatsDice, DiceTextures, nbDeplacement, joueurActuel);
 
@@ -537,8 +528,8 @@ begin
     // Affichage des cartes des autres joueurs
     for j := 0 to 5 do
     begin
-      cartesRect[j] := coordonnees((j mod 3) * 205 + SCREEN_WIDTH - 650, (j div 3) * 285 + 135, 200, 280);
-      afficherImage(Renderer, 'cartes/' + GetEnumName(TypeInfo(TNomCarte), Ord(TNomCarte(j+6))), @cartesRect[j]);
+      DestRect[j] := coordonnees((j mod 3) * 205 + SCREEN_WIDTH - 650, (j div 3) * 285 + 135, 200, 280);
+      afficherImage(Renderer, 'cartes/' + GetEnumName(TypeInfo(TNomCarte), Ord(TNomCarte(j+6))), @DestRect[j]);
     end;
 
     SDL_RenderPresent(Renderer); // Affiche le rendu
@@ -553,8 +544,50 @@ begin
             MouseY := Event.button.y;
             for j := 0 to 5 do
             begin
-              if (MouseX >= cartesRect[j].x) and (MouseX <= cartesRect[j].x + cartesRect[j].w) and
-                (MouseY >= cartesRect[j].y) and (MouseY <= cartesRect[j].y + cartesRect[j].h) then
+              if (MouseX >= DestRect[j].x) and (MouseX <= DestRect[j].x + DestRect[j].w) and
+                (MouseY >= DestRect[j].y) and (MouseY <= DestRect[j].y + DestRect[j].h) then
+              begin
+                carteChoisie := j+6;
+                IsRunning := False;
+              end;
+            end;
+          end;
+        SDL_QUITEV: Halt;
+      end;
+    end;
+  end;
+  writeln('Suspect choisi : ', GetEnumName(TypeInfo(TNomCarte), Ord(TNomCarte(carteChoisie))));
+  cartesChoisies[0].nom := TNomCarte(carteChoisie);
+  
+  SDL_RenderClear(Renderer);
+  afficherTour(Renderer, joueurs, ResultatsDice, DiceTextures, nbDeplacement, joueurActuel);
+
+  IsRunning:=True;
+  while IsRunning do
+  begin
+    afficherTexte(Renderer, 'Choisissez une arme :', 30, SCREEN_WIDTH - 500 , 50, Couleur(163, 3, 3, 255));
+
+    // Affichage des cartes des autres joueurs
+    for j := 0 to 5 do
+    begin
+      DestRect[j] := coordonnees((j mod 3) * 205 + SCREEN_WIDTH - 650, (j div 3) * 285 + 135, 200, 280);
+      afficherImage(Renderer, 'cartes/' + GetEnumName(TypeInfo(TNomCarte), Ord(TNomCarte(j))), @DestRect[j]);
+    end;
+
+    SDL_RenderPresent(Renderer); // Affiche le rendu
+
+    // Gestion des événements
+    while SDL_PollEvent(@Event) <> 0 do
+    begin
+      case Event.type_ of
+        SDL_MOUSEBUTTONDOWN:
+          begin
+            MouseX := Event.button.x;
+            MouseY := Event.button.y;
+            for j := 0 to 5 do
+            begin
+              if (MouseX >= DestRect[j].x) and (MouseX <= DestRect[j].x + DestRect[j].w) and
+                (MouseY >= DestRect[j].y) and (MouseY <= DestRect[j].y + DestRect[j].h) then
               begin
                 carteChoisie := j;
                 IsRunning := False;
@@ -565,10 +598,37 @@ begin
       end;
     end;
   end;
-  writeln('Suspect choisi : ', GetEnumName(TypeInfo(TNomCarte), Ord(TNomCarte(carteChoisie+6))));
+  writeln('Arme choisie : ', GetEnumName(TypeInfo(TNomCarte), Ord(TNomCarte(carteChoisie))));
+  cartesChoisies[1].nom := TNomCarte(carteChoisie);
+
+  cartesChoisies[2].nom := TPieceToTNomCarte(quellePiece(pieces, x, y).nom);
+
+  for i:=0 to 2 do
+    writeln(cartesChoisies[i].nom);
 end;
 
-procedure choixActionCouloir(Renderer : PSDL_Renderer ; paquetPieces, paquetArmes, paquetPersonnages, cartesChoisies : TPaquet ; joueurActuel, nbDeplacement : Integer ; joueurs : TJoueurs);
+function comparaisonCartes(compare, comparant : TPaquet) : TPaquet;
+var cartesCommunes : TPaquet;
+    i, j, indexPaquet : Integer;
+
+begin
+  SetLength(cartesCommunes, 0);
+  indexPaquet := 0;
+  for i:=0 to length(compare) - 1 do
+    for j:=0 to length(comparant) - 1 do
+      if compare[i].nom = comparant[j].nom then
+        begin
+          SetLength(cartesCommunes,indexPaquet+1);
+          cartesCommunes[indexPaquet]:=compare[i];
+          indexPaquet:=indexPaquet+1;
+        end;
+  writeln('Cartes communes :');
+  if Length(cartesCommunes)>0 then
+    for i:=0 to length(cartesCommunes) - 1 do
+      writeln(cartesCommunes[i].nom)
+end;
+
+procedure choixActionCouloir(Renderer : PSDL_Renderer ; joueurActuel, nbDeplacement : Integer ; joueurs : TJoueurs);
 var IsRunning : Boolean;
     CurrentSelection : Integer;
     Event : TSDL_Event;
@@ -630,12 +690,14 @@ begin
   end;
 end;  
 
-procedure choixActionPiece(Renderer : PSDL_Renderer ; paquetPieces, paquetArmes, paquetPersonnages, cartesChoisies : TPaquet ; joueurActuel, nbDeplacement : Integer ; joueurs : TJoueurs);
+procedure choixActionPiece(Renderer : PSDL_Renderer ; joueurActuel, nbDeplacement, x, y : Integer ; pieces : TPieces ; joueurs : TJoueurs ; var cartesCommunes : TPaquet);
 var IsRunning : Boolean;
     CurrentSelection : Integer;
     Event : TSDL_Event;
     ResultatsDice : TTabInt;
     DiceTextures : TabTextures;
+    cartesChoisies : TPaquet;
+    joueurChoisi : TJoueur;
 
 begin
   IsRunning:=True;
@@ -685,7 +747,8 @@ begin
             case CurrentSelection of
               0: begin
                   SDL_RenderClear(Renderer);
-                  hypothese(Renderer, paquetPieces, paquetArmes, paquetPersonnages, ResultatsDice, DiceTextures, joueurActuel, nbDeplacement, joueurs, cartesChoisies);
+                  hypothese(Renderer, joueurs, ResultatsDice, DiceTextures, joueurActuel, nbDeplacement, x, y, pieces, cartesChoisies, joueurChoisi);
+                  cartesCommunes := comparaisonCartes(cartesChoisies, joueurChoisi.main);
                   IsRunning:=False;
                  end;
               1: begin
@@ -704,11 +767,15 @@ end;
 
 procedure gestionTour(Renderer : PSDL_Renderer ; pieces : TPieces ; var joueurs: TJoueurs; var joueurActuel: Integer; var ResultatsDice : TTabInt; var nbDeplacement: Integer);
 var
-  NewX, NewY: Integer;
+  NewX, NewY, i, j: Integer;
   caseActuelle: Integer;
   Event: TSDL_Event;
   DiceTextures : TabTextures;
   paquetPieces, paquetArmes, paquetPersonnages, cartesChoisies : TPaquet;
+  carte : TCarte;
+  IsRunning : Boolean;
+  JoueursRect : array of TSDL_Rect;
+  cartesCommunes : TPaquet;
 begin
   while SDL_PollEvent(@Event) <> 0 do
   begin
@@ -729,10 +796,14 @@ begin
               if not (estDansPiece(pieces, newX, newY+1)) and (estDansPiece(pieces, newX, newY)) then
               begin
                 nbDeplacement:=0;
-                choixActionPiece(Renderer, paquetPieces, paquetArmes, paquetPersonnages, cartesChoisies, joueurActuel, nbDeplacement, joueurs);
+                choixActionPiece(Renderer, joueurActuel, nbDeplacement, joueurs[joueurActuel].x, joueurs[joueurActuel].y, pieces, joueurs, cartesCommunes);
+                joueurActuel := (joueurActuel + 1) mod length(joueurs);
               end
               else if not (estDansPiece(pieces, newX, newY)) and (nbDeplacement=0) then
-                choixActionCouloir(Renderer, paquetPieces, paquetArmes, paquetPersonnages, cartesChoisies, joueurActuel, nbDeplacement, joueurs);
+              begin
+                choixActionCouloir(Renderer, joueurActuel, nbDeplacement, joueurs);
+                joueurActuel := (joueurActuel + 1) mod length(joueurs);
+              end;
             end;
             SDLK_RIGHT: if not (caseActuelle in [2, 3, 6, 10]) and (nbDeplacement>0) then
             begin
@@ -740,13 +811,17 @@ begin
                 Dec(nbDeplacement);
               Inc(NewX);
               joueurs[joueurActuel].X := NewX;
-               if not (estDansPiece(pieces, newX-1, newY)) and (estDansPiece(pieces, newX, newY)) then
+              if not (estDansPiece(pieces, newX-1, newY)) and (estDansPiece(pieces, newX, newY)) then
               begin
                 nbDeplacement:=0;
-                choixActionPiece(Renderer, paquetPieces, paquetArmes, paquetPersonnages, cartesChoisies, joueurActuel, nbDeplacement, joueurs);
+                choixActionPiece(Renderer, joueurActuel, nbDeplacement, joueurs[joueurActuel].x, joueurs[joueurActuel].y, pieces, joueurs, cartesCommunes);
+                joueurActuel := (joueurActuel + 1) mod length(joueurs);
               end
               else if not (estDansPiece(pieces, newX, newY)) and (nbDeplacement=0) then
-                choixActionCouloir(Renderer, paquetPieces, paquetArmes, paquetPersonnages, cartesChoisies, joueurActuel, nbDeplacement, joueurs);
+              begin
+                choixActionCouloir(Renderer, joueurActuel, nbDeplacement, joueurs);
+                joueurActuel := (joueurActuel + 1) mod length(joueurs);
+              end;
             end;
             SDLK_DOWN: if not (caseActuelle in [4, 5, 6, 12]) and (nbDeplacement>0) then
             begin
@@ -757,10 +832,14 @@ begin
               if not (estDansPiece(pieces, newX, newY-1)) and (estDansPiece(pieces, newX, newY)) then
               begin
                 nbDeplacement:=0;
-                choixActionPiece(Renderer, paquetPieces, paquetArmes, paquetPersonnages, cartesChoisies, joueurActuel, nbDeplacement, joueurs);
+                choixActionPiece(Renderer, joueurActuel, nbDeplacement, joueurs[joueurActuel].x, joueurs[joueurActuel].y, pieces, joueurs, cartesCommunes);
+                joueurActuel := (joueurActuel + 1) mod length(joueurs);
               end
               else if not (estDansPiece(pieces, newX, newY)) and (nbDeplacement=0) then
-                choixActionCouloir(Renderer, paquetPieces, paquetArmes, paquetPersonnages, cartesChoisies, joueurActuel, nbDeplacement, joueurs);
+              begin
+                choixActionCouloir(Renderer, joueurActuel, nbDeplacement, joueurs);
+                joueurActuel := (joueurActuel + 1) mod length(joueurs);
+              end;
             end;
             SDLK_LEFT: if not (caseActuelle in [8, 9, 10, 12]) and (nbDeplacement>0) then
             begin
@@ -771,22 +850,24 @@ begin
               if not (estDansPiece(pieces, newX+1, newY)) and (estDansPiece(pieces, newX, newY)) then
               begin
                 nbDeplacement:=0;
-                choixActionPiece(Renderer, paquetPieces, paquetArmes, paquetPersonnages, cartesChoisies, joueurActuel, nbDeplacement, joueurs);
+                choixActionPiece(Renderer, joueurActuel, nbDeplacement, joueurs[joueurActuel].x, joueurs[joueurActuel].y, pieces, joueurs, cartesCommunes);
+                joueurActuel := (joueurActuel + 1) mod length(joueurs);
               end
               else if not (estDansPiece(pieces, newX, newY)) and (nbDeplacement=0) then
-                choixActionCouloir(Renderer, paquetPieces, paquetArmes, paquetPersonnages, cartesChoisies, joueurActuel, nbDeplacement, joueurs);
+              begin
+                choixActionCouloir(Renderer, joueurActuel, nbDeplacement, joueurs);
+                joueurActuel := (joueurActuel + 1) mod length(joueurs);
+              end;
             end;
             SDLK_RETURN :
             begin
               LancerDes(Renderer, DiceTextures, ResultatsDice); // Relancer les dés pour le joueur suivant
               nbDeplacement := ResultatsDice[0] + ResultatsDice[1] + 2;
-              joueurActuel := (joueurActuel + 1) mod length(joueurs); // Passer au joueur suivant
             end;
           end;      
         end;
     end;
   end;
 end;
-
 
 end.
