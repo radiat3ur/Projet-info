@@ -42,7 +42,6 @@ const
 Type TPersonnage = (Duval, Eleve, Boutigny, Delaroche, Yohann, Yon, rien); // Type pour les joueurs
 Type TNomCarte = (Blouse, Livre, Panier, Plateau, Reveil, Stethoscope, Dudu, Etudiant, DuoBoutigny, IsabelleDelaroche, YohannLepailleur, JeromeYon, Amphi, Laboratoire, Gymnase, Parking, RU, Shop, Bibliotheque, Infirmerie, Residence); //Type pour les cartes
 Type TCategorie = (Piece, Arme, Personnage);
-Type TCouleur = (Black, Blue, Green, Cyan, Red, Magenta, Yellow, White);
 Type TNomPiece = (Tillion, Labo, Gym, Parking_visiteurs, Self, INSA_Shop, Biblio, Inf, Chambre);  
 
 Type TCarte = Record
@@ -64,7 +63,6 @@ Type TJoueurs = Array of TJoueur;
 Type TCase = record
     estOccupee: Boolean;
     typePiece: TNomPiece;
-    couleur: TCouleur;
     joueurID : Integer; // 0 si pas de joueur, sinon numéro du joueur
 end;
 

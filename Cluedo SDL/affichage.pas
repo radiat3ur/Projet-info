@@ -142,11 +142,11 @@ begin
   SetLength(ResultatsDice, 2);
   // Définir le rectangle pour le premier dé
   Angle:=-10.0;
-  DestRect := coordonnees(SCREEN_WIDTH div 2 - 40, 100, TILE_SIZE * 3, TILE_SIZE * 3);
+  DestRect := coordonnees(SCREEN_WIDTH div 2 - 35, 60, TILE_SIZE * 3, TILE_SIZE * 3);
   SDL_RenderCopyEx(Renderer, chargerTexture(Renderer, 'dé ' + IntToStr(ResultatsDice[0] + 1)), nil, @DestRect, Angle, nil, SDL_FLIP_NONE);
     
   // Définir le rectangle pour le deuxième dé
-  DestRect.x := SCREEN_WIDTH div 2 + 80;
+  DestRect.x := SCREEN_WIDTH div 2 + 85;
   Angle:=10.0;
   SDL_RenderCopyEx(Renderer, chargerTexture(Renderer, 'dé ' + IntToStr(ResultatsDice[1] + 1)), nil, @DestRect, Angle, nil, SDL_FLIP_NONE);
 end;
@@ -183,10 +183,10 @@ begin
 
   AfficherPions(Renderer, joueurs);  
   AfficherDes(Renderer, DiceTextures, ResultatsDice);
-  afficherTexte(Renderer, 'Déplacements restants : ' + IntToStr(nbDeplacement), 14, SCREEN_WIDTH div 2, 60, Couleur(0, 0, 0, 0));
+  afficherTexte(Renderer, 'Déplacements restants : ' + IntToStr(nbDeplacement), 25, SCREEN_WIDTH div 2 - 60, 200, Couleur(0, 0, 0, 0));
   
   DestRect := coordonnees(0, SCREEN_HEIGHT-230, 180, 252);
-  afficherImage(Renderer, GetEnumName(TypeInfo(TPersonnage), Ord(joueurs[joueurActuel].nom)), @DestRect);
+  afficherImage(Renderer, GetEnumName(TypeInfo(TPersonnage), Ord(joueurs[joueurActuel].nom)) + 'actuel', @DestRect);
 
   SetLength(carteRect, length(joueurs[joueurActuel].main));
   for i := 0 to length(joueurs[joueurActuel].main) - 1 do // Parcourt le paquet
