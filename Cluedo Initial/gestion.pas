@@ -23,7 +23,6 @@ function accusation(paquetPieces, paquetArmes, paquetPersonnages, solution : TPa
 procedure initilisationPositionsJoueurs(var joueurs : TJoueurs ; var plateau : TPlateau);
 procedure initialisationPiece(var plateau: TPlateau; debutX, finX, debutY, finY: Integer; piece: TPiece; couleur: TCouleur);
 procedure initialisationPlateau(var plateau: TPlateau);
-Procedure PlacerPionDansPiece(var plateau: TPlateau; currentPlayer: Integer; piece: TPiece);
 
 implementation
 
@@ -246,6 +245,7 @@ begin
     until (choix >= 1) and (choix <= length(paquet));
     carteChoisie.categorie:=paquet[choix-1].categorie;
     carteChoisie.nom:=paquet[choix-1].nom;
+   
 end;
 
 procedure choixCartes(paquetPieces, paquetArmes, paquetPersonnages: TPaquet; var cartesChoisies: TPaquet);
@@ -315,7 +315,7 @@ begin
 end;
 
 procedure comparaisonCartes(compare, comparant : TPaquet ; var cartesCommunes : TPaquet);
-var compare, comparant : TPaquet ; var cartesCommunes : TPaquet
+var i, j, indexPaquet : Integer;
 
 begin
     indexPaquet:=0;
@@ -434,7 +434,7 @@ for i:=0 to length(joueurs)-1 do
       joueurs[i].y := 7;
       end;
     4:begin;
-      joueurs[i].x := 5; 
+      joueurs[i].x := 6; 
       joueurs[i].y := 20;
       end;
     5:begin;
@@ -442,6 +442,7 @@ for i:=0 to length(joueurs)-1 do
       joueurs[i].y := 20;
       end;
     end;
+    joueurs[i].dansPiece:=false;
           // Placer le joueur sur le plateau
       plateau[joueurs[i].x, joueurs[i].y].estOccupee := True;
       plateau[joueurs[i].x, joueurs[i].y].joueurID := i+1;
@@ -514,44 +515,16 @@ begin
 
   plateau[4, 3].typePiece:= Couloir;
   plateau[3, 9].typePiece:= Couloir;
-  plateau[4, 11].typePiece:= Couloir;
-  plateau[2, 17].typePiece:= Couloir;
+  plateau[2, 13].typePiece:= Couloir;
+  plateau[4, 20].typePiece:= Couloir;
   plateau[8, 5].typePiece:= Couloir;
-  plateau[9, 9].typePiece:= Couloir;
+  plateau[10, 11].typePiece:= Couloir;
   plateau[7, 12].typePiece:= Couloir;
-  plateau[7, 18].typePiece:= Couloir;
   plateau[10, 20].typePiece:= Couloir;
   plateau[13, 3].typePiece:= Couloir;
-  plateau[13, 10].typePiece:= Couloir;
+  plateau[15, 9].typePiece:= Couloir;
   plateau[15, 17].typePiece:= Couloir;
 end;
 
-Procedure PlacerPionDansPiece(var plateau: TPlateau; currentPlayer: Integer; piece: TPiece);
-var
-  i, j: Integer;
-  positionTrouvee: Boolean;
-begin
-  positionTrouvee := False;
-
-  // Parcours du plateau pour trouver une case libre dans la pièce donnée
-  for i := 1 to 16 do
-  begin
-    for j := 1 to 21 do
-    begin
-      if (plateau[i, j].typePiece = piece) and not plateau[i, j].estOccupee then
-      begin
-        // Place le joueur sur la case libre trouvée
-        plateau[i, j].estOccupee := True;
-        plateau[i, j].joueurID := currentPlayer;
-        positionTrouvee := True;
-        write(currentPlayer+1);
-        Break; //Arrête la boucle
-      end;
-    end;
-
-    if positionTrouvee then
-      Break;
-  end;
-end;
 
 end.

@@ -24,6 +24,7 @@ begin
         preventionTourJoueur(joueurs, currentPlayer);
 
         // Affiche la main du joueur actuel
+        writeln('Voici les cartes du Joueur ',i+1);
         affichagePaquet(joueurs[i].main); 
         finTourJoueur();
     end;
