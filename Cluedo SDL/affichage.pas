@@ -139,17 +139,23 @@ procedure AfficherDes(Renderer: PSDL_Renderer; DiceTextures: TabTextures; Result
 var
   DestRect: TSDL_Rect;
   Angle : Double;
+  texture1, texture2 : PSDL_Texture;
 begin
   SetLength(ResultatsDice, 2);
   // Définir le rectangle pour le premier dé
   Angle:=-10.0;
   DestRect := coordonnees(SCREEN_WIDTH div 2 - 35, 60, TILE_SIZE * 3, TILE_SIZE * 3);
-  SDL_RenderCopyEx(Renderer, chargerTexture(Renderer, 'dé ' + IntToStr(ResultatsDice[0] + 1)), nil, @DestRect, Angle, nil, SDL_FLIP_NONE);
+  texture1 := chargerTexture(Renderer, 'dé ' + IntToStr(ResultatsDice[0] + 1));
+  SDL_RenderCopyEx(Renderer, texture1, nil, @DestRect, Angle, nil, SDL_FLIP_NONE);
     
   // Définir le rectangle pour le deuxième dé
   DestRect.x := SCREEN_WIDTH div 2 + 85;
   Angle:=10.0;
-  SDL_RenderCopyEx(Renderer, chargerTexture(Renderer, 'dé ' + IntToStr(ResultatsDice[1] + 1)), nil, @DestRect, Angle, nil, SDL_FLIP_NONE);
+  texture2 := chargerTexture(Renderer, 'dé ' + IntToStr(ResultatsDice[1] + 1));
+  SDL_RenderCopyEx(Renderer, texture2, nil, @DestRect, Angle, nil, SDL_FLIP_NONE);
+
+  SDL_DestroyTexture(texture1);
+  SDL_DestroyTexture(texture2);
 end;
 
 procedure AfficherPions(Renderer: PSDL_Renderer; joueurs: TJoueurs);

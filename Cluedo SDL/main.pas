@@ -27,7 +27,7 @@ begin
   IsRunning:=True;
   while IsRunning do
   begin
-    gestionTour(Renderer, pieces, joueurs, joueurActuel, ResultatsDice, nbDeplacement);
+    gestionTour(Renderer, pieces, paquetArmes, paquetPersonnages, joueurs, joueurActuel, ResultatsDice, nbDeplacement);
     afficherTour(Renderer, joueurs, ResultatsDice, DiceTextures, nbDeplacement, joueurActuel);
     SDL_RenderPresent(Renderer);
     SDL_Delay(16);
