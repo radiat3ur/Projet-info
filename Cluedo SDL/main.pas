@@ -23,7 +23,7 @@ begin
   selectionJoueurs(Renderer, joueurs);
   SDL_Delay(750);
   initialisationPartie(Renderer, pieces, joueurs, joueurActuel, paquetPieces, paquetArmes, paquetPersonnages, solution, paquetSansCartesCrime);
-
+  preventionJoueur(Renderer, joueurs, joueurActuel, 'C''est à toi de jouer !');
   IsRunning:=True;
   while IsRunning do
   begin
