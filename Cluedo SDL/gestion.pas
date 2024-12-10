@@ -84,7 +84,7 @@ begin
                  end;
               1: begin
                   affichageNarration(Renderer);
-                  SDL_RenderPresent(Renderer);
+                  // SDL_RenderPresent(Renderer);
                   lecture := True;
                   while lecture do
                   begin
@@ -742,22 +742,18 @@ begin
                   victoire := accusation(Renderer, joueurs, ResultatsDice, DiceTextures, nbDeplacement, joueurActuel, x, y, paquetPersonnages, paquetArmes, paquetPieces, solution, pieces);
                   if (victoire = true) then
                   begin
-                    SDL_RenderClear(Renderer);
-                    DestRect := coordonnees(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
-                    afficherImage(Renderer, 'fond', @DestRect);
-                    afficherTexte(Renderer, 'Vous avez gagné', 80, SCREEN_WIDTH div 2 - 500, SCREEN_HEIGHT div 2, Couleur(163, 3, 3, 255));
+                    affichageVictoire(Renderer);
+                    DestRect := coordonnees(SCREEN_WIDTH div 2 - 250 , SCREEN_HEIGHT div 2 - 300, 500, 700);
+                    afficherImage(Renderer, GetEnumName(TypeInfo(TPersonnage), Ord(joueurs[joueurActuel].nom)), @DestRect);
                     SDL_RenderPresent(Renderer);
-                    SDL_Delay(2000);
+                    SDL_Delay(5000);
                     Halt;
                   end
                   else
-                  begin
-                    SDL_RenderClear(Renderer);
-                    DestRect := coordonnees(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
-                    afficherImage(Renderer, 'fond', @DestRect);
-                    afficherTexte(Renderer, 'Vous avez perdu', 80, SCREEN_WIDTH div 2 - 500, SCREEN_HEIGHT div 2, Couleur(163, 3, 3, 255));
+                  begin 
+                    affichageVictoire(Renderer);                   
                     SDL_RenderPresent(Renderer);
-                    SDL_Delay(2000);
+                    SDL_Delay(5000);
                     Halt;
                   end;
                  end;
@@ -839,22 +835,18 @@ begin
                   write(victoire);
                   if (victoire = true) then
                   begin
-                    SDL_RenderClear(Renderer);
-                    DestRect := coordonnees(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
-                    afficherImage(Renderer, 'fond', @DestRect);
-                    afficherTexte(Renderer, 'Vous avez gagné', 80, SCREEN_WIDTH div 2 - 500, SCREEN_HEIGHT div 2, Couleur(163, 3, 3, 255));
+                    affichageVictoire(Renderer);
+                    DestRect := coordonnees(SCREEN_WIDTH div 2 - 250 , SCREEN_HEIGHT div 2 - 300, 500, 700);
+                    afficherImage(Renderer, GetEnumName(TypeInfo(TPersonnage), Ord(joueurs[joueurActuel].nom)), @DestRect);
                     SDL_RenderPresent(Renderer);
-                    SDL_Delay(2000);
+                    SDL_Delay(5000);
                     Halt;
                   end
                   else
-                  begin
-                    SDL_RenderClear(Renderer);
-                    DestRect := coordonnees(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
-                    afficherImage(Renderer, 'fond', @DestRect);
-                    afficherTexte(Renderer, 'Vous avez perdu', 80, SCREEN_WIDTH div 2 - 500, SCREEN_HEIGHT div 2, Couleur(163, 3, 3, 255));
+                  begin 
+                    affichageVictoire(Renderer);                   
                     SDL_RenderPresent(Renderer);
-                    SDL_Delay(2000);
+                    SDL_Delay(5000);
                     Halt;
                   end;
                  end;
