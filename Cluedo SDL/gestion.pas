@@ -83,7 +83,23 @@ begin
                   afficherImage(Renderer, 'menu', @DestRect);
                  end;
               1: begin
-                   IsRunning := False;
+                  affichageNarration(Renderer);
+                  SDL_RenderPresent(Renderer);
+                  lecture := True;
+                  while lecture do
+                  begin
+                    while SDL_PollEvent(@Event) <> 0 do
+                    begin
+                      if Event.type_ = SDL_KEYDOWN then
+                      begin
+                        if Event.key.keysym.sym = SDLK_RETURN then
+                          lecture := False;
+                      end
+                      else if Event.type_ = SDL_QUITEV then
+                        Halt;
+                    end;
+                  end;
+                  IsRunning := False;
                  end;
               2: begin
                   IsRunning := False;

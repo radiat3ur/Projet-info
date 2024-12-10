@@ -13,6 +13,7 @@ function chargerTextureDepuisTexte(renderer:PSDL_Renderer; police:PTTF_Font; tex
 procedure afficherTexte(Renderer: PSDL_Renderer; text: String; taille, x, y: Integer; couleur: TSDL_Color);
 procedure affichageRegles(Renderer : PSDL_Renderer);
 procedure affichageMenu(Renderer : PSDL_Renderer ; CurrentSelection : Integer);
+procedure affichageNarration(Renderer : PSDL_Renderer);
 procedure AfficherDes(Renderer: PSDL_Renderer; DiceTextures: TabTextures; ResultatsDice: TTabInt);
 procedure AfficherPions(Renderer : PSDL_Renderer ; joueurs : TJoueurs);
 procedure preventionJoueur(Renderer : PSDL_Renderer ; joueurs : TJoueurs ; joueurActuel : Integer ; texte : String);
@@ -179,7 +180,7 @@ var DestRect : TSDL_Rect;
     lecture : Boolean;
 begin
   DestRect := coordonnees(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
-  afficherImage(Renderer, 'fond', @DestRect);
+  afficherImage(Renderer, 'prevention', @DestRect);
   afficherTexte(Renderer, texte, 70, 600, 500, Couleur(163, 3, 3, 255));
   DestRect := coordonnees(100, 200, 500, 700);
   afficherImage(Renderer, GetEnumName(TypeInfo(TPersonnage), Ord(joueurs[joueurActuel].nom)), @DestRect);
@@ -266,6 +267,19 @@ begin
 
   SDL_RenderPresent(Renderer);
 end;
+
+procedure affichageNarration(Renderer : PSDL_Renderer);
+var DestRect : TSDL_Rect; lecture : boolean;
+begin
+  SDL_RenderClear(Renderer); // Nettoyer l'écran
+
+  // Définir le rectangle pour afficher l'image
+  DestRect := coordonnees(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+
+   // Afficher l'image de fond
+  afficherImage(Renderer, 'naration', @DestRect);
+end;
+
 
 procedure CleanUp(Window : PSDL_Window ; Renderer : PSDL_Renderer);
 begin
