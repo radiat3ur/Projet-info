@@ -948,6 +948,7 @@ begin
               end;
             end;
             SDLK_RETURN :
+            if (nbDeplacement=0) then
             begin
               LancerDes(Renderer, DiceTextures, ResultatsDice); // Relancer les dés pour le joueur suivant
               nbDeplacement := ResultatsDice[0] + ResultatsDice[1] + 2;

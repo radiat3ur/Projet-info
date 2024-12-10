@@ -362,7 +362,6 @@ begin
         write(' (impossible)');
       end;
       writeln();
-      end;
     end;
     readln(choix);
     ClearLines(18,9);

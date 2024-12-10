@@ -7,7 +7,6 @@ const
 
 Type TPersonnages = (Duval, Jerome_YON, Yohann, Diane_Duval, Thomas_LECOURT, Jerome_Thibaut); // Type pour les joueurs
 Type TCarte = (Amphi_Tillion, Labo, Cafeteria, Parking_visiteur, RU, BDE, BU, Infirmerie, Residence, Blouse, Stylo, Ordinateur_portable, Leocarte, Rapport_de_stage, Calculatrice, Dudu, Yon, Lepailleur, Diane, Lecourt, THIBAUT); //Type pour les cartes
-Type TCategorie = (Piece, Arme, Personnage);
 Type TCouleur = (Black, Blue, Green, Cyan, Red, Magenta, Yellow, White);
 Type TPiece = (Amphi_Tillionn, Laboo, Cafeteriaa, Parking_visiteurs, RUU, BDEE, BUU, Infirmeriee, Residencee, Couloir, Mur, Porte);
   

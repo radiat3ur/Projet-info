@@ -17,6 +17,7 @@ procedure affichageResultatHypothese(paquetPieces, paquetArmes, paquetPersonnage
 procedure affichageResultatAccusation(paquetPieces, paquetArmes, paquetPersonnages, solution : TPaquet; joueurActuel : TJoueur);
 
 procedure attributionCouleur(couleur: TCouleur);
+procedure affichageLegende(i : Integer);
 procedure affichagePlateau(var plateau: TPlateau; joueurs: TJoueurs; joueurActuel: Integer);
 Procedure PlacerPionDansPiece(var plateau: TPlateau; currentPlayer: Integer; piece: TPiece);
 procedure PlacerDevantPorte(var plateau: TPlateau; var joueurs: TJoueurs; currentPlayer: Integer; var deplacement:integer);
@@ -162,7 +163,7 @@ end;
 procedure finTourJoueur();
 begin
   writeln();
-  write('Appuyez sur Entree pour terminer votre tour');
+  writeLN('Appuyez sur Entree pour terminer votre tour');
   readln;
   ClrScr;
 end;
@@ -265,6 +266,88 @@ begin
     TextColor(15);
 end;
 
+procedure affichageLegende(i : Integer);
+begin
+case i of
+  1: begin
+      TextBackground(0);
+      write('  Legende :');
+    end;
+  2: write();
+  3: begin
+      TextBackground(0);
+      write('   ');
+      TextBackground(1);
+      write('   ');
+      TextBackground(0);
+      write(' - Amphi Tillion');
+    end;
+  4: begin
+      TextBackground(0);
+      write('    ');
+      TextBackground(4);
+      write('   ');
+      TextBackground(0);
+      write(' - BU');
+      end;
+  5: begin
+      TextBackground(0);
+      write('    ');
+      TextBackground(2);
+      write('   ');
+      TextBackground(0);
+      write(' - Labo');
+    end;
+  6: begin
+      TextBackground(0);
+      write('    ');
+      TextBackground(5);
+      write('   ');
+      TextBackground(0);
+      write(' - Parking visiteurs');
+    end;
+  7: begin
+      TextBackground(0);
+      write('    ');
+      TextBackground(14);
+      write('   ');
+      TextBackground(0);
+      write(' - RU');
+    end;
+  8: begin
+      TextBackground(0);
+      write('   ');
+      TextBackground(1);
+      write('   ');
+      TextBackground(0);
+      write(' - BDE');
+    end;
+  9: begin  
+      TextBackground(0);
+      write('   ');
+      TextBackground(3);
+      write('   ');
+      TextBackground(0);
+      write(' - Residence');
+    end;
+  10: begin
+      TextBackground(0);
+      write('    ');
+      TextBackground(4);
+      write('   ');
+      TextBackground(0);
+      write(' - Infirmerie');
+    end;
+  11: begin
+      TextBackground(0);
+      write('    ');
+      TextBackground(14);
+      write('   ');
+      TextBackground(0);
+      write(' - Cafeteria');
+    end;
+  end;
+end;
 
 // Procédure pour afficher le plateau avec les joueurs
 procedure affichagePlateau(var plateau: TPlateau; joueurs: TJoueurs; joueurActuel: Integer);
@@ -289,91 +372,12 @@ begin
       if plateau[i, j].joueurID > 0 then
         write(plateau[i, j].joueurID) // Afficher le numéro du joueur
       else if plateau[i, j].typePiece = Mur then
-        write(' ') // Mur marqué par "x"
+        write(' ') 
       else
         write('.'); // Couloirs et pièces marqués par '.'  
           
     end;
-
-    case i of
-      1: begin
-            TextBackground(0);
-            write('  Legende :');
-          end;
-      2: write();
-      3: begin
-            TextBackground(0);
-            write('   ');
-            TextBackground(1);
-            write('   ');
-            TextBackground(0);
-            write(' - Amphi Tillion');
-          end;
-      4: begin
-            TextBackground(0);
-            write('    ');
-            TextBackground(4);
-            write('   ');
-            TextBackground(0);
-            write(' - BU');
-          end;
-      5: begin
-            TextBackground(0);
-            write('    ');
-            TextBackground(2);
-            write('   ');
-            TextBackground(0);
-            write(' - Labo');
-          end;
-      6: begin
-            TextBackground(0);
-            write('    ');
-            TextBackground(5);
-            write('   ');
-            TextBackground(0);
-            write(' - Parking visiteurs');
-          end;
-      7: begin
-            TextBackground(0);
-            write('    ');
-            TextBackground(14);
-            write('   ');
-            TextBackground(0);
-            write(' - RU');
-          end;
-      8: begin
-            TextBackground(0);
-            write('   ');
-            TextBackground(1);
-            write('   ');
-            TextBackground(0);
-            write(' - BDE');
-          end;
-      9: begin  
-            TextBackground(0);
-            write('   ');
-            TextBackground(3);
-            write('   ');
-            TextBackground(0);
-            write(' - Residence');
-          end;
-      10: begin
-            TextBackground(0);
-            write('    ');
-            TextBackground(4);
-            write('   ');
-            TextBackground(0);
-            write(' - Infirmerie');
-          end;
-      11: begin
-            TextBackground(0);
-            write('    ');
-            TextBackground(14);
-            write('   ');
-            TextBackground(0);
-            write(' - Cafeteria');
-      end;
-    end;
+    affichageLegende(i);
     writeln;
   end;
   TextBackground(0);
