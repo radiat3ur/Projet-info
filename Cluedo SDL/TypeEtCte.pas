@@ -40,14 +40,9 @@ const
     );
 
 Type TPersonnage = (Duval, Eleve, Boutigny, Delaroche, Yohann, Yon, rien); // Type pour les joueurs
-Type TNomCarte = (Blouse, Livre, Panier, Plateau, Reveil, Stethoscope, Dudu, Etudiant, DuoBoutigny, IsabelleDelaroche, YohannLepailleur, JeromeYon, Amphi, Laboratoire, Gymnase, Parking, RU, Shop, Bibliotheque, Infirmerie, Residence); //Type pour les cartes
+Type TCarte = (Blouse, Livre, Panier, Plateau, Reveil, Stethoscope, Dudu, Etudiant, DuoBoutigny, IsabelleDelaroche, YohannLepailleur, JeromeYon, Amphi, Laboratoire, Gymnase, Parking, RU, Shop, Bibliotheque, Infirmerie, Residence); //Type pour les cartes
 Type TCategorie = (Piece, Arme, Personnage);
 Type TNomPiece = (Tillion, Labo, Gym, Parking_visiteurs, Self, INSA_Shop, Biblio, Inf, Chambre);  
-
-Type TCarte = Record
-    categorie : TCategorie;
-    nom : TNomCarte;
-end;
 
 Type TPaquet = Array of TCarte;
   
@@ -63,7 +58,7 @@ Type TJoueurs = Array of TJoueur;
 Type TCase = record
     estOccupee: Boolean;
     typePiece: TNomPiece;
-    joueurID : Integer; // 0 si pas de joueur, sinon numéro du joueur
+    joueurID : Integer; 
 end;
 
 Type TPiece = record

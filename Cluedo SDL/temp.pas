@@ -19,7 +19,7 @@ procedure LancerDes(Renderer: PSDL_Renderer; DiceTextures: TabTextures; var Resu
 
 function estDansPiece(pieces : TPieces ; xJ, yJ : Integer) : Boolean;
 function quellePiece(pieces : TPieces ; xJ, yJ : Integer) : TPiece;
-function TPieceToTNomCarte(piece: TNomPiece): TNomCarte;
+function TPieceToTCarte(piece: TNomPiece): TCarte;
 // function choixCarte(Renderer : PSDL_Renderer ; joueurs : TJoueurs ; ResultatsDice : TTabInt ; DiceTextures : TabTextures ; nbDeplacement, joueurActuel, indice : Integer ; paquet: TPaquet; objet : String) : TCarte;
 // procedure choixCartes(Renderer : PSDL_Renderer ; joueurs : TJoueurs ; ResultatsDice : TTabInt ; DiceTextures : TabTextures ; nbDeplacement, joueurActuel : Integer ; paquetPersonnages, paquetArmes : TPaquet ; pieces : TPieces ; var cartesChoisies : TPaquet);
 procedure choixCartes(Renderer: PSDL_Renderer ; joueurs: TJoueurs ; ResultatsDice : TTabInt ; DiceTextures : TabTextures ; nbDeplacement, joueurActuel, x, y : Integer; pieces : TPieces ; var cartesChoisies : TPaquet ; var joueurChoisi : TJoueur);
@@ -285,7 +285,7 @@ begin
     for i:=0 to Length(paquetArmes)-1 do
     begin
         paquetArmes[i].categorie:=Arme;
-        paquetArmes[i].nom:=TNomCarte(i);
+        paquetArmes[i].nom:=TCarte(i);
     end;
 
     // Crée le paquet des personnages
@@ -293,7 +293,7 @@ begin
     for i:=0 to length(paquetPersonnages)-1 do
     begin
         paquetPersonnages[i].categorie:=Personnage;
-        paquetPersonnages[i].nom:=TNomCarte(i+length(paquetArmes));
+        paquetPersonnages[i].nom:=TCarte(i+length(paquetArmes));
     end;
 
     // Crée le paquet des pièces
@@ -301,7 +301,7 @@ begin
     for i:=0 to length(paquetPieces)-1 do
     begin
         paquetPieces[i].categorie:=Piece;
-        paquetPieces[i].nom:=TNomCarte(i+length(paquetArmes)+length(paquetPersonnages));
+        paquetPieces[i].nom:=TCarte(i+length(paquetArmes)+length(paquetPersonnages));
     end;
 end;
 
@@ -440,18 +440,18 @@ begin
     end;
 end;
 
-function TPieceToTNomCarte(piece: TNomPiece): TNomCarte;
+function TPieceToTCarte(piece: TNomPiece): TCarte;
 begin
   case piece of
-    Tillion : TPieceToTNomCarte := TNomCarte(12);
-    Labo : TPieceToTNomCarte := TNomCarte(13);
-    Gym : TPieceToTNomCarte := TNomCarte(14);
-    Parking_visiteurs : TPieceToTNomCarte := TNomCarte(15);
-    Self : TPieceToTNomCarte := TNomCarte(16);
-    INSA_Shop : TPieceToTNomCarte := TNomCarte(17);
-    Biblio : TPieceToTNomCarte := TNomCarte(18);
-    Inf : TPieceToTNomCarte := TNomCarte(19);
-    Chambre : TPieceToTNomCarte := TNomCarte(20);
+    Tillion : TPieceToTCarte := TCarte(12);
+    Labo : TPieceToTCarte := TCarte(13);
+    Gym : TPieceToTCarte := TCarte(14);
+    Parking_visiteurs : TPieceToTCarte := TCarte(15);
+    Self : TPieceToTCarte := TCarte(16);
+    INSA_Shop : TPieceToTCarte := TCarte(17);
+    Biblio : TPieceToTCarte := TCarte(18);
+    Inf : TPieceToTCarte := TCarte(19);
+    Chambre : TPieceToTCarte := TCarte(20);
   end;
 end;
 
@@ -529,7 +529,7 @@ begin
     for j := 0 to 5 do
     begin
       DestRect[j] := coordonnees((j mod 3) * 205 + SCREEN_WIDTH - 650, (j div 3) * 285 + 135, 200, 280);
-      afficherImage(Renderer, 'cartes/' + GetEnumName(TypeInfo(TNomCarte), Ord(TNomCarte(j+6))), @DestRect[j]);
+      afficherImage(Renderer, 'cartes/' + GetEnumName(TypeInfo(TCarte), Ord(TCarte(j+6))), @DestRect[j]);
     end;
 
     SDL_RenderPresent(Renderer); // Affiche le rendu
@@ -556,8 +556,8 @@ begin
       end;
     end;
   end;
-  writeln('Suspect choisi : ', GetEnumName(TypeInfo(TNomCarte), Ord(TNomCarte(carteChoisie))));
-  cartesChoisies[0].nom := TNomCarte(carteChoisie);
+  writeln('Suspect choisi : ', GetEnumName(TypeInfo(TCarte), Ord(TCarte(carteChoisie))));
+  cartesChoisies[0].nom := TCarte(carteChoisie);
   
   SDL_RenderClear(Renderer);
   afficherTour(Renderer, joueurs, ResultatsDice, DiceTextures, nbDeplacement, joueurActuel);
@@ -571,7 +571,7 @@ begin
     for j := 0 to 5 do
     begin
       DestRect[j] := coordonnees((j mod 3) * 205 + SCREEN_WIDTH - 650, (j div 3) * 285 + 135, 200, 280);
-      afficherImage(Renderer, 'cartes/' + GetEnumName(TypeInfo(TNomCarte), Ord(TNomCarte(j))), @DestRect[j]);
+      afficherImage(Renderer, 'cartes/' + GetEnumName(TypeInfo(TCarte), Ord(TCarte(j))), @DestRect[j]);
     end;
 
     SDL_RenderPresent(Renderer); // Affiche le rendu
@@ -598,10 +598,10 @@ begin
       end;
     end;
   end;
-  writeln('Arme choisie : ', GetEnumName(TypeInfo(TNomCarte), Ord(TNomCarte(carteChoisie))));
-  cartesChoisies[1].nom := TNomCarte(carteChoisie);
+  writeln('Arme choisie : ', GetEnumName(TypeInfo(TCarte), Ord(TCarte(carteChoisie))));
+  cartesChoisies[1].nom := TCarte(carteChoisie);
 
-  cartesChoisies[2].nom := TPieceToTNomCarte(quellePiece(pieces, x, y).nom);
+  cartesChoisies[2].nom := TPieceToTCarte(quellePiece(pieces, x, y).nom);
 
   for i:=0 to 2 do
     writeln(cartesChoisies[i].nom);
@@ -757,7 +757,7 @@ begin
                     for i:= 0 to length(cartesCommunes) - 1 do
                     begin
                       DestRect[i] := coordonnees((i mod 3) * 205 + SCREEN_WIDTH - 650, (i div 3) * 285 + 135, 200, 280);
-                      afficherImage(Renderer, 'cartes/' + GetEnumName(TypeInfo(TNomCarte), Ord(cartesCommunes[i].nom)), @DestRect[i]);
+                      afficherImage(Renderer, 'cartes/' + GetEnumName(TypeInfo(TCarte), Ord(cartesCommunes[i].nom)), @DestRect[i]);
                     end;
                     SDL_RenderPresent(Renderer);
                   end;

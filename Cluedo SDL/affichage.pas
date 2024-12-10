@@ -15,8 +15,8 @@ procedure affichageRegles(Renderer : PSDL_Renderer);
 procedure affichageMenu(Renderer : PSDL_Renderer ; CurrentSelection : Integer);
 procedure AfficherDes(Renderer: PSDL_Renderer; DiceTextures: TabTextures; ResultatsDice: TTabInt);
 procedure AfficherPions(Renderer : PSDL_Renderer ; joueurs : TJoueurs);
+procedure preventionJoueur(Renderer : PSDL_Renderer ; joueurs : TJoueurs ; joueurActuel : Integer ; texte : String);
 procedure afficherTour(Renderer: PSDL_Renderer; joueurs: TJoueurs; ResultatsDice: TTabInt; DiceTextures: TabTextures; nbDeplacement, joueurActuel: Integer);
-
 procedure CleanUp(Window : PSDL_Window ; Renderer : PSDL_Renderer);
 
 implementation
@@ -173,6 +173,32 @@ begin
   end;
 end;
 
+procedure preventionJoueur(Renderer : PSDL_Renderer ; joueurs : TJoueurs ; joueurActuel : Integer ; texte : String);
+var DestRect : TSDL_Rect;
+    Event : TSDL_Event;
+    lecture : Boolean;
+begin
+  DestRect := coordonnees(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+  afficherImage(Renderer, 'fond', @DestRect);
+  afficherTexte(Renderer, texte, 70, 600, 500, Couleur(163, 3, 3, 255));
+  DestRect := coordonnees(100, 200, 500, 700);
+  afficherImage(Renderer, GetEnumName(TypeInfo(TPersonnage), Ord(joueurs[joueurActuel].nom)), @DestRect);
+  SDL_RenderPresent(Renderer);
+  while lecture do
+  begin
+    while SDL_PollEvent(@Event) <> 0 do
+    begin
+      if Event.type_ = SDL_KEYDOWN then
+      begin
+        if Event.key.keysym.sym = SDLK_RETURN then
+          lecture := False;
+      end
+      else if Event.type_ = SDL_QUITEV then
+        Halt;
+    end;
+  end;
+end;
+
 procedure afficherTour(Renderer: PSDL_Renderer; joueurs: TJoueurs; ResultatsDice: TTabInt; DiceTextures: TabTextures; nbDeplacement, joueurActuel: Integer);
 var DestRect: TSDL_Rect;
     i: Integer;
@@ -181,8 +207,7 @@ begin
   SDL_SetRenderDrawColor(Renderer, 255, 255, 255, 255);
   SDL_RenderClear(Renderer);
 
-  DestRect := coordonnees(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT); 
-
+  DestRect := coordonnees(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
   afficherImage(Renderer, 'fond', @DestRect);
 
   DestRect := coordonnees(0, 0, TILE_SIZE * GRID_WIDTH, TILE_SIZE * GRID_HEIGHT);
@@ -199,10 +224,8 @@ begin
   for i := 0 to length(joueurs[joueurActuel].main) - 1 do // Parcourt le paquet
   begin
     carteRect[i] := coordonnees(i * 137 + 210, SCREEN_HEIGHT - 195, 135, 189);
-    afficherImage(Renderer, 'cartes/' + GetEnumName(TypeInfo(TNomCarte), Ord(joueurs[joueurActuel].main[i].nom)), @carteRect[i]);
+    afficherImage(Renderer, 'cartes/' + GetEnumName(TypeInfo(TCarte), Ord(joueurs[joueurActuel].main[i])), @carteRect[i]);
   end;
-
-  //SDL_RenderPresent(Renderer);
 end;
 
 procedure affichageRegles(Renderer : PSDL_Renderer);

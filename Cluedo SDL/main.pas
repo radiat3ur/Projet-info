@@ -1,6 +1,6 @@
 program main;
 
-uses crt, SDL2, SDL2_image, SDL2_ttf, TypeEtCte, affichage, gestion;
+uses crt, SDL2, SDL2_image, SDL2_ttf, TypeEtCte, affichage, gestion, TypInfo;
 
 var Window: PSDL_Window;
     Renderer: PSDL_Renderer;
@@ -27,7 +27,7 @@ begin
   IsRunning:=True;
   while IsRunning do
   begin
-    gestionTour(Renderer, pieces, paquetArmes, paquetPersonnages, joueurs, joueurActuel, ResultatsDice, nbDeplacement);
+    gestionTour(Renderer, pieces, paquetArmes, paquetPersonnages, paquetPieces, solution, joueurs, joueurActuel, ResultatsDice, nbDeplacement);
     afficherTour(Renderer, joueurs, ResultatsDice, DiceTextures, nbDeplacement, joueurActuel);
     SDL_RenderPresent(Renderer);
     SDL_Delay(16);
