@@ -277,7 +277,7 @@ begin
   DestRect := coordonnees(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
 
    // Afficher l'image de fond
-  afficherImage(Renderer, 'naration', @DestRect);
+  afficherImage(Renderer, 'narration', @DestRect);
 end;
 
 
