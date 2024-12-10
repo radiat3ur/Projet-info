@@ -81,10 +81,6 @@ const
     (x: 21; y: 7)  // Position prédéfinie pour Jerome_Thibaut
   );
 
-  personnagesDisponibles: array[0..5] of TPersonnage = (
-    Duval, Eleve, Boutigny, Delaroche, Yohann, Yon
-  );
-
 Type TabTextures = array of PSDL_Texture;
 
 implementation

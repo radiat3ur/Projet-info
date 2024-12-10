@@ -2,47 +2,42 @@ Unit affichage;
 
 interface 
 
-Uses Crt, TypeEtCte, gestion, SDL2, SDL2_mixer;
+Uses Crt, TypeEtCte, SDL2, SDL2_mixer;
 
-procedure narration();
+procedure effacerLignes(ligne, nbLignes: Integer);
 procedure affichageMenu();
 procedure affichageRegles();
-procedure choixDebutJeu(var nbJoueurs : Integer ; var joueurs : TJoueurs);
-procedure menu(var choix, nbJoueurs : Integer ; var joueurs : TJoueurs);
+procedure narration();
+
 procedure preventionTourJoueur(joueurs: TJoueurs; var i: Integer);
 procedure finTourJoueur();
-procedure affichageCarte(carte : TCarte);
+
+procedure affichageCarte(carte: TCarte);
 procedure affichagePaquet(paquet: TPaquet);
-procedure affichageResultatHypothese(paquetPieces, paquetArmes, paquetPersonnages: TPaquet; joueurActuel : TJoueur; joueurs : TJoueurs; cartesChoisies : TPaquet; carteChoisie : TCarte; var presenceCarteCommune:boolean;currentPlayer:integer;plateau:TPlateau);
-procedure affichageResultatAccusation(paquetPieces, paquetArmes, paquetPersonnages, solution : TPaquet; joueurActuel : TJoueur);
 
 procedure attributionCouleur(couleur: TCouleur);
+procedure afficherEtiquettes(i, j: Integer);
 procedure affichageLegende(i : Integer);
-procedure affichagePlateau(var plateau: TPlateau; joueurs: TJoueurs; joueurActuel: Integer);
-Procedure PlacerPionDansPiece(var plateau: TPlateau; currentPlayer: Integer; piece: TPiece);
-procedure PlacerDevantPorte(var plateau: TPlateau; var joueurs: TJoueurs; currentPlayer: Integer; var deplacement:integer);
-procedure deplacerJoueur(var joueurs: TJoueurs; currentPlayer: Integer; var plateau: TPlateau; var deplacement: Integer);
-function LancerDes( deplacement:integer) : integer;
-procedure jouerTour(var joueurs: TJoueurs; var plateau: TPlateau; paquetPieces, paquetArmes, paquetPersonnages, solution: TPaquet; joueurActuel : TJoueur; cartesChoisies : TPaquet; carteChoisie : TCarte; currentPlayer:integer);
 
+procedure affichagePlateau(var plateau: TPlateau; joueurs: TJoueurs; joueurActuel: Integer);
+
+procedure AnnonceTour(currentPlayer: Integer);
 
 
 implementation
 
-procedure narration(); // Affiche la narration
-
+procedure effacerLignes(ligne, nbLignes: Integer);
+var i: Integer;
 begin
-  write('La nuit est tombee sur le campus de l''INSA, et une ombre s''etend sur les batiments normalement empreints de l''effervescence etudiante. Mais ce soir, l''atmosphere est differente... une tension palpable flotte dans l''air. ');
-  write('Au petit matin, la terrible nouvelle est tombee comme un couperet : Alexis LECOMTE, figure respectee (et redoutee) de l''ecole, a ete retrouve sans vie, mysterieusement assassine. ');
-  writeln('Son corps inerte a ete decouvert dans l''une des salles de l''etablissement, entoure de quelques accessoires de laboratoire... et des indices qui echappent a toute logique. ');
-  writeln();
-  writeln('Les lieux du crime restent inconnus : a-t-il ete surpris au laboratoire de chimie, attaque dans le calme apparent de la bibliotheque, ou pris au piege dans la salle des machines ? Autour de lui, des traces d''etranges outils et accessoires de travail, signes d''une lutte inattendue. ');
-  write('Mais le plus surprenant dans cette sombre affaire, c''est que chacun des professeurs proches de lui semble avoir un alibi... ou une excuse. Entre jalousies academiques, vieilles rancunes et competitions feroces, il se pourrait bien que l''un d''eux ait franchi la ligne de l''acceptable.');
-  readln();
+  for i := 0 to nbLignes - 1 do
+  begin
+    GotoXY(1, ligne + i);
+    ClrEol;
+  end;
+  GotoXY(1,18);
 end;
 
 procedure affichageMenu(); // Affiche le menu au tout début du jeu
-
 begin
   writeln('==========================');
   writeln(#27'[1m       MENU PRINCIPAL      '#27'[0m'); // Met en gras
@@ -56,7 +51,6 @@ begin
 end;
 
 procedure affichageRegles(); // Affiche les règles
-
 begin
   writeln('--- Regles du Jeu ---');
   writeln('Bienvenue a l''INSA, ou un crime odieux vient d''etre commis!');
@@ -112,42 +106,15 @@ begin
   writeln('Pret a resoudre le mystere ? L''INSA n''attend que vous... Que l''enquete commence !');
 end;
 
-procedure choixDebutJeu(var nbJoueurs : Integer ; var joueurs : TJoueurs);
-
+procedure narration(); // Affiche la narration
 begin
-  repeat
-    write('Entrez le nombre de joueurs (2-6) : ');
-    readln(nbJoueurs); // Sélectionne le nombre de joueurs
-  until (nbJoueurs >= 2) and (nbJoueurs <= MAX_PERSONNAGES); // Vérifie que le nombre est compris entre 2 et 6
-
-  SetLength(joueurs,nbJoueurs); // Défini la taille du tableau des joueurs en fonction du nombre de joueurs
-  initialisationJoueurs(joueurs, nbJoueurs); // (voir la procedure dans gestion.pas)
-end;
-
-procedure menu(var choix, nbJoueurs : Integer ; var joueurs : TJoueurs);
-
-begin
-repeat
-  ClrScr;
-  affichageMenu();
-  readln(choix);
-
-  case choix of
-    1: begin
-        ClrScr;
-        affichageRegles(); // Lorsque 1 est tapé, on affiche les règles
-        readln();
-        menu(choix, nbJoueurs, joueurs);
-        end;
-    2: begin
-          ClrScr;
-          choixDebutJeu(nbJoueurs, joueurs); // Lorsque 2 est tapé, on initilialise le jeu
-        end;
-    3: halt; // Lorsque 3 est tapé, on quitte le jeu
-  else
-    writeln('Choix invalide, veuillez reessayer.');
-  end;
-  until (choix=1) or (choix=2) or (choix=3) ;
+  write('La nuit est tombee sur le campus de l''INSA, et une ombre s''etend sur les batiments normalement empreints de l''effervescence etudiante. Mais ce soir, l''atmosphere est differente... une tension palpable flotte dans l''air. ');
+  write('Au petit matin, la terrible nouvelle est tombee comme un couperet : Alexis LECOMTE, figure respectee (et redoutee) de l''ecole, a ete retrouve sans vie, mysterieusement assassine. ');
+  writeln('Son corps inerte a ete decouvert dans l''une des salles de l''etablissement, entoure de quelques accessoires de laboratoire... et des indices qui echappent a toute logique. ');
+  writeln();
+  writeln('Les lieux du crime restent inconnus : a-t-il ete surpris au laboratoire de chimie, attaque dans le calme apparent de la bibliotheque, ou pris au piege dans la salle des machines ? Autour de lui, des traces d''etranges outils et accessoires de travail, signes d''une lutte inattendue. ');
+  write('Mais le plus surprenant dans cette sombre affaire, c''est que chacun des professeurs proches de lui semble avoir un alibi... ou une excuse. Entre jalousies academiques, vieilles rancunes et competitions feroces, il se pourrait bien que l''un d''eux ait franchi la ligne de l''acceptable.');
+  readln();
 end;
 
 procedure preventionTourJoueur(joueurs: TJoueurs; var i: Integer);
@@ -181,33 +148,6 @@ begin
     affichageCarte(paquet[i]);
 end;
 
-procedure affichageResultatHypothese(paquetPieces, paquetArmes, paquetPersonnages: TPaquet; joueurActuel : TJoueur; joueurs : TJoueurs; cartesChoisies : TPaquet; carteChoisie : TCarte; var presenceCarteCommune:boolean;currentPlayer:integer;plateau:TPlateau);
-
-begin
-  hypothese(paquetPieces, paquetArmes, paquetPersonnages, joueurActuel, joueurs, cartesChoisies, carteChoisie, presenceCarteCommune,plateau,currentPlayer);
-  writeln('Voici la "carte en commun" : ');
-  if presenceCarteCommune= true then
-    writeln(carteChoisie)
-  else
-    writeln('Aucune carte en commun');
-end;
-
-procedure affichageResultatAccusation(paquetPieces, paquetArmes, paquetPersonnages, solution : TPaquet; joueurActuel : TJoueur);
-var resultat:Boolean;
-
-begin
-  resultat:=accusation(paquetPieces, paquetArmes, paquetPersonnages, solution, joueurActuel);
-  if (resultat) then
-    writeln(joueurActuel.nom, ' remporte la partie ! Les autres joueurs ont perdu.')
-  else
-    writeln(joueurActuel.nom, ' a perdu la partie. Les autres joueurs gagnent !');
-    writeln('Le veritable coupable est : ',solution[2]);
-    writeln('Les faits se sont deroules : ',solution[0]);
-    writeln('L''arme du crime etait : ',solution[1]);
-end;
-
-
-// Procédure pour attribuer une couleur au texte de fond
 procedure attributionCouleur(couleur: TCouleur);
 
 begin
@@ -349,7 +289,6 @@ case i of
   end;
 end;
 
-// Procédure pour afficher le plateau avec les joueurs
 procedure affichagePlateau(var plateau: TPlateau; joueurs: TJoueurs; joueurActuel: Integer);
 var
   i, j: Integer;
@@ -383,216 +322,6 @@ begin
   TextBackground(0);
 end;
 
-procedure PlacerPionDansPiece(var plateau: TPlateau; currentPlayer: Integer; piece: TPiece);
-var
-  i, j: Integer;
-  positionTrouvee: Boolean;
-  oldX, oldY: Integer;
-begin
-  positionTrouvee := False;
-
-  // Trouver l'ancienne position du joueur et la libérer
-  for i := 1 to 16 do
-  begin
-    for j := 1 to 21 do
-    begin
-      if (plateau[i, j].joueurID = currentPlayer) then
-      begin
-        oldX := i;
-        oldY := j;
-
-        // Libérer l'ancienne position
-        plateau[i, j].estOccupee := False;
-        plateau[i, j].joueurID := 0;
-
-        // Effacer l'affichage de l'ancienne position
-        GotoXY(oldY, oldX + 1);
-        attributionCouleur(plateau[i, j].couleur);
-        write('.');
-        Break; // On arrête une fois la position trouvée
-      end;
-    end;
-  end;
-
-  // Parcours du plateau pour trouver une case libre dans la pièce donnée
-  for i := 1 to 16 do
-  begin
-    for j := 1 to 21 do
-    begin
-      if (plateau[i, j].typePiece = piece) and not plateau[i, j].estOccupee then
-      begin
-        // Place le joueur sur la case libre trouvée
-        plateau[i, j].estOccupee := True;
-        plateau[i, j].joueurID := currentPlayer;
-        positionTrouvee := True;
-
-        // Afficher la nouvelle position
-        GotoXY(j, i + 1);
-        attributionCouleur(plateau[i, j].couleur);
-        write(currentPlayer);
-        attributionCouleur(Black);
-        Break; // Arrête la boucle
-      end;
-    end;
-
-    if positionTrouvee then
-      Break;
-  end;
-end;
-
-procedure PlacerDevantPorte(var plateau: TPlateau; var joueurs: TJoueurs; currentPlayer: Integer; var deplacement:integer);
-var oldx,oldy,i, j, nbPortes, choix: Integer;
-    portesDisponibles: array[1..2] of record
-    x, y: Integer;
-  end;
-begin
-  nbPortes := 0;
-  for i := 1 to 16 do
-  begin
-    for j := 1 to 21 do
-    begin
-    //attribuer la position du pion
-    if  plateau[i,j].joueurID=currentPlayer+1 then
-    begin
-    joueurs[currentPlayer].x:=i;
-    joueurs[currentPlayer].y:=j;
-    end;
-      // Identifier les portes autour de la pièce
-      if (plateau[i, j].typePiece = Couloir) and
-         ((plateau[i + 1, j].typePiece = joueurs[currentPlayer].piecePrecedente) or
-          (plateau[i - 1, j].typePiece = joueurs[currentPlayer].piecePrecedente) or
-          (plateau[i, j + 1].typePiece = joueurs[currentPlayer].piecePrecedente) or
-          (plateau[i, j - 1].typePiece = joueurs[currentPlayer].piecePrecedente)) then
-      begin
-        Inc(nbPortes);
-        portesDisponibles[nbPortes].x := i;
-        portesDisponibles[nbPortes].y := j;
-        if nbPortes = 2 then //Arret lorsqu'il atteint un nb de 2 portes
-          Break;
-      end;
-    end;
-    if nbPortes = 2 then
-      Break;
-  end;
-
-  // Affichage
-  writeln('Choisissez une porte :');
-  for i := 1 to nbPortes do
-    writeln(i, '. Porte en position (', portesDisponibles[i].y, ',', portesDisponibles[i].x, ')');
-  repeat
-    write('Votre choix : ');
-    readln(choix);
-  until (choix >= 1) and (choix <= nbPortes);
-  
-  oldx:=joueurs[currentPlayer].x;
-  oldy:=joueurs[currentPlayer].y;
-
-   // Effacer l'ancienne position
-  plateau[joueurs[currentPlayer].x, joueurs[currentPlayer].y].estOccupee := False;
-  plateau[joueurs[currentPlayer].x, joueurs[currentPlayer].y].joueurID := 0;
-
-  // Déplacer le joueur devant la porte choisie
-  joueurs[currentPlayer].x := portesDisponibles[choix].x;
-  joueurs[currentPlayer].y := portesDisponibles[choix].y;
-
-  plateau[joueurs[currentPlayer].x, joueurs[currentPlayer].y].estOccupee := True;
-  plateau[joueurs[currentPlayer].x, joueurs[currentPlayer].y].joueurID := currentPlayer+1;
-
-  // Mettre à jour l'affichage
-  GotoXY(oldY,oldx+1);
-  attributionCouleur(plateau[oldX,oldY].couleur);
-  write('.');
-      
-  GotoXY(portesDisponibles[choix].y, portesDisponibles[choix].x + 1); //+1 car écriture "plateau de jeu"
-  attributionCouleur(plateau[joueurs[currentPlayer].x, joueurs[currentPlayer].y].couleur);
-  write(currentPlayer+1);
-
-  // Réinitialiser "dansPiece"
-  joueurs[currentPlayer].dansPiece := False;
-  ClearLines(18,7);
-end;
-
-
-// Procédure pour déplacer un joueur
-procedure deplacerJoueur(var joueurs: TJoueurs; currentPlayer: Integer; var plateau: TPlateau; var deplacement: Integer);
-var
-  oldX,oldY,newX, newY: Integer;
-  key: Char;
-  piece:TPiece;
-begin
-  while deplacement >=0 do
-  begin
-    key := ReadKey;
- 
-    // Calculer la nouvelle position en fonction de la touche
-    newX := joueurs[currentPlayer].x;
-    newY := joueurs[currentPlayer].y;
-    oldX := newX;
-    oldY := newY;
-
-    case key of
-      #72: Dec(newX); // Haut
-      #80: Inc(newX); // Bas
-      #75: Dec(newY); // Gauche
-      #77: Inc(newY); // Droite
-    end;  
-
-    // Vérifier si la nouvelle position est valide
-    if (plateau[newX, newY].typePiece <> Mur) and (not plateau[newX, newY].estOccupee) then
-    begin
-      // Libérer l'ancienne position
-      plateau[joueurs[currentPlayer].x, joueurs[currentPlayer].y].estOccupee := False;
-      plateau[joueurs[currentPlayer].x, joueurs[currentPlayer].y].joueurID := 0;
-
-      // Déplacer le joueur
-      joueurs[currentPlayer].x := newX;
-      joueurs[currentPlayer].y := newY;
-
-      // Occuper la nouvelle position
-      plateau[newX, newY].estOccupee := True;
-      plateau[newX, newY].joueurID := currentPlayer + 1; // ID de joueur commence à 1
-
-      GotoXY(oldY,oldX+1);
-      attributionCouleur(plateau[oldX,oldY].couleur);
-      write('.');
-
-      GotoXY(newY,newX+1);
-      attributionCouleur(plateau[newX,newY].couleur);
-      write(currentPlayer+1);
-
-      GotoXY(1,20);
-      attributionCouleur(Black);
-      ClrEol();
-      GotoXY(1,21);
-      ClrEol();
-      GotoXY(1,20);
-      writeln('Deplacements restants:', deplacement); 
-      Dec(deplacement); // Réduire le nombre de déplacements restants
-      
-      if (plateau[newX, newY].typePiece <> Couloir) then
-      begin
-      deplacement:=-1;
-      currentPlayer:=plateau[newX, newY].joueurID;
-      piece:=plateau[newX, newY].typePiece;
-      PlacerPionDansPiece(plateau,currentPlayer, piece);
-      
-      //joueurs[currentPlayer].dansPiece := True;
-      //joueurs[currentPlayer].piecePrecedente := piece; 
-      end;
-    end;
-  end;
-end;
-
-//lancer des 2 des
-function LancerDes( deplacement:integer) : integer;
-  var  des1,des2: integer;
-begin
-  des1 := Random(6) + 1; 
-  des2 := Random(6) + 1;
-  LancerDes:=deplacement+des1 + des2;
-  end;
-
-//Ajout audio pour annoncer les joueurs
 procedure AnnonceTour(currentPlayer: Integer);
 var
   music: PMix_Music;
@@ -608,7 +337,6 @@ begin
   //else
   //  exit; // Si joueur non valide, sortir
   end;
-
   if Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0 then exit;
 
   music := Mix_LoadMUS(PAnsiChar(AnsiString(audioFile)));
@@ -621,67 +349,6 @@ begin
   end;
 
   Mix_CloseAudio;
-end;
-
-// Procédure principale pour gérer les tours
-procedure jouerTour(var joueurs: TJoueurs; var plateau: TPlateau; paquetPieces, paquetArmes, paquetPersonnages, solution: TPaquet; joueurActuel : TJoueur; cartesChoisies : TPaquet; carteChoisie : TCarte; currentPlayer:integer);
-var
-  deplacement: Integer;
-  action : Integer;
-  resultatAction, presenceCarteCommune : Boolean;
-begin
-action:=1;
-      for currentPlayer := 0 to length(joueurs)-1 do
-  begin
-  deplacement := 0;
-   writeln('Joueur ', currentPlayer +1 , ', c''est votre tour !');
-   AnnonceTour(currentPlayer);
-   if joueurs[currentPlayer].dansPiece then
-   begin
-  PlacerDevantPorte(plateau, joueurs, currentPlayer, deplacement);
-  deplacement:=-1;
-  end;
-  deplacement := LancerDes(deplacement);
-  write('Tu as obtenu ',deplacement);
-  deplacerJoueur(joueurs, currentPlayer, plateau, deplacement);
-  ClearLines(18,4);
-    
-  
- if (plateau[joueurs[currentPlayer].x, joueurs[currentPlayer].y].typePiece <> Mur) and
-   (plateau[joueurs[currentPlayer].x, joueurs[currentPlayer].y].typePiece <> Couloir) then
-    begin
-  joueurs[currentPlayer].dansPiece:=True;
-  joueurs[currentPlayer].piecePrecedente := plateau[joueurs[currentPlayer].x, joueurs[currentPlayer].y].typePiece;
-    writeln('1. Hypothese');
-    writeln('2. Accusation');
-    resultatAction:=choixAction(action);
-    ClearLines(18,2);
-    if resultatAction then
-    begin
-      affichageResultatHypothese(paquetPieces, paquetArmes, paquetPersonnages, joueurs[currentPlayer], joueurs, cartesChoisies, carteChoisie, presenceCarteCommune,currentPlayer,plateau);
-      Delay(3000);
-      ClearLines(18,4);
-    end
-    else
-    begin
-      affichageResultatAccusation(paquetPieces, paquetArmes, paquetPersonnages, solution, joueurs[currentPlayer]);
-      halt;
-    end;
-    end
-    else if (plateau[joueurs[currentPlayer].x, joueurs[currentPlayer].y].typePiece = Couloir) then
-    begin
-      writeln('Souhaitez vous faire une accusation?');
-      writeln('1. oui');
-      writeln('2. non');
-      resultatAction:=choixAction(action);
-      ClearLines(18,4);
-      if resultatAction then
-        begin
-          affichageResultatAccusation(paquetPieces, paquetArmes, paquetPersonnages, solution, joueurs[currentPlayer]);
-          halt;
-        end;
-    end;
-  end;
 end;
 
 end.
