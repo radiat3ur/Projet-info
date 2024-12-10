@@ -54,53 +54,53 @@ procedure affichageRegles(); // Affiche les règles
 begin
   writeln('--- Regles du Jeu ---');
   writeln('Bienvenue a l''INSA, ou un crime odieux vient d''etre commis!');
-  writeln('Le professeur d''informatique, **Monsieur Lecomte**, a ete retrouve mort dans des circonstances mysterieuses.');
+  writeln('Le professeur d''informatique, Monsieur Lecomte, a ete retrouve mort dans des circonstances mysterieuses.');
 
-  writeln('Votre mission : **remonter la piste** et decouvrir qui est le coupable, avec quelle arme, et dans quelle piece.');
-  writeln('**Saurez-vous resoudre ce mystere avant vos camarades ?**');
+  writeln('Votre mission : remonter la piste et decouvrir qui est le coupable, avec quelle arme, et dans quelle piece.');
+  writeln('Saurez-vous resoudre ce mystere avant vos camarades ?');
   writeln;
 
   writeln('--- Comment commencer une partie ? ---');
-  writeln(' • Chaque joueur choisit un pion pour incarner son personnage prefere. Ce sera votre **avatar d''enqueteur** tout au long de la partie.');
+  writeln(' • Chaque joueur choisit un pion pour incarner son personnage prefere. Ce sera votre avatar d''enqueteur tout au long de la partie.');
   writeln(' • Le programme selectionne automatiquement une arme, un suspect et un lieu.');
-  writeln('   Ces elements sont places dans une **enveloppe virtuelle** qui contient la solution de l''enigme.');
-  writeln('   Les cartes restantes sont **reparties automatiquement** entre les joueurs.');
+  writeln('   Ces elements sont places dans une enveloppe virtuelle qui contient la solution de l''enigme.');
+  writeln('   Les cartes restantes sont reparties automatiquement entre les joueurs.');
   writeln(' • Munissez-vous d''une feuille d''enquete qui repertorie tous les suspects, armes, et lieux possibles.');
   writeln;
-  writeln(#27'[3mAppuyez sur ENTREE pour afficher la suite'#27'[0m'); // Texte en italique (verifier à l'insa!)
+  writeln('Appuyez sur ENTREE pour afficher la suite');
   readln;
   
   writeln('--- Comment jouer ? ---');
-  writeln('La partie commence dans les couloirs de l''INSA, chaque pion a un **emplacement predefini**.');
+  writeln('La partie commence dans les couloirs de l''INSA, chaque pion a un emplacement predefini.');
   writeln;
   writeln('A chaque tour :');
-  writeln(' • Vous lancez virtuellement les des (avec la touche **ENTREE**) pour avancer dans les couloirs de l''ecole.');
-  writeln(' • Sur le plateau, les pions se deplacent a l''aide des **fleches du clavier**.');
+  writeln(' • Vous lancez virtuellement les des (avec la touche ENTREE) pour avancer dans les couloirs de l''ecole.');
+  writeln(' • Sur le plateau, les pions se deplacent a l''aide des fleches du clavier.');
   writeln(' • Si vous arrivez dans un couloir, votre tour est termine.');
-  writeln(' • Si vous entrez dans une piece, vous pouvez formuler une **hypothese** sur le crime.');
+  writeln(' • Si vous entrez dans une piece, vous pouvez formuler une hypothese sur le crime.');
   writeln;
 
   writeln('Formuler une hypothese :');
-  writeln('   ◦ Vous choisissez un **suspect**, une **arme du crime**, et la **piece ou vous etes**.');
-  writeln('     (par exemple : Je pense que c''est **DuDu**, avec le **reveil**, dans la **bibliotheque**.)');
+  writeln('   ◦ Vous choisissez un suspect, une arme du crime, et la piece ou vous etes.');
+  writeln('     (par exemple : Je pense que c''est DuDu, avec le reveil, dans la bibliotheque.)');
   writeln('   ◦ Vous designer un joueur.');
   writeln('   ◦ Si le joueur designe possede une ou plusieurs des cartes de l''hypothese, il en choisit une');
   writeln('     et elle vous sera revelee en prive.');
-  writeln('   ◦ Si personne ne possede les cartes que vous avez mentionnees, vous etes peut-etre **proche de la solution**!');
+  writeln('   ◦ Si personne ne possede les cartes que vous avez mentionnees, vous etes peut-etre proche de la solution!');
   writeln('   ◦ Votre tour est termine.');
   writeln;
   writeln('Continuez d''explorer d''autres pieces, de formuler des hypotheses, et d''eliminer des options');
-  writeln('sur votre **feuille d’enquete numerique**.');
+  writeln('sur votre feuille d’enquete numerique.');
   writeln;
 
   writeln('--- Comment gagner ? ---');
-  writeln('Formuler une **accusation finale** :');
-  writeln(' • Lorsque vous pensez avoir identifie les trois elements du crime, vous pouvez formuler une **accusation**.');
-  writeln('   Contrairement a l''hypothese, elle peut se faire depuis **n''importe quelle case** du plateau.');
+  writeln('Formuler une accusation finale :');
+  writeln(' • Lorsque vous pensez avoir identifie les trois elements du crime, vous pouvez formuler une accusation.');
+  writeln('   Contrairement a l''hypothese, elle peut se faire depuis n''importe quelle case du plateau.');
   writeln(' • Si votre accusation est correcte, le programme revelera la solution, et vous deviendrez');
-  writeln('   le **maitre enqueteur**. **Felicitations !**');
+  writeln('   le maitre enqueteur. Felicitations !');
   writeln(' • Si vous vous trompez, vous perdez la partie et les autres joueurs l''emportent.');
-  writeln('   **Ne vous loupez pas !**');
+  writeln('   Ne vous loupez pas !');
   writeln;
 
   writeln('Pret a resoudre le mystere ? L''INSA n''attend que vous... Que l''enquete commence !');
@@ -334,8 +334,6 @@ begin
     3: audioFile := 'joueur4.mp3';
     4: audioFile := 'joueur5.mp3';
     5: audioFile := 'joueur6.mp3';
-  //else
-  //  exit; // Si joueur non valide, sortir
   end;
   if Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0 then exit;
 

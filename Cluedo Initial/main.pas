@@ -4,20 +4,17 @@ program cluedo;
 Uses Crt, affichage, TypeEtCte, gestion,SDL2_image, SDL2, SDL2_mixer;
 
 var
-  choix, nbJoueurs, debutX, finX, debutY, finY, currentPlayer, i : Integer;
-  paquetPieces, paquetArmes, paquetPersonnages, solution, paquetSansCartesCrime, cartesChoisies: TPaquet;
-  carteChoisie : TCarte;
+  choix, nbJoueurs, currentPlayer, i : Integer;
+  paquetPieces, paquetArmes, paquetPersonnages, solution, paquetSansCartesCrime: TPaquet;
   joueurs: TJoueurs;
   plateau : TPlateau;
-  couleur : TCouleur;
-  piece : TPiece;
 
 begin
-  menu(plateau, choix, nbJoueurs, joueurs);
+  menu(choix, nbJoueurs, joueurs);
   currentPlayer:=nbJoueurs-1;
   // Initialise le jeu
   choixDebutJeu(nbJoueurs, plateau, joueurs); // Lorsque 2 est tapé, on initilialise le jeu
-  initialisationPartie(nbJoueurs, debutX, finX, debutY, finY, piece, couleur, joueurs, paquetPieces, paquetArmes, paquetPersonnages, paquetSansCartesCrime, solution, plateau);
+  initialisationPartie(nbJoueurs, joueurs, paquetPieces, paquetArmes, paquetPersonnages, paquetSansCartesCrime, solution, plateau);
   narration();
 
   for i:=0 to nbJoueurs-1 do
@@ -36,6 +33,6 @@ begin
   repeat
     preventionTourJoueur(joueurs, currentPlayer);
     affichagePlateau(plateau, joueurs, currentPlayer);
-    jouerTour(joueurs, plateau, paquetPieces, paquetArmes, paquetPersonnages, solution, joueurs[currentPlayer], cartesChoisies, carteChoisie, currentPlayer)
+    jouerTour(joueurs, plateau, paquetPieces, paquetArmes, paquetPersonnages, solution, joueurs[currentPlayer], currentPlayer)
   until False;
 end.
