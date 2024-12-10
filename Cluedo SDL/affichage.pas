@@ -20,6 +20,7 @@ procedure AfficherDes(Renderer: PSDL_Renderer; DiceTextures: TabTextures; Result
 procedure AfficherPions(Renderer : PSDL_Renderer ; joueurs : TJoueurs);
 procedure preventionJoueur(Renderer : PSDL_Renderer ; joueurs : TJoueurs ; joueurActuel : Integer ; texte : String);
 procedure afficherTour(Renderer: PSDL_Renderer; joueurs: TJoueurs; ResultatsDice: TTabInt; DiceTextures: TabTextures; nbDeplacement, joueurActuel: Integer);
+procedure affichageVictoire(Renderer : PSDL_Renderer);
 procedure CleanUp(Window : PSDL_Window ; Renderer : PSDL_Renderer);
 
 implementation
@@ -271,7 +272,7 @@ begin
 end;
 
 procedure affichageNarration(Renderer : PSDL_Renderer);
-var DestRect : TSDL_Rect; lecture : boolean;
+var DestRect : TSDL_Rect;
 begin
   SDL_RenderClear(Renderer); // Nettoyer l'écran
 
@@ -280,6 +281,20 @@ begin
 
    // Afficher l'image de fond
   afficherImage(Renderer, 'narration', @DestRect);
+
+  SDL_RenderPresent(Renderer);
+end;
+
+procedure affichageVictoire(Renderer : PSDL_Renderer);
+var DestRect : TSDL_Rect;
+begin
+  SDL_RenderClear(Renderer); // Nettoyer l'écran
+
+  // Définir le rectangle pour afficher l'image
+  DestRect := coordonnees(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+
+   // Afficher l'image de fond
+  afficherImage(Renderer, 'victoire', @DestRect);
 end;
 
 
