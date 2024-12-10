@@ -5,8 +5,6 @@ interface
 uses SDL2;
 
 const
-    MAX_PERSONNAGES = 6;
-    MAX_CARTES = 21;
     SCREEN_WIDTH = 1920;  // Largeur de la fenêtre (espace supplémentaire pour les dés)
     SCREEN_HEIGHT = 1080;  // Hauteur de la fenêtre
     TILE_SIZE = 40;       // Taille d'une case (réduit pour adapter le plateau)
@@ -41,7 +39,6 @@ const
 
 Type TPersonnage = (Duval, Eleve, Boutigny, Delaroche, Yohann, Yon, rien); // Type pour les joueurs
 Type TCarte = (Blouse, Livre, Panier, Plateau, Reveil, Stethoscope, Dudu, Etudiant, DuoBoutigny, IsabelleDelaroche, YohannLepailleur, JeromeYon, Amphi, Laboratoire, Gymnase, Parking, RU, Shop, Bibliotheque, Infirmerie, Residence); //Type pour les cartes
-Type TCategorie = (Piece, Arme, Personnage);
 Type TNomPiece = (Tillion, Labo, Gym, Parking_visiteurs, Self, INSA_Shop, Biblio, Inf, Chambre);  
 
 Type TPaquet = Array of TCarte;
