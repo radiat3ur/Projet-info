@@ -57,58 +57,58 @@ end;
 procedure affichageRegles(); // Affiche les règles
 
 begin
-    writeln('--- Regles du Jeu ---');
-    writeln('Bienvenue a l''INSA, ou un crime odieux vient d''etre commis!');
-    writeln('Le professeur d''informatique, **Monsieur Lecomte**, a ete retrouve mort dans des circonstances mysterieuses.');
+  writeln('--- Regles du Jeu ---');
+  writeln('Bienvenue a l''INSA, ou un crime odieux vient d''etre commis!');
+  writeln('Le professeur d''informatique, **Monsieur Lecomte**, a ete retrouve mort dans des circonstances mysterieuses.');
 
-    writeln('Votre mission : **remonter la piste** et decouvrir qui est le coupable, avec quelle arme, et dans quelle piece.');
-    writeln('**Saurez-vous resoudre ce mystere avant vos camarades ?**');
-    writeln;
+  writeln('Votre mission : **remonter la piste** et decouvrir qui est le coupable, avec quelle arme, et dans quelle piece.');
+  writeln('**Saurez-vous resoudre ce mystere avant vos camarades ?**');
+  writeln;
 
-    writeln('--- Comment commencer une partie ? ---');
-    writeln(' • Chaque joueur choisit un pion pour incarner son personnage prefere. Ce sera votre **avatar d''enqueteur** tout au long de la partie.');
-    writeln(' • Le programme selectionne automatiquement une arme, un suspect et un lieu.');
-    writeln('   Ces elements sont places dans une **enveloppe virtuelle** qui contient la solution de l''enigme.');
-    writeln('   Les cartes restantes sont **reparties automatiquement** entre les joueurs.');
-    writeln(' • Munissez-vous d''une feuille d''enquete qui repertorie tous les suspects, armes, et lieux possibles.');
-    writeln;
-    writeln(#27'[3mAppuyez sur ENTREE pour afficher la suite'#27'[0m'); // Texte en italique (verifier à l'insa!)
-    readln;
-    
-    writeln('--- Comment jouer ? ---');
-    writeln('La partie commence dans les couloirs de l''INSA, chaque pion a un **emplacement predefini**.');
-    writeln;
-    writeln('A chaque tour :');
-    writeln(' • Vous lancez virtuellement les des (avec la touche **ENTREE**) pour avancer dans les couloirs de l''ecole.');
-    writeln(' • Sur le plateau, les pions se deplacent a l''aide des **fleches du clavier**.');
-    writeln(' • Si vous arrivez dans un couloir, votre tour est termine.');
-    writeln(' • Si vous entrez dans une piece, vous pouvez formuler une **hypothese** sur le crime.');
-    writeln;
+  writeln('--- Comment commencer une partie ? ---');
+  writeln(' • Chaque joueur choisit un pion pour incarner son personnage prefere. Ce sera votre **avatar d''enqueteur** tout au long de la partie.');
+  writeln(' • Le programme selectionne automatiquement une arme, un suspect et un lieu.');
+  writeln('   Ces elements sont places dans une **enveloppe virtuelle** qui contient la solution de l''enigme.');
+  writeln('   Les cartes restantes sont **reparties automatiquement** entre les joueurs.');
+  writeln(' • Munissez-vous d''une feuille d''enquete qui repertorie tous les suspects, armes, et lieux possibles.');
+  writeln;
+  writeln(#27'[3mAppuyez sur ENTREE pour afficher la suite'#27'[0m'); // Texte en italique (verifier à l'insa!)
+  readln;
+  
+  writeln('--- Comment jouer ? ---');
+  writeln('La partie commence dans les couloirs de l''INSA, chaque pion a un **emplacement predefini**.');
+  writeln;
+  writeln('A chaque tour :');
+  writeln(' • Vous lancez virtuellement les des (avec la touche **ENTREE**) pour avancer dans les couloirs de l''ecole.');
+  writeln(' • Sur le plateau, les pions se deplacent a l''aide des **fleches du clavier**.');
+  writeln(' • Si vous arrivez dans un couloir, votre tour est termine.');
+  writeln(' • Si vous entrez dans une piece, vous pouvez formuler une **hypothese** sur le crime.');
+  writeln;
 
-    writeln('Formuler une hypothese :');
-    writeln('   ◦ Vous choisissez un **suspect**, une **arme du crime**, et la **piece ou vous etes**.');
-    writeln('     (par exemple : Je pense que c''est **DuDu**, avec le **reveil**, dans la **bibliotheque**.)');
-    writeln('   ◦ Vous designer un joueur.');
-    writeln('   ◦ Si le joueur designe possede une ou plusieurs des cartes de l''hypothese, il en choisit une');
-    writeln('     et elle vous sera revelee en prive.');
-    writeln('   ◦ Si personne ne possede les cartes que vous avez mentionnees, vous etes peut-etre **proche de la solution**!');
-    writeln('   ◦ Votre tour est termine.');
-    writeln;
-    writeln('Continuez d''explorer d''autres pieces, de formuler des hypotheses, et d''eliminer des options');
-    writeln('sur votre **feuille d’enquete numerique**.');
-    writeln;
+  writeln('Formuler une hypothese :');
+  writeln('   ◦ Vous choisissez un **suspect**, une **arme du crime**, et la **piece ou vous etes**.');
+  writeln('     (par exemple : Je pense que c''est **DuDu**, avec le **reveil**, dans la **bibliotheque**.)');
+  writeln('   ◦ Vous designer un joueur.');
+  writeln('   ◦ Si le joueur designe possede une ou plusieurs des cartes de l''hypothese, il en choisit une');
+  writeln('     et elle vous sera revelee en prive.');
+  writeln('   ◦ Si personne ne possede les cartes que vous avez mentionnees, vous etes peut-etre **proche de la solution**!');
+  writeln('   ◦ Votre tour est termine.');
+  writeln;
+  writeln('Continuez d''explorer d''autres pieces, de formuler des hypotheses, et d''eliminer des options');
+  writeln('sur votre **feuille d’enquete numerique**.');
+  writeln;
 
-    writeln('--- Comment gagner ? ---');
-    writeln('Formuler une **accusation finale** :');
-    writeln(' • Lorsque vous pensez avoir identifie les trois elements du crime, vous pouvez formuler une **accusation**.');
-    writeln('   Contrairement a l''hypothese, elle peut se faire depuis **n''importe quelle case** du plateau.');
-    writeln(' • Si votre accusation est correcte, le programme revelera la solution, et vous deviendrez');
-    writeln('   le **maitre enqueteur**. **Felicitations !**');
-    writeln(' • Si vous vous trompez, vous perdez la partie et les autres joueurs l''emportent.');
-    writeln('   **Ne vous loupez pas !**');
-    writeln;
+  writeln('--- Comment gagner ? ---');
+  writeln('Formuler une **accusation finale** :');
+  writeln(' • Lorsque vous pensez avoir identifie les trois elements du crime, vous pouvez formuler une **accusation**.');
+  writeln('   Contrairement a l''hypothese, elle peut se faire depuis **n''importe quelle case** du plateau.');
+  writeln(' • Si votre accusation est correcte, le programme revelera la solution, et vous deviendrez');
+  writeln('   le **maitre enqueteur**. **Felicitations !**');
+  writeln(' • Si vous vous trompez, vous perdez la partie et les autres joueurs l''emportent.');
+  writeln('   **Ne vous loupez pas !**');
+  writeln;
 
-    writeln('Pret a resoudre le mystere ? L''INSA n''attend que vous... Que l''enquete commence !');
+  writeln('Pret a resoudre le mystere ? L''INSA n''attend que vous... Que l''enquete commence !');
 end;
 
 procedure choixDebutJeu(var nbJoueurs : Integer ; var joueurs : TJoueurs);
@@ -127,26 +127,26 @@ procedure menu(var choix, nbJoueurs : Integer ; var joueurs : TJoueurs);
 
 begin
 repeat
-    ClrScr;
-    affichageMenu();
-    readln(choix);
-	
-    case choix of
-      1: begin
-             ClrScr;
-             affichageRegles(); // Lorsque 1 est tapé, on affiche les règles
-             readln();
-             menu(choix, nbJoueurs, joueurs);
-          end;
-      2: begin
-             ClrScr;
-             choixDebutJeu(nbJoueurs, joueurs); // Lorsque 2 est tapé, on initilialise le jeu
-          end;
-      3: halt; // Lorsque 3 est tapé, on quitte le jeu
-    else
-      writeln('Choix invalide, veuillez reessayer.');
-    end;
-    until (choix=1) or (choix=2) or (choix=3) ;
+  ClrScr;
+  affichageMenu();
+  readln(choix);
+
+  case choix of
+    1: begin
+        ClrScr;
+        affichageRegles(); // Lorsque 1 est tapé, on affiche les règles
+        readln();
+        menu(choix, nbJoueurs, joueurs);
+        end;
+    2: begin
+          ClrScr;
+          choixDebutJeu(nbJoueurs, joueurs); // Lorsque 2 est tapé, on initilialise le jeu
+        end;
+    3: halt; // Lorsque 3 est tapé, on quitte le jeu
+  else
+    writeln('Choix invalide, veuillez reessayer.');
+  end;
+  until (choix=1) or (choix=2) or (choix=3) ;
 end;
 
 procedure preventionTourJoueur(joueurs: TJoueurs; var i: Integer);
@@ -168,9 +168,8 @@ begin
 end;
 
 procedure affichageCarte(carte: TCarte);
-
 begin
-    writeln(carte.nom);
+  writeln(carte);
 end;
 
 procedure affichagePaquet(paquet: TPaquet);
@@ -178,9 +177,7 @@ var  i: Integer;
 
 begin
   for i := 0 to length(paquet)-1 do // Parcourt le paquet
-  begin
     affichageCarte(paquet[i]);
-  end;
 end;
 
 procedure affichageResultatHypothese(paquetPieces, paquetArmes, paquetPersonnages: TPaquet; joueurActuel : TJoueur; joueurs : TJoueurs; cartesChoisies : TPaquet; carteChoisie : TCarte; var presenceCarteCommune:boolean;currentPlayer:integer;plateau:TPlateau);
@@ -189,9 +186,9 @@ begin
   hypothese(paquetPieces, paquetArmes, paquetPersonnages, joueurActuel, joueurs, cartesChoisies, carteChoisie, presenceCarteCommune,plateau,currentPlayer);
   writeln('Voici la "carte en commun" : ');
   if presenceCarteCommune= true then
-  writeln(carteChoisie.nom)
+    writeln(carteChoisie)
   else
-   writeln('Aucune carte en commun');
+    writeln('Aucune carte en commun');
 end;
 
 procedure affichageResultatAccusation(paquetPieces, paquetArmes, paquetPersonnages, solution : TPaquet; joueurActuel : TJoueur);
@@ -203,9 +200,9 @@ begin
     writeln(joueurActuel.nom, ' remporte la partie ! Les autres joueurs ont perdu.')
   else
     writeln(joueurActuel.nom, ' a perdu la partie. Les autres joueurs gagnent !');
-    writeln('Le veritable coupable est : ',solution[2].nom);
-    writeln('Les faits se sont deroules : ',solution[0].nom);
-    writeln('L''arme du crime etait : ',solution[1].nom);
+    writeln('Le veritable coupable est : ',solution[2]);
+    writeln('Les faits se sont deroules : ',solution[0]);
+    writeln('L''arme du crime etait : ',solution[1]);
 end;
 
 
@@ -228,44 +225,44 @@ end;
 procedure afficherEtiquettes(i, j: Integer);
 begin
  //Ecriture BDE sur les bords
-             if (i = 14) and (j = 21) then
-            begin
-                TextColor(0); // Texte noir
-                write('B');
-            end
-            else if (i = 15) and (j = 21) then
-            begin
-                TextColor(0); // Texte noir
-                write('D');
-            end
-            else if (i = 16) and (j = 21) then
-            begin
-                TextColor(0); // Texte noir
-                write('E');
-            end
-            //Ecriture RU sur les bords
-             else if (i = 8) and (j = 21) then
-            begin
-                TextColor(0); // Texte noir
-                write('R');
-            end
-            else if (i = 9) and (j = 21) then
-            begin
-                TextColor(0); // Texte noir
-                write('U');
-            end
-             //Ecriture BU sur les bords
-            else if (i = 2) and (j = 21) then
-            begin
-                TextColor(0); // Texte noir
-                write('B');
-            end
-            else if (i = 3) and (j = 21) then
-            begin
-                TextColor(0); // Texte noir
-                write('U');
-            end;
-             TextColor(15);
+  if (i = 14) and (j = 21) then
+  begin
+    TextColor(0); // Texte noir
+    write('B');
+  end
+  else if (i = 15) and (j = 21) then
+  begin
+    TextColor(0); // Texte noir
+    write('D');
+  end
+  else if (i = 16) and (j = 21) then
+  begin
+    TextColor(0); // Texte noir
+    write('E');
+  end
+  //Ecriture RU sur les bords
+  else if (i = 8) and (j = 21) then
+  begin
+    TextColor(0); // Texte noir
+    write('R');
+  end
+  else if (i = 9) and (j = 21) then
+  begin
+    TextColor(0); // Texte noir
+    write('U');
+  end
+  //Ecriture BU sur les bords
+  else if (i = 2) and (j = 21) then
+  begin
+    TextColor(0); // Texte noir
+    write('B');
+  end
+  else if (i = 3) and (j = 21) then
+  begin
+    TextColor(0); // Texte noir
+    write('U');
+  end;
+    TextColor(15);
 end;
 
 
@@ -289,7 +286,7 @@ begin
       attributionCouleur(plateau[i, j].couleur);
       afficherEtiquettes(i,j);
 
-  if plateau[i, j].joueurID > 0 then
+      if plateau[i, j].joueurID > 0 then
         write(plateau[i, j].joueurID) // Afficher le numéro du joueur
       else if plateau[i, j].typePiece = Mur then
         write(' ') // Mur marqué par "x"
@@ -299,88 +296,87 @@ begin
     end;
 
     case i of
-          1: begin
-                TextBackground(0);
-                write('  Legende :');
-              end;
-          2: write();
-          3: begin
-                TextBackground(0);
-                write('   ');
-                TextBackground(1);
-                write('   ');
-                TextBackground(0);
-                write(' - Amphi Tillion');
-              end;
-          4: begin
-                TextBackground(0);
-                write('    ');
-                TextBackground(4);
-                write('   ');
-                TextBackground(0);
-                write(' - BU');
-              end;
-          5: begin
-                TextBackground(0);
-                write('    ');
-                TextBackground(2);
-                write('   ');
-                TextBackground(0);
-                write(' - Labo');
-              end;
-          6: begin
-                TextBackground(0);
-                write('    ');
-                TextBackground(5);
-                write('   ');
-                TextBackground(0);
-                write(' - Parking visiteurs');
-              end;
-          7: begin
-                TextBackground(0);
-                write('    ');
-                TextBackground(14);
-                write('   ');
-                TextBackground(0);
-                write(' - RU');
-              end;
-          8: begin
-              TextBackground(0);
-              write('   ');
-              TextBackground(1);
-              write('   ');
-              TextBackground(0);
-              write(' - BDE');
-              end;
-          9: begin  
-              TextBackground(0);
-              write('   ');
-              TextBackground(3);
-              write('   ');
-              TextBackground(0);
-              write(' - Residence');
-              end;
-          10: begin
-              TextBackground(0);
-              write('    ');
-              TextBackground(4);
-              write('   ');
-              TextBackground(0);
-              write(' - Infirmerie');
-              end;
-          11: begin
-              TextBackground(0);
-              write('    ');
-              TextBackground(14);
-              write('   ');
-              TextBackground(0);
-              write(' - Cafeteria');
-              end;
+      1: begin
+            TextBackground(0);
+            write('  Legende :');
+          end;
+      2: write();
+      3: begin
+            TextBackground(0);
+            write('   ');
+            TextBackground(1);
+            write('   ');
+            TextBackground(0);
+            write(' - Amphi Tillion');
+          end;
+      4: begin
+            TextBackground(0);
+            write('    ');
+            TextBackground(4);
+            write('   ');
+            TextBackground(0);
+            write(' - BU');
+          end;
+      5: begin
+            TextBackground(0);
+            write('    ');
+            TextBackground(2);
+            write('   ');
+            TextBackground(0);
+            write(' - Labo');
+          end;
+      6: begin
+            TextBackground(0);
+            write('    ');
+            TextBackground(5);
+            write('   ');
+            TextBackground(0);
+            write(' - Parking visiteurs');
+          end;
+      7: begin
+            TextBackground(0);
+            write('    ');
+            TextBackground(14);
+            write('   ');
+            TextBackground(0);
+            write(' - RU');
+          end;
+      8: begin
+            TextBackground(0);
+            write('   ');
+            TextBackground(1);
+            write('   ');
+            TextBackground(0);
+            write(' - BDE');
+          end;
+      9: begin  
+            TextBackground(0);
+            write('   ');
+            TextBackground(3);
+            write('   ');
+            TextBackground(0);
+            write(' - Residence');
+          end;
+      10: begin
+            TextBackground(0);
+            write('    ');
+            TextBackground(4);
+            write('   ');
+            TextBackground(0);
+            write(' - Infirmerie');
+          end;
+      11: begin
+            TextBackground(0);
+            write('    ');
+            TextBackground(14);
+            write('   ');
+            TextBackground(0);
+            write(' - Cafeteria');
       end;
+    end;
     writeln;
   end;
   TextBackground(0);
-
 end;
 
 procedure PlacerPionDansPiece(var plateau: TPlateau; currentPlayer: Integer; piece: TPiece);
@@ -499,12 +495,12 @@ begin
   plateau[joueurs[currentPlayer].x, joueurs[currentPlayer].y].joueurID := currentPlayer+1;
 
   // Mettre à jour l'affichage
-      GotoXY(oldY,oldx+1);
-      attributionCouleur(plateau[oldX,oldY].couleur);
-      write('.');
+  GotoXY(oldY,oldx+1);
+  attributionCouleur(plateau[oldX,oldY].couleur);
+  write('.');
       
   GotoXY(portesDisponibles[choix].y, portesDisponibles[choix].x + 1); //+1 car écriture "plateau de jeu"
- attributionCouleur(plateau[joueurs[currentPlayer].x, joueurs[currentPlayer].y].couleur);
+  attributionCouleur(plateau[joueurs[currentPlayer].x, joueurs[currentPlayer].y].couleur);
   write(currentPlayer+1);
 
   // Réinitialiser "dansPiece"
@@ -520,7 +516,6 @@ var
   key: Char;
   piece:TPiece;
 begin
-
   while deplacement >=0 do
   begin
     key := ReadKey;
@@ -650,7 +645,7 @@ action:=1;
   
  if (plateau[joueurs[currentPlayer].x, joueurs[currentPlayer].y].typePiece <> Mur) and
    (plateau[joueurs[currentPlayer].x, joueurs[currentPlayer].y].typePiece <> Couloir) then
-begin
+    begin
   joueurs[currentPlayer].dansPiece:=True;
   joueurs[currentPlayer].piecePrecedente := plateau[joueurs[currentPlayer].x, joueurs[currentPlayer].y].typePiece;
     writeln('1. Hypothese');
@@ -659,31 +654,30 @@ begin
     ClearLines(18,2);
     if resultatAction then
     begin
-        affichageResultatHypothese(paquetPieces, paquetArmes, paquetPersonnages, joueurs[currentPlayer], joueurs, cartesChoisies, carteChoisie, presenceCarteCommune,currentPlayer,plateau);
-        Delay(3000);
-        ClearLines(18,4);
-        end
+      affichageResultatHypothese(paquetPieces, paquetArmes, paquetPersonnages, joueurs[currentPlayer], joueurs, cartesChoisies, carteChoisie, presenceCarteCommune,currentPlayer,plateau);
+      Delay(3000);
+      ClearLines(18,4);
+    end
     else
     begin
-        affichageResultatAccusation(paquetPieces, paquetArmes, paquetPersonnages, solution, joueurs[currentPlayer]);
-        halt;
+      affichageResultatAccusation(paquetPieces, paquetArmes, paquetPersonnages, solution, joueurs[currentPlayer]);
+      halt;
     end;
-   end
-   else if (plateau[joueurs[currentPlayer].x, joueurs[currentPlayer].y].typePiece = Couloir) then
-         begin
-          writeln('Souhaitez vous faire une accusation?');
-          writeln('1. oui');
-          writeln('2. non');
-          resultatAction:=choixAction(action);
-          ClearLines(18,4);
-          if resultatAction then
-            begin
-            affichageResultatAccusation(paquetPieces, paquetArmes, paquetPersonnages, solution, joueurs[currentPlayer]);
-            halt;
-            end;
-          end;
-end;
-
+    end
+    else if (plateau[joueurs[currentPlayer].x, joueurs[currentPlayer].y].typePiece = Couloir) then
+    begin
+      writeln('Souhaitez vous faire une accusation?');
+      writeln('1. oui');
+      writeln('2. non');
+      resultatAction:=choixAction(action);
+      ClearLines(18,4);
+      if resultatAction then
+        begin
+          affichageResultatAccusation(paquetPieces, paquetArmes, paquetPersonnages, solution, joueurs[currentPlayer]);
+          halt;
+        end;
+    end;
+  end;
 end;
 
 end.
