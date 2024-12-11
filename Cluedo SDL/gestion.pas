@@ -35,16 +35,16 @@ implementation
 
 procedure menu(Renderer: PSDL_Renderer);
 var Event : TSDL_Event;
-    CurrentSelection: Integer;
+    selectionActuelle: Integer;
     IsRunning, lecture : Boolean;
     DestRect : TSDL_Rect;
 begin
-  CurrentSelection := 0; // L'option sélectionnée commence à 0
+  selectionActuelle := 0; // L'option sélectionnée commence à 0
   IsRunning := True;
   
   while IsRunning do
   begin
-    affichageMenu(Renderer, CurrentSelection);
+    affichageMenu(Renderer, selectionActuelle);
 
     // Gestion des événements
     while SDL_PollEvent(@Event) <> 0 do
@@ -57,13 +57,13 @@ begin
       begin
         case Event.key.keysym.sym of
           SDLK_UP:
-            if CurrentSelection > 0 then
-              Dec(CurrentSelection);
+            if selectionActuelle > 0 then
+              Dec(selectionActuelle);
           SDLK_DOWN:
-            if CurrentSelection < 2 then
-              Inc(CurrentSelection);
+            if selectionActuelle < 2 then
+              Inc(selectionActuelle);
           SDLK_RETURN:
-            case CurrentSelection of
+            case selectionActuelle of
               0: begin
                   affichageRegles(Renderer);
                   lecture := True;
@@ -299,6 +299,7 @@ procedure InitPaquets(var paquetPieces, paquetArmes, paquetPersonnages : TPaquet
 var i : Integer;
 
 begin
+  // Crée le paquet des pièces
   SetLength(paquetArmes, 6);
   for i:=0 to Length(paquetArmes)-1 do
   begin
@@ -691,7 +692,7 @@ end;
 
 procedure choixActionCouloir(Renderer : PSDL_Renderer ; var joueurActuel : Integer ; nbDeplacement, x, y : Integer ; paquetPersonnages, paquetArmes, paquetPieces, solution : TPaquet ; pieces : TPieces; joueurs : TJoueurs);
 var IsRunning, victoire : Boolean;
-    CurrentSelection : Integer;
+    selectionActuelle : Integer;
     Event : TSDL_Event;
     DestRect : TSDL_Rect;
     ResultatsDice : TTabInt;
@@ -699,7 +700,7 @@ var IsRunning, victoire : Boolean;
 
 begin
   IsRunning:=True;
-  CurrentSelection := 0;
+  selectionActuelle := 0;
 
   while IsRunning do
   begin
@@ -708,12 +709,12 @@ begin
 
     afficherTexte(Renderer, 'Voulez-vous formuler une accusation ?', 35, SCREEN_WIDTH - 800, 305, Couleur(163, 3, 3, 255));
 
-    if CurrentSelection = 0 then
+    if selectionActuelle = 0 then
       afficherTexte(Renderer, 'Oui', 50, SCREEN_WIDTH - 600, 365, Couleur(163, 3, 3, 0))
     else
       afficherTexte(Renderer, 'Oui', 45, SCREEN_WIDTH - 600, 365, Couleur(0, 0, 0, 0));
 
-    if CurrentSelection = 1 then
+    if selectionActuelle = 1 then
       afficherTexte(Renderer, 'Non', 50, SCREEN_WIDTH - 600, 425, Couleur(163, 3, 3, 0))
     else
       afficherTexte(Renderer, 'Non', 45, SCREEN_WIDTH - 600, 425, Couleur(0, 0, 0, 0));
@@ -731,13 +732,13 @@ begin
       begin
         case Event.key.keysym.sym of
           SDLK_UP:
-            if CurrentSelection = 1 then
-              Dec(CurrentSelection);
+            if selectionActuelle = 1 then
+              Dec(selectionActuelle);
           SDLK_DOWN:
-            if CurrentSelection = 0 then
-              Inc(CurrentSelection);
+            if selectionActuelle = 0 then
+              Inc(selectionActuelle);
           SDLK_RETURN:
-            case CurrentSelection of
+            case selectionActuelle of
               0: begin
                   victoire := accusation(Renderer, joueurs, ResultatsDice, DiceTextures, nbDeplacement, joueurActuel, x, y, paquetPersonnages, paquetArmes, paquetPieces, solution, pieces);
                   if (victoire = true) then
@@ -769,9 +770,10 @@ begin
   preventionJoueur(Renderer, joueurs, joueurActuel, 'C''est à toi de jouer !');
 end;  
 
+// Amanda
 procedure choixActionPiece(Renderer : PSDL_Renderer ; var joueurActuel : Integer ; nbDeplacement, x, y : Integer ; pieces : TPieces ; joueurs : TJoueurs ; paquetArmes, paquetPersonnages, paquetPieces, solution : TPaquet ; var cartesCommunes : TPaquet);
 var IsRunning, victoire : Boolean;
-    CurrentSelection, i : Integer;
+    selectionActuelle, i : Integer;
     Event : TSDL_Event;
     ResultatsDice : TTabInt;
     DiceTextures : TabTextures;
@@ -782,7 +784,7 @@ var IsRunning, victoire : Boolean;
 
 begin
   IsRunning:=True;
-  CurrentSelection:=0;
+  selectionActuelle:=0;
 
   while IsRunning do
   begin
@@ -791,17 +793,17 @@ begin
 
     afficherTexte(Renderer, 'Que voulez-vous faire ?', 40, SCREEN_WIDTH - 800, 305, Couleur(163, 3, 3, 0));
 
-    if CurrentSelection = 0 then
+    if selectionActuelle = 0 then
       afficherTexte(Renderer, '1. Formuler une hypothèse', 30, SCREEN_WIDTH - 800, 365, Couleur(163, 3, 3, 0))
     else
       afficherTexte(Renderer, '1. Formuler une hyptohèse', 25, SCREEN_WIDTH - 800, 365, Couleur(0, 0, 0, 0));
 
-    if CurrentSelection = 1 then
+    if selectionActuelle = 1 then
       afficherTexte(Renderer, '2. Formuler une accusation', 30, SCREEN_WIDTH - 800, 405, Couleur(163, 3, 3, 0))
     else
       afficherTexte(Renderer, '2. Formuler une accusation', 25, SCREEN_WIDTH - 800, 405, Couleur(0, 0, 0, 0));
 
-      if CurrentSelection = 2 then
+      if selectionActuelle = 2 then
       afficherTexte(Renderer, '3. Rien', 30, SCREEN_WIDTH - 800, 445, Couleur(163, 3, 3, 0))
     else
       afficherTexte(Renderer, '3. Rien', 25, SCREEN_WIDTH - 800, 445, Couleur(0, 0, 0, 0));
@@ -819,13 +821,13 @@ begin
       begin
         case Event.key.keysym.sym of
           SDLK_UP:
-            if CurrentSelection > 0 then
-              Dec(CurrentSelection);
+            if selectionActuelle > 0 then
+              Dec(selectionActuelle);
           SDLK_DOWN:
-            if CurrentSelection < 2 then
-              Inc(CurrentSelection);
+            if selectionActuelle < 2 then
+              Inc(selectionActuelle);
           SDLK_RETURN:
-            case CurrentSelection of
+            case selectionActuelle of
               0: begin
                   hypothese(Renderer, joueurs, ResultatsDice, DiceTextures, nbDeplacement, joueurActuel, x, y, pieces, paquetArmes, paquetPersonnages);
                   IsRunning:=False;
@@ -862,6 +864,8 @@ begin
   preventionJoueur(Renderer, joueurs, joueurActuel, 'C''est à toi de jouer !');
 end;
 
+
+// Mènel
 procedure gestionTour(Renderer : PSDL_Renderer ; pieces : TPieces ;  paquetArmes, paquetPersonnages, paquetPieces, solution : TPaquet ; var joueurs: TJoueurs; var joueurActuel: Integer; var ResultatsDice : TTabInt; var nbDeplacement: Integer);
 var
   NewX, NewY, i, j: Integer;
@@ -887,7 +891,7 @@ begin
           case Event.key.keysym.sym of
             SDLK_UP: if not (caseActuelle in [1, 3, 5, 9]) and (nbDeplacement>0) then
             begin
-              if not (estDansPiece(pieces,newX,newY) and estDansPiece(pieces,newX,newY-1)) then
+              if not (estDansPiece(pieces,newX,newY-1)) then
                 Dec(nbDeplacement);
               Dec(NewY);
               joueurs[joueurActuel].y := NewY;
@@ -901,7 +905,7 @@ begin
             end;
             SDLK_RIGHT: if not (caseActuelle in [2, 3, 6, 10]) and (nbDeplacement>0) then
             begin
-              if not (estDansPiece(pieces,newX,newY) and estDansPiece(pieces,newX+1,newY)) then
+              if not (estDansPiece(pieces,newX+1,newY)) then
                 Dec(nbDeplacement);
               Inc(NewX);
               joueurs[joueurActuel].X := NewX;
@@ -917,7 +921,7 @@ begin
             end;
             SDLK_DOWN: if not (caseActuelle in [4, 5, 6, 12]) and (nbDeplacement>0) then
             begin
-              if not (estDansPiece(pieces,newX,newY) and estDansPiece(pieces,newX,newY+1)) then
+              if not (estDansPiece(pieces,newX,newY+1)) then
                 Dec(nbDeplacement);
               Inc(NewY);
               joueurs[joueurActuel].y := NewY;
@@ -933,7 +937,7 @@ begin
             end;
             SDLK_LEFT: if not (caseActuelle in [8, 9, 10, 12]) and (nbDeplacement>0) then
             begin
-              if not (estDansPiece(pieces,newX,newY) and estDansPiece(pieces,newX-1,newY)) then
+              if not (estDansPiece(pieces,newX-1,newY)) then
                 Dec(nbDeplacement);
               Dec(NewX);
               joueurs[joueurActuel].x := NewX;

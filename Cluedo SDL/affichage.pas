@@ -12,7 +12,7 @@ function Couleur(r, g, b, a: Integer): TSDL_Color;
 function chargerTextureDepuisTexte(renderer:PSDL_Renderer; police:PTTF_Font; text:String; color: TSDL_Color):PSDL_Texture;
 procedure afficherTexte(Renderer: PSDL_Renderer; text: String; taille, x, y: Integer; couleur: TSDL_Color);
 
-procedure affichageMenu(Renderer : PSDL_Renderer ; CurrentSelection : Integer);
+procedure affichageMenu(Renderer : PSDL_Renderer ; selectionActuelle : Integer);
 procedure affichageRegles(Renderer : PSDL_Renderer);
 procedure affichageNarration(Renderer : PSDL_Renderer);
 
@@ -232,7 +232,7 @@ begin
   end;
 end;
 
-procedure affichageMenu(Renderer : PSDL_Renderer ; CurrentSelection : Integer);
+procedure affichageMenu(Renderer : PSDL_Renderer ; selectionActuelle : Integer);
 var DestRect : TSDL_Rect;
 begin
   SDL_RenderClear(Renderer); // Nettoyer l'écran
@@ -244,17 +244,17 @@ begin
   afficherImage(Renderer, 'menu', @DestRect);
 
   // Affichage du menu texte
-  if CurrentSelection = 0 then
+  if selectionActuelle = 0 then
     afficherTexte(Renderer, '1. Afficher les règles du jeu', 75, SCREEN_WIDTH div 2 - 465, SCREEN_HEIGHT div 2 - 40, Couleur(163, 3, 3, 0))
   else
     afficherTexte(Renderer, '1. Afficher les règles du jeu', 70, SCREEN_WIDTH div 2 - 440, SCREEN_HEIGHT div 2 - 40, Couleur(0, 0, 0, 0));
 
-  if CurrentSelection = 1 then
+  if selectionActuelle = 1 then
     afficherTexte(Renderer, '2. Commencer une nouvelle partie', 75, SCREEN_WIDTH div 2 - 570, SCREEN_HEIGHT div 2 + 80, Couleur(163, 3, 3, 0))
   else
     afficherTexte(Renderer, '2. Commencer une nouvelle partie', 70, SCREEN_WIDTH div 2 - 520, SCREEN_HEIGHT div 2 + 80 , Couleur(0, 0, 0, 0));
 
-  if CurrentSelection = 2 then
+  if selectionActuelle = 2 then
     afficherTexte(Renderer, '3. Quitter', 75, SCREEN_WIDTH div 2 - 170, SCREEN_HEIGHT div 2 + 200 , Couleur(163, 3, 3, 0))
   else
     afficherTexte(Renderer, '3. Quitter', 70, SCREEN_WIDTH div 2 - 165, SCREEN_HEIGHT div 2 + 200 , Couleur(0, 0, 0, 0));

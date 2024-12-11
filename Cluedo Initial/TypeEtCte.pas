@@ -17,7 +17,7 @@ Type TJoueur = Record
 	main : TPaquet;
 	x, y : Integer;
 	piecePrecedente: TPiece;
-	dansPiece:boolean;
+	dansPiece: Boolean;
 end;
 
 Type TJoueurs =  Array of TJoueur;
