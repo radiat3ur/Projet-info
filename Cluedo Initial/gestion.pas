@@ -4,10 +4,15 @@ interface
 
 Uses Crt, TypeEtCte, affichage;
 
-procedure placerPionDansPiece(var plateau : TPlateau ; currentPlayer : Integer ; piece : TPiece);
+// Mènel
+procedure placerPionDansPiece(var plateau : TPlateau ; joueurActuel : Integer ; piece : TPiece);
+
+// Léandre
 function choixAction(choix : Integer) : Boolean;
 function TPieceToTCarte(piece: TPiece): TCarte;
 procedure menu(plateau : TPlateau ; var choix, nbJoueurs : Integer ; var joueurs : TJoueurs);
+
+// Amanda :
 procedure initialisationPaquets(var paquetPieces, paquetArmes, paquetPersonnages : TPaquet);
 procedure selectionCartesCrime(paquetPieces, paquetArmes, paquetPersonnages : TPaquet; var solution, paquetSansCartesCrime : TPaquet);
 procedure melangerPaquet(var paquetSansCartesCrime : TPaquet);
@@ -17,44 +22,46 @@ procedure initialisationPiece(var plateau: TPlateau; debutX, finX, debutY, finY:
 procedure initialisationPlateau(var plateau: TPlateau);
 procedure choixDebutJeu(var nbJoueurs : Integer ; var plateau : TPlateau ; var joueurs : TJoueurs);
 procedure initialisationPartie(nbJoueurs, debutX, finX, debutY, finY : Integer ; piece : TPiece ; couleur : TCouleur ; var joueurs : TJoueurs ; var paquetPieces, paquetArmes, paquetPersonnages, paquetSansCartesCrime, solution : TPaquet ; var plateau : TPlateau);
+
+// Mènel :
 procedure choixCarte(paquet: TPaquet; var carteChoisie: TCarte);
 procedure choixCartesAccusation(paquetPieces, paquetArmes, paquetPersonnages : TPaquet; var cartesChoisies : TPaquet);
-procedure choixCartesHypothese(paquetPieces, paquetArmes, paquetPersonnages: TPaquet; var cartesChoisies: TPaquet; plateau:TPlateau; joueurs:TJoueurs; currentPlayer:integer);
+procedure choixCartesHypothese(paquetPieces, paquetArmes, paquetPersonnages: TPaquet; var cartesChoisies: TPaquet; plateau:TPlateau; joueurs:TJoueurs; joueurActuel:integer);
 procedure comparaisonCartes(compare, comparant : TPaquet ; var cartesCommunes : TPaquet);
 procedure recupererCarteJoueur(compare, comparant : TPaquet ; var carteChoisie : TCarte; var presenceCarteCommune:boolean);
-procedure hypothese(paquetPieces, paquetArmes, paquetPersonnages: TPaquet; joueurActuel : TJoueur; joueurs : TJoueurs; var cartesChoisies : TPaquet ; var carteChoisie : TCarte; var presenceCarteCommune:Boolean;plateau:TPlateau;currentPlayer:Integer);
+procedure hypothese(paquetPieces, paquetArmes, paquetPersonnages: TPaquet; joueurs : TJoueurs; var cartesChoisies : TPaquet ; var carteChoisie : TCarte; var presenceCarteCommune:Boolean;plateau:TPlateau;joueurActuel:Integer);
 function accusation(paquetPieces, paquetArmes, paquetPersonnages, solution : TPaquet; joueurActuel : TJoueur):Boolean;
-procedure affichageResultatHypothese(paquetPieces, paquetArmes, paquetPersonnages: TPaquet; joueurActuel : TJoueur; joueurs : TJoueurs; cartesChoisies : TPaquet; carteChoisie : TCarte; var presenceCarteCommune:boolean;currentPlayer:integer;plateau:TPlateau);
+procedure affichageResultatHypothese(paquetPieces, paquetArmes, paquetPersonnages: TPaquet; joueurs : TJoueurs; cartesChoisies : TPaquet; carteChoisie : TCarte; var presenceCarteCommune:boolean;joueurActuel:integer;plateau:TPlateau);
 procedure affichageResultatAccusation(paquetPieces, paquetArmes, paquetPersonnages, solution : TPaquet; joueurActuel : TJoueur);
-procedure PlacerDevantPorte(var plateau: TPlateau; var joueurs: TJoueurs; currentPlayer: Integer; var deplacement:integer);
-procedure deplacerJoueur(var joueurs: TJoueurs; currentPlayer: Integer; var plateau: TPlateau; var deplacement: Integer);
+procedure PlacerDevantPorte(var plateau: TPlateau; var joueurs: TJoueurs; joueurActuel: Integer; var deplacement:integer);
+procedure deplacerJoueur(var joueurs: TJoueurs; joueurActuel: Integer; var plateau: TPlateau; var deplacement: Integer);
 function LancerDes( deplacement:integer) : integer;
-procedure jouerTour(var joueurs: TJoueurs; var plateau: TPlateau; paquetPieces, paquetArmes, paquetPersonnages, solution: TPaquet; joueurActuel : TJoueur; cartesChoisies : TPaquet; carteChoisie : TCarte; currentPlayer:integer);
+procedure jouerTour(var joueurs: TJoueurs; var plateau: TPlateau; paquetPieces, paquetArmes, paquetPersonnages, solution: TPaquet; cartesChoisies : TPaquet; carteChoisie : TCarte; joueurACtuel:integer);
 
 
 implementation
 
-procedure placerPionDansPiece(var plateau : TPlateau ; currentPlayer : Integer ; piece : TPiece);
+procedure placerPionDansPiece(var plateau : TPlateau ; joueurACtuel : Integer ; piece : TPiece);
 var i,j : Integer;
     positionTrouvee : Boolean;
-    oldX, oldY : Integer;
+    x, y : Integer;
 begin
   positionTrouvee := False;
   for i := 1 to 16 do
   begin
     for j := 1 to 21 do
     begin
-      if (plateau[i, j].joueurID = currentPlayer) then
+      if (plateau[i, j].joueurID = joueurActuel) then
       begin
-        oldX := i;
-        oldY := j;
+        x := i;
+        y := j;
 
         // Libérer l'ancienne position
         plateau[i, j].estOccupee := False;
         plateau[i, j].joueurID := 0;
 
         // Effacer l'affichage de l'ancienne position
-        GotoXY(oldY, oldX + 1);
+        GotoXY(y, x + 1);
         attributionCouleur(plateau[i, j].couleur);
         write('.');
         Break; // On arrête une fois la position trouvée
@@ -71,13 +78,13 @@ begin
       begin
         // Place le joueur sur la case libre trouvée
         plateau[i, j].estOccupee := True;
-        plateau[i, j].joueurID := currentPlayer;
+        plateau[i, j].joueurID := joueurActuel;
         positionTrouvee := True;
 
         // Afficher la nouvelle position
         GotoXY(j, i + 1);
         attributionCouleur(plateau[i, j].couleur);
-        write(currentPlayer);
+        write(joueurActuel);
         attributionCouleur(Black);
         Break; // Arrête la boucle
       end;
@@ -472,7 +479,7 @@ begin
   effacerLignes(18,12);
 end;
 
-procedure choixCartesHypothese(paquetPieces, paquetArmes, paquetPersonnages: TPaquet; var cartesChoisies: TPaquet; plateau:TPlateau; joueurs:TJoueurs; currentPlayer:integer);
+procedure choixCartesHypothese(paquetPieces, paquetArmes, paquetPersonnages: TPaquet; var cartesChoisies: TPaquet; plateau:TPlateau; joueurs:TJoueurs; joueurActuel:integer);
 var posX, posY:integer;
     caseActuelle:TCase;
    
@@ -491,8 +498,8 @@ begin
   effacerLignes(18,12);
   
   // Choix de la pièce
-  posX:=joueurs[currentPlayer].x;
-  posY:=joueurs[currentPlayer].y;
+  posX:=joueurs[joueurActuel].x;
+  posY:=joueurs[joueurActuel].y;
   caseActuelle:=plateau[posX,posY];
   cartesChoisies[2] := TPieceToTCarte(caseActuelle.typePiece);
   // effacerLignes(18,12);
@@ -537,7 +544,7 @@ begin
   end; 
 end;
 
-procedure hypothese(paquetPieces, paquetArmes, paquetPersonnages: TPaquet; joueurActuel : TJoueur; joueurs : TJoueurs; var cartesChoisies : TPaquet ; var carteChoisie : TCarte; var presenceCarteCommune:Boolean;plateau:TPlateau;currentPlayer:Integer);
+procedure hypothese(paquetPieces, paquetArmes, paquetPersonnages: TPaquet; joueurs : TJoueurs; var cartesChoisies : TPaquet ; var carteChoisie : TCarte; var presenceCarteCommune:Boolean;plateau:TPlateau;joueurActuel:Integer);
 var i, choix, impossible : Integer;
     
 begin
@@ -546,7 +553,7 @@ begin
     for i:=0 to Length(joueurs)-1 do
     begin
       write(i+1, '. ', joueurs[i].nom);
-      if joueurs[i].nom=joueurActuel.nom then
+      if joueurs[i].nom=joueurs[joueurActuel].nom then
       begin
         impossible:=i;
         write(' (impossible)');
@@ -557,9 +564,9 @@ begin
     effacerLignes(18,9);
   until (choix >= 1) and (choix <= MAX_PERSONNAGES) and (choix-1<>impossible);
 
-  choixCartesHypothese(paquetPieces, paquetArmes, paquetPersonnages, cartesChoisies,plateau,joueurs,currentPlayer);
+  choixCartesHypothese(paquetPieces, paquetArmes, paquetPersonnages, cartesChoisies,plateau,joueurs,joueurActuel);
   writeln('Votre hypothese est : C''est ', cartesChoisies[0], ' dans ', cartesChoisies[2], ' avec ', cartesChoisies[1]);
-	Delay(3000);//(pas besoin?)
+	Readln();
 	effacerLignes(18,2);
     
   writeln('Appuyez sur Entree lorsque le joueur ', joueurs[choix-1].nom, ' est pret.'); // Prévention pour le témoin de joueur
@@ -567,7 +574,7 @@ begin
   recupererCarteJoueur(joueurs[choix-1].main, cartesChoisies, carteChoisie,presenceCarteCommune);
   effacerLignes(18,6);
   
-  writeln('Appuyez sur Entree lorsque le joueur ', joueurActuel.nom, ' est pret.'); // Prévention pour joueur actuel de voir la carte
+  writeln('Appuyez sur Entree lorsque le joueur ', joueurs[joueurActuel].nom, ' est pret.'); // Prévention pour joueur actuel de voir la carte
   readln;
 end;
 
@@ -583,10 +590,10 @@ begin
     accusation:=False
 end;
 
-procedure affichageResultatHypothese(paquetPieces, paquetArmes, paquetPersonnages: TPaquet; joueurActuel : TJoueur; joueurs : TJoueurs; cartesChoisies : TPaquet; carteChoisie : TCarte; var presenceCarteCommune:boolean;currentPlayer:integer;plateau:TPlateau);
+procedure affichageResultatHypothese(paquetPieces, paquetArmes, paquetPersonnages: TPaquet; joueurs : TJoueurs; cartesChoisies : TPaquet; carteChoisie : TCarte; var presenceCarteCommune:boolean;joueurActuel:integer;plateau:TPlateau);
 
 begin
-  hypothese(paquetPieces, paquetArmes, paquetPersonnages, joueurActuel, joueurs, cartesChoisies, carteChoisie, presenceCarteCommune,plateau,currentPlayer);
+  hypothese(paquetPieces, paquetArmes, paquetPersonnages, joueurs, cartesChoisies, carteChoisie, presenceCarteCommune,plateau,joueurActuel);
   writeln('Voici la "carte en commun" : ');
   if presenceCarteCommune= true then
     writeln(carteChoisie)
@@ -608,7 +615,7 @@ begin
     writeln('L''arme du crime etait : ',solution[1]);
 end;
 
-procedure PlacerDevantPorte(var plateau: TPlateau; var joueurs: TJoueurs; currentPlayer: Integer; var deplacement:integer);
+procedure PlacerDevantPorte(var plateau: TPlateau; var joueurs: TJoueurs; joueurActuel: Integer; var deplacement:integer);
 var oldx,oldy,i, j, nbPortes, choix: Integer;
     portesDisponibles: array[1..2] of record
     x, y: Integer;
@@ -620,17 +627,17 @@ begin
     for j := 1 to 21 do
     begin
     //attribuer la position du pion
-    if  plateau[i,j].joueurID=currentPlayer+1 then
+    if  plateau[i,j].joueurID=joueurActuel+1 then
     begin
-    joueurs[currentPlayer].x:=i;
-    joueurs[currentPlayer].y:=j;
+    joueurs[joueurActuel].x:=i;
+    joueurs[joueurActuel].y:=j;
     end;
       // Identifier les portes autour de la pièce
       if (plateau[i, j].typePiece = Couloir) and
-         ((plateau[i + 1, j].typePiece = joueurs[currentPlayer].piecePrecedente) or
-          (plateau[i - 1, j].typePiece = joueurs[currentPlayer].piecePrecedente) or
-          (plateau[i, j + 1].typePiece = joueurs[currentPlayer].piecePrecedente) or
-          (plateau[i, j - 1].typePiece = joueurs[currentPlayer].piecePrecedente)) then
+         ((plateau[i + 1, j].typePiece = joueurs[joueurActuel].piecePrecedente) or
+          (plateau[i - 1, j].typePiece = joueurs[joueurActuel].piecePrecedente) or
+          (plateau[i, j + 1].typePiece = joueurs[joueurActuel].piecePrecedente) or
+          (plateau[i, j - 1].typePiece = joueurs[joueurActuel].piecePrecedente)) then
       begin
         Inc(nbPortes);
         portesDisponibles[nbPortes].x := i;
@@ -652,19 +659,19 @@ begin
     readln(choix);
   until (choix >= 1) and (choix <= nbPortes);
   
-  oldx:=joueurs[currentPlayer].x;
-  oldy:=joueurs[currentPlayer].y;
+  oldx:=joueurs[joueurActuel].x;
+  oldy:=joueurs[joueurActuel].y;
 
    // Effacer l'ancienne position
-  plateau[joueurs[currentPlayer].x, joueurs[currentPlayer].y].estOccupee := False;
-  plateau[joueurs[currentPlayer].x, joueurs[currentPlayer].y].joueurID := 0;
+  plateau[joueurs[joueurActuel].x, joueurs[joueurActuel].y].estOccupee := False;
+  plateau[joueurs[joueurActuel].x, joueurs[joueurActuel].y].joueurID := 0;
 
   // Déplacer le joueur devant la porte choisie
-  joueurs[currentPlayer].x := portesDisponibles[choix].x;
-  joueurs[currentPlayer].y := portesDisponibles[choix].y;
+  joueurs[joueurActuel].x := portesDisponibles[choix].x;
+  joueurs[joueurActuel].y := portesDisponibles[choix].y;
 
-  plateau[joueurs[currentPlayer].x, joueurs[currentPlayer].y].estOccupee := True;
-  plateau[joueurs[currentPlayer].x, joueurs[currentPlayer].y].joueurID := currentPlayer+1;
+  plateau[joueurs[joueurActuel].x, joueurs[joueurActuel].y].estOccupee := True;
+  plateau[joueurs[joueurActuel].x, joueurs[joueurActuel].y].joueurID := joueurActuel+1;
 
   // Mettre à jour l'affichage
   GotoXY(oldY,oldx+1);
@@ -672,15 +679,15 @@ begin
   write('.');
       
   GotoXY(portesDisponibles[choix].y, portesDisponibles[choix].x + 1); //+1 car écriture "plateau de jeu"
-  attributionCouleur(plateau[joueurs[currentPlayer].x, joueurs[currentPlayer].y].couleur);
-  write(currentPlayer+1);
+  attributionCouleur(plateau[joueurs[joueurActuel].x, joueurs[joueurActuel].y].couleur);
+  write(joueurActuel+1);
 
   // Réinitialiser "dansPiece"
-  joueurs[currentPlayer].dansPiece := False;
+  joueurs[joueurActuel].dansPiece := False;
   effacerLignes(18,7);
 end;
 
-procedure deplacerJoueur(var joueurs: TJoueurs; currentPlayer: Integer; var plateau: TPlateau; var deplacement: Integer);
+procedure deplacerJoueur(var joueurs: TJoueurs; joueurActuel: Integer; var plateau: TPlateau; var deplacement: Integer);
 var
   oldX,oldY,newX, newY: Integer;
   key: Char;
@@ -691,8 +698,8 @@ begin
     key := ReadKey;
  
     // Calculer la nouvelle position en fonction de la touche
-    newX := joueurs[currentPlayer].x;
-    newY := joueurs[currentPlayer].y;
+    newX := joueurs[joueurActuel].x;
+    newY := joueurs[joueurActuel].y;
     oldX := newX;
     oldY := newY;
 
@@ -707,16 +714,16 @@ begin
     if (plateau[newX, newY].typePiece <> Mur) and (not plateau[newX, newY].estOccupee) then
     begin
       // Libérer l'ancienne position
-      plateau[joueurs[currentPlayer].x, joueurs[currentPlayer].y].estOccupee := False;
-      plateau[joueurs[currentPlayer].x, joueurs[currentPlayer].y].joueurID := 0;
+      plateau[joueurs[joueurActuel].x, joueurs[joueurActuel].y].estOccupee := False;
+      plateau[joueurs[joueurActuel].x, joueurs[joueurActuel].y].joueurID := 0;
 
       // Déplacer le joueur
-      joueurs[currentPlayer].x := newX;
-      joueurs[currentPlayer].y := newY;
+      joueurs[joueurActuel].x := newX;
+      joueurs[joueurActuel].y := newY;
 
       // Occuper la nouvelle position
       plateau[newX, newY].estOccupee := True;
-      plateau[newX, newY].joueurID := currentPlayer + 1; // ID de joueur commence à 1
+      plateau[newX, newY].joueurID := joueurActuel + 1; // ID de joueur commence à 1
 
       GotoXY(oldY,oldX+1);
       attributionCouleur(plateau[oldX,oldY].couleur);
@@ -724,7 +731,7 @@ begin
 
       GotoXY(newY,newX+1);
       attributionCouleur(plateau[newX,newY].couleur);
-      write(currentPlayer+1);
+      write(joueurActuel+1);
 
       GotoXY(1,20);
       attributionCouleur(Black);
@@ -738,12 +745,12 @@ begin
       if (plateau[newX, newY].typePiece <> Couloir) then
       begin
       deplacement:=-1;
-      currentPlayer:=plateau[newX, newY].joueurID;
+      joueurActuel:=plateau[newX, newY].joueurID;
       piece:=plateau[newX, newY].typePiece;
-      PlacerPionDansPiece(plateau,currentPlayer, piece);
+      PlacerPionDansPiece(plateau,joueurActuel, piece);
       
-      //joueurs[currentPlayer].dansPiece := True;
-      //joueurs[currentPlayer].piecePrecedente := piece; 
+      //joueurs[joueurActuel].dansPiece := True;
+      //joueurs[joueurActuel].piecePrecedente := piece; 
       end;
     end;
   end;
@@ -757,51 +764,51 @@ begin
   LancerDes:=deplacement+des1 + des2;
 end;
 
-procedure jouerTour(var joueurs: TJoueurs; var plateau: TPlateau; paquetPieces, paquetArmes, paquetPersonnages, solution: TPaquet; joueurActuel : TJoueur; cartesChoisies : TPaquet; carteChoisie : TCarte; currentPlayer:integer);
+procedure jouerTour(var joueurs: TJoueurs; var plateau: TPlateau; paquetPieces, paquetArmes, paquetPersonnages, solution: TPaquet; cartesChoisies : TPaquet; carteChoisie : TCarte; joueurActuel:integer);
 var
   deplacement: Integer;
   action : Integer;
   resultatAction, presenceCarteCommune : Boolean;
 begin
-action:=1;
-      for currentPlayer := 0 to length(joueurs)-1 do
+  action:=1;
+  for joueurActuel := 0 to length(joueurs)-1 do
   begin
-  deplacement := 0;
-   writeln('Joueur ', currentPlayer +1 , ', c''est votre tour !');
-   AnnonceTour(currentPlayer);
-   if joueurs[currentPlayer].dansPiece then
-   begin
-  PlacerDevantPorte(plateau, joueurs, currentPlayer, deplacement);
-  deplacement:=-1;
+    deplacement := 0;
+    writeln('Joueur ', joueurActuel +1 , ', c''est votre tour !');
+    annonceTour(joueurActuel);
+    if joueurs[joueurActuel].dansPiece then
+    begin
+    PlacerDevantPorte(plateau, joueurs, joueurActuel, deplacement);
+    deplacement:=-1;
   end;
   deplacement := LancerDes(deplacement);
   write('Tu as obtenu ',deplacement);
-  deplacerJoueur(joueurs, currentPlayer, plateau, deplacement);
+  deplacerJoueur(joueurs, joueurActuel, plateau, deplacement);
   effacerLignes(18,4);
     
   
- if (plateau[joueurs[currentPlayer].x, joueurs[currentPlayer].y].typePiece <> Mur) and
-   (plateau[joueurs[currentPlayer].x, joueurs[currentPlayer].y].typePiece <> Couloir) then
-    begin
-  joueurs[currentPlayer].dansPiece:=True;
-  joueurs[currentPlayer].piecePrecedente := plateau[joueurs[currentPlayer].x, joueurs[currentPlayer].y].typePiece;
+  if (plateau[joueurs[joueurActuel].x, joueurs[joueurActuel].y].typePiece <> Mur) and
+  (plateau[joueurs[joueurActuel].x, joueurs[joueurActuel].y].typePiece <> Couloir) then
+  begin
+    joueurs[joueurActuel].dansPiece:=True;
+    joueurs[joueurActuel].piecePrecedente := plateau[joueurs[joueurActuel].x, joueurs[joueurActuel].y].typePiece;
     writeln('1. Hypothese');
     writeln('2. Accusation');
     resultatAction:=choixAction(action);
     effacerLignes(18,2);
     if resultatAction then
     begin
-      affichageResultatHypothese(paquetPieces, paquetArmes, paquetPersonnages, joueurs[currentPlayer], joueurs, cartesChoisies, carteChoisie, presenceCarteCommune,currentPlayer,plateau);
+      affichageResultatHypothese(paquetPieces, paquetArmes, paquetPersonnages, joueurs, cartesChoisies, carteChoisie, presenceCarteCommune,joueurActuel,plateau);
       Delay(3000);
       effacerLignes(18,4);
     end
     else
     begin
-      affichageResultatAccusation(paquetPieces, paquetArmes, paquetPersonnages, solution, joueurs[currentPlayer]);
+      affichageResultatAccusation(paquetPieces, paquetArmes, paquetPersonnages, solution, joueurs[joueurActuel]);
       halt;
     end;
     end
-    else if (plateau[joueurs[currentPlayer].x, joueurs[currentPlayer].y].typePiece = Couloir) then
+    else if (plateau[joueurs[joueurActuel].x, joueurs[joueurActuel].y].typePiece = Couloir) then
     begin
       writeln('Souhaitez vous faire une accusation?');
       writeln('1. oui');
@@ -810,7 +817,7 @@ action:=1;
       effacerLignes(18,4);
       if resultatAction then
         begin
-          affichageResultatAccusation(paquetPieces, paquetArmes, paquetPersonnages, solution, joueurs[currentPlayer]);
+          affichageResultatAccusation(paquetPieces, paquetArmes, paquetPersonnages, solution, joueurs[joueurActuel]);
           halt;
         end;
       end;

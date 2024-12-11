@@ -1,4 +1,4 @@
-Unit affichage;
+Unit affichage; // Amanda
 
 interface 
 
@@ -21,7 +21,7 @@ procedure affichageLegende(i : Integer);
 
 procedure affichagePlateau(var plateau: TPlateau; joueurs: TJoueurs; joueurActuel: Integer);
 
-procedure AnnonceTour(currentPlayer: Integer);
+procedure annonceTour(joueurActuel: Integer);
 
 
 implementation
@@ -117,20 +117,18 @@ begin
   readln();
 end;
 
-procedure preventionTourJoueur(joueurs: TJoueurs; var i: Integer);
+procedure preventionTourJoueur(joueurs: TJoueurs; var i : Integer);
 begin
-  // Passe au joueur suivant
-  i := (i + 1) mod length(joueurs);  // Parcourt les joueurs
-  // Annonce du joueur dont c'est le tour
+  i := (i + 1) mod length(joueurs);
   writeln('Appuyez sur Entree lorsque le joueur ', joueurs[i].nom, ' est pret.');
-  readln;
+  Readln;
   ClrScr;
 end;
 
 procedure finTourJoueur();
 begin
   writeln();
-  writeLN('Appuyez sur Entree pour terminer votre tour');
+  writeln('Appuyez sur Entree pour terminer votre tour');
   readln;
   ClrScr;
 end;
@@ -144,12 +142,11 @@ procedure affichagePaquet(paquet: TPaquet);
 var  i: Integer;
 
 begin
-  for i := 0 to length(paquet)-1 do // Parcourt le paquet
+  for i := 0 to length(paquet)-1 do
     affichageCarte(paquet[i]);
 end;
 
 procedure attributionCouleur(couleur: TCouleur);
-
 begin
   case couleur of
     Black: TextBackground(0);
@@ -165,45 +162,21 @@ end;
 
 procedure afficherEtiquettes(i, j: Integer);
 begin
- //Ecriture BDE sur les bords
-  if (i = 14) and (j = 21) then
+  if (j = 21) then
   begin
-    TextColor(0); // Texte noir
-    write('B');
-  end
-  else if (i = 15) and (j = 21) then
-  begin
-    TextColor(0); // Texte noir
-    write('D');
-  end
-  else if (i = 16) and (j = 21) then
-  begin
-    TextColor(0); // Texte noir
-    write('E');
-  end
-  //Ecriture RU sur les bords
-  else if (i = 8) and (j = 21) then
-  begin
-    TextColor(0); // Texte noir
-    write('R');
-  end
-  else if (i = 9) and (j = 21) then
-  begin
-    TextColor(0); // Texte noir
-    write('U');
-  end
-  //Ecriture BU sur les bords
-  else if (i = 2) and (j = 21) then
-  begin
-    TextColor(0); // Texte noir
-    write('B');
-  end
-  else if (i = 3) and (j = 21) then
-  begin
-    TextColor(0); // Texte noir
-    write('U');
+    TextColor(0);
+    if (i = 2) or (i = 14 ) then
+      write('B')
+    else if (i = 15) then
+      write('D')
+    else if (i = 16) then
+      write('E')
+    else if (i = 8) then
+      write('R')
+    else if (i = 3) or (i = 9) then
+      write('U')
   end;
-    TextColor(15);
+  TextColor(15);
 end;
 
 procedure affichageLegende(i : Integer);
@@ -322,12 +295,12 @@ begin
   TextBackground(0);
 end;
 
-procedure AnnonceTour(currentPlayer: Integer);
+procedure annonceTour(joueurActuel: Integer);
 var
   music: PMix_Music;
   audioFile: string;
 begin
-  case currentPlayer of
+  case joueurActuel of
     0: audioFile := 'joueur1.mp3';
     1: audioFile := 'joueur2.mp3';
     2: audioFile := 'joueur3.mp3';
