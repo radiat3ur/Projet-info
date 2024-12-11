@@ -2,7 +2,7 @@ unit affichage;
 
 interface
 
-uses SDL2, SDL2_image, SDL2_ttf, TypeEtCte, sysUtils, TypInfo;
+uses SDL2, SDL2_image, SDL2_ttf, SDL2_Mixer, TypeEtCte, sysUtils, TypInfo;
 
 procedure InitSDL(var Window: PSDL_Window; var Renderer: PSDL_Renderer);
 function coordonnees(x, y, w, h : Integer): TSDL_Rect;
@@ -11,6 +11,8 @@ procedure afficherImage(Renderer: PSDL_Renderer; filename: string; DestRect: PSD
 function Couleur(r, g, b, a: Integer): TSDL_Color;
 function chargerTextureDepuisTexte(renderer:PSDL_Renderer; police:PTTF_Font; text:String; color: TSDL_Color):PSDL_Texture;
 procedure afficherTexte(Renderer: PSDL_Renderer; text: String; taille, x, y: Integer; couleur: TSDL_Color);
+function chargerTextureDepuisAudio(filename: String): PMix_Chunk;
+procedure afficherAudio(filename: string);
 
 procedure affichageMenu(Renderer : PSDL_Renderer ; selectionActuelle : Integer);
 procedure affichageRegles(Renderer : PSDL_Renderer);
@@ -49,6 +51,9 @@ begin
     SDL_Quit;
     Halt;
   end;
+    // Prepare mixer
+  if Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT,
+    MIX_DEFAULT_CHANNELS, 4096) < 0 then Exit;
 end;
 
 function coordonnees(x, y, w, h : Integer): TSDL_Rect;
@@ -139,6 +144,40 @@ begin
   SDL_DestroyTexture(texteTexture);
 end;
 
+function chargerTextureDepuisAudio(filename: String): PMix_Chunk;
+var audio: PMix_Chunk;
+    chemin: AnsiString;
+begin
+  chemin := 'meta/audio/' + filename + '.mp3';
+  audio := Mix_LoadWAV(PChar(chemin));
+
+  if audio = nil then
+  begin
+    writeln('Erreur de chargement de l''audio : ', chemin, ' : ', Mix_GetError);
+    Halt;
+  end;
+
+  chargerTextureDepuisAudio := audio;
+end;
+
+procedure afficherAudio(filename: string);
+var audio: PMix_Chunk;
+begin
+  audio := chargerTextureDepuisAudio(filename);
+
+  if Mix_PlayChannel(-1, audio, 0) < 0 then
+  begin
+    writeln('Erreur de lecture de l''audio : ', Mix_GetError);
+    Halt;
+  end;
+
+  Mix_PlayChannel(-1, audio, 0);
+
+  SDL_Delay(5000);
+
+  Mix_FreeChunk(audio);
+end;
+
 procedure AfficherDes(Renderer: PSDL_Renderer; DiceTextures: TabTextures; ResultatsDice: TTabInt);
 var
   DestRect: TSDL_Rect;
@@ -188,6 +227,7 @@ begin
   DestRect := coordonnees(100, 200, 500, 700);
   afficherImage(Renderer, GetEnumName(TypeInfo(TPersonnage), Ord(joueurs[joueurActuel].nom)), @DestRect);
   SDL_RenderPresent(Renderer);
+  afficherAudio('Prevention ' + GetEnumName(TypeInfo(TPersonnage), Ord(joueurs[joueurActuel].nom)));
   while lecture do
   begin
     while SDL_PollEvent(@Event) <> 0 do

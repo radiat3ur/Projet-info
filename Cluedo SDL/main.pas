@@ -1,6 +1,6 @@
 program main;
 
-uses crt, SDL2, SDL2_image, SDL2_ttf, TypeEtCte, affichage, gestion, TypInfo;
+uses crt, SDL2, SDL2_image, SDL2_Mixer, SDL2_ttf, TypeEtCte, affichage, gestion, TypInfo;
 
 var Window: PSDL_Window;
     Renderer: PSDL_Renderer;
@@ -14,6 +14,7 @@ var Window: PSDL_Window;
     Event : TSDL_Event;
     Rect : TSDL_Rect;
     carteChoisie : TCarte;
+    audio : PMix_Chunk;
 
 begin
   InitSDL(Window, Renderer);
