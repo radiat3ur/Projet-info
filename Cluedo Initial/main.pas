@@ -1,28 +1,17 @@
-
 program cluedo;
 
 Uses Crt, affichage, TypeEtCte, gestion,SDL2_image, SDL2, SDL2_mixer;
 
 var
-<<<<<<< HEAD
-  choix, nbJoueurs, debutX, finX, debutY, finY, joueurActuel, i : Integer;
-  paquetPieces, paquetArmes, paquetPersonnages, solution, paquetSansCartesCrime, cartesChoisies: TPaquet;
-  carteChoisie : TCarte;
-=======
-  choix, nbJoueurs, currentPlayer, i : Integer;
-  paquetPieces, paquetArmes, paquetPersonnages, solution, paquetSansCartesCrime: TPaquet;
->>>>>>> 368283784d73933ea28e8499ab9ade0f38dcb9f9
+  choix, nbJoueurs, joueurActuel, i : Integer;
+  paquetPieces, paquetArmes, paquetPersonnages, solution, paquetSansCartesCrime, cartesChoisies : TPaquet;
   joueurs: TJoueurs;
   plateau : TPlateau;
+  carteChoisie : TCarte;
 
 begin
-<<<<<<< HEAD
-  menu(plateau, choix, nbJoueurs, joueurs);
-  joueurActuel:=nbJoueurs-1;
-=======
   menu(choix, nbJoueurs, joueurs);
-  currentPlayer:=nbJoueurs-1;
->>>>>>> 368283784d73933ea28e8499ab9ade0f38dcb9f9
+  joueurActuel:=nbJoueurs-1;
   // Initialise le jeu
   choixDebutJeu(nbJoueurs, plateau, joueurs); // Lorsque 2 est tapé, on initilialise le jeu
   initialisationPartie(nbJoueurs, joueurs, paquetPieces, paquetArmes, paquetPersonnages, paquetSansCartesCrime, solution, plateau);
@@ -42,14 +31,8 @@ begin
   initialisationPlateau(plateau);
     
   repeat
-<<<<<<< HEAD
     preventionTourJoueur(joueurs, joueurActuel);
     affichagePlateau(plateau, joueurs, joueurActuel);
     jouerTour(joueurs, plateau, paquetPieces, paquetArmes, paquetPersonnages, solution, cartesChoisies, carteChoisie, joueurActuel)
-=======
-    preventionTourJoueur(joueurs, currentPlayer);
-    affichagePlateau(plateau, joueurs, currentPlayer);
-    jouerTour(joueurs, plateau, paquetPieces, paquetArmes, paquetPersonnages, solution, joueurs[currentPlayer], currentPlayer)
->>>>>>> 368283784d73933ea28e8499ab9ade0f38dcb9f9
   until False;
 end.
