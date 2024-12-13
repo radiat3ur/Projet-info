@@ -88,9 +88,9 @@ var i : Integer;
 
 begin
   // Crée le paquet de pièces
-  SetLength(paquetPieces, 9);
-  SetLength(paquetArmes, 6);
-  SetLength(paquetPersonnages, 6);
+  Setlength(paquetPieces, 9);
+  Setlength(paquetArmes, 6);
+  Setlength(paquetPersonnages, 6);
   for i := 0 to 8 do
   begin
     paquetPieces[i] := TCarte(i);
@@ -99,8 +99,8 @@ begin
   // Crée les paquets d'armes et de personnages
   for i := 0 to 5 do
   begin
-    paquetArmes[i] := TCarte(i + Length(paquetPieces));
-    paquetPersonnages[i] := TCarte(i + Length(paquetPieces) + Length(paquetArmes));
+    paquetArmes[i] := TCarte(i + length(paquetPieces));
+    paquetPersonnages[i] := TCarte(i + length(paquetPieces) + length(paquetArmes));
   end;
 end;
 
@@ -109,25 +109,25 @@ var i, randomIndex, indexPaquet : Integer ;
 begin
   // Prend les trois cartes crime au hasard
   Randomize;
-  SetLength(solution, 3);
+  Setlength(solution, 3);
 
   // On sélectionne une carte au hasard dans chaque paquet pour constituer la solution du crime
 
   // randomIndex est pris au hasard entre 1 et 9, ce qui correspond aux indices du paquet de pièces
-  randomIndex:=Random(Length(paquetPieces));
+  randomIndex:=Random(length(paquetPieces));
   // ensuite on l'associe à la première carte solution
   solution[0] := paquetPieces[randomIndex];
   // on fait de même pour les armes et personnages
-  randomIndex := Random(Length(paquetArmes));
+  randomIndex := Random(length(paquetArmes));
   solution[1] := paquetArmes[randomIndex];
-  randomIndex := Random(Length(paquetPersonnages));
+  randomIndex := Random(length(paquetPersonnages));
   solution[2] := paquetPersonnages[randomIndex];
 
-  SetLength(paquetSansCartesCrime, 18);
+  Setlength(paquetSansCartesCrime, 18);
   indexPaquet:=0;
 
   // Rempli le paquet sans les cartes sélectionnées pour la solution
-  for i := 0 to Length(paquetPieces)-1 do
+  for i := 0 to length(paquetPieces)-1 do
   begin
     // Si la carte n'est pas dans la solution, elle est ajoutée à paquetSansCartesCrime
     if (paquetPieces[i]<>solution[0]) then
@@ -137,7 +137,7 @@ begin
     end;
   end;
 
-  for i:=0 to Length(paquetArmes)-1 do
+  for i:=0 to length(paquetArmes)-1 do
   begin  
     if (paquetArmes[i]<>solution[1]) then
     begin
@@ -146,7 +146,7 @@ begin
     end;
   end;
 
-  for i:=0 to Length(paquetPersonnages)-1 do
+  for i:=0 to length(paquetPersonnages)-1 do
   begin  
     if (paquetPersonnages[i]<>solution[2]) then
     begin
@@ -162,7 +162,7 @@ var i, j : Integer ;
 begin
   Randomize;
   // Parcourt le paquet à l'envers
-  for i := 0 to Length(paquetSansCartesCrime) - 1 do
+  for i := 0 to length(paquetSansCartesCrime) - 1 do
   begin
     // Prend au hasard un indice entre 0 et i
     j := Random(i);
@@ -182,7 +182,7 @@ begin
       personnagesDisponibles[i] := True; // Tous les personnages sont disponibles
 
     // Initialise le nombre de joueurs, soit la taille du tableau
-    SetLength(joueurs, nbJoueurs);
+    Setlength(joueurs, nbJoueurs);
 
     // Les joueurs sélectionnent leur personnage
     for i := 0 to nbJoueurs - 1 do
@@ -223,14 +223,14 @@ begin
     for i := 0 to nbJoueurs-1 do
     begin
       if i < joueursAvecNbCartesStandard then
-        SetLength(joueurs[i].main, cartesParJoueur) // Donne le nombre classique de cartes aux deuxpremiers joueurs
+        Setlength(joueurs[i].main, cartesParJoueur) // Donne le nombre classique de cartes aux deuxpremiers joueurs
       else
       // Les joueurs suivants reçoivent une carte supplémentaire
       // Initialise la liste des cartes pour chaque joueur en fonction de la taille assignée
-      SetLength(joueurs[i].main, cartesParJoueur + 1);
+      Setlength(joueurs[i].main, cartesParJoueur + 1);
     end;
 
-    for i:=0 to Length(joueurs)-1 do
+    for i:=0 to length(joueurs)-1 do
     begin;
       // Position initiale joueur 1
       case i of
@@ -275,7 +275,7 @@ begin
     for i := 0 to nbJoueurs - 1 do
     begin
       // Rempli les cartes pour le joueur i
-      for j := 0 to Length(joueurs[i].main)-1 do
+      for j := 0 to length(joueurs[i].main)-1 do
       begin
         joueurs[i].main[j] := paquetSansCartesCrime[indexPaquet];
         indexPaquet := indexPaquet + 1;
@@ -365,7 +365,7 @@ begin
     readln(nbJoueurs); // Sélectionne le nombre de joueurs
   until (nbJoueurs >= 2) and (nbJoueurs <= MAX_PERSONNAGES); // Vérifie que le nombre est compris entre 2 et 6
 
-  SetLength(joueurs,nbJoueurs); // Défini la taille du tableau des joueurs en fonction du nombre de joueurs
+  Setlength(joueurs,nbJoueurs); // Défini la taille du tableau des joueurs en fonction du nombre de joueurs
   initJoueurs(joueurs, plateau, nbJoueurs); // (voir la procedure dans gestion.pas)
 end;
 
@@ -385,10 +385,10 @@ var i, choix : Integer;
 
 begin
 	repeat
-    for i := 0 to Length(paquet) - 1 do
+    for i := 0 to length(paquet) - 1 do
       writeln(i + 1, '. ', paquet[i]);
     readln(choix);
-    until (choix >= 1) and (choix <= Length(paquet));
+    until (choix >= 1) and (choix <= length(paquet));
     carteChoisie:=paquet[choix - 1];
 end;
 
@@ -396,7 +396,7 @@ procedure choixCartesAccusation(paquetPieces, paquetArmes, paquetPersonnages : T
 
 begin
   // Initialise la taille de cartesChoisies pour qu'il contienne trois cartes
-  SetLength(cartesChoisies, 3);
+  Setlength(cartesChoisies, 3);
 
   // Choix du suspect
   writeln('Choisissez un suspect :');
@@ -420,7 +420,7 @@ var posX, posY:integer;
    
 begin
   // Initialise la taille de cartesChoisies pour qu'il contienne trois cartes
-  SetLength(cartesChoisies,3);
+  Setlength(cartesChoisies,3);
 
   // Choix du suspect
   writeln('Choisissez un suspect :');
@@ -443,15 +443,15 @@ end;
 procedure comparaisonCartes(compare, comparant : TPaquet ; var cartesCommunes : TPaquet);
 var i, j, indexPaquet : Integer;
 begin
-  SetLength(cartesCommunes, 0);
+  Setlength(cartesCommunes, 0);
   indexPaquet:=0;
-  for i := 0 to Length(compare)-1 do
+  for i := 0 to length(compare)-1 do
   begin
-    for j := 0 to Length(comparant)-1 do
+    for j := 0 to length(comparant)-1 do
     begin
       if compare[i] = comparant[j] then
       begin
-        SetLength(cartesCommunes,indexPaquet+1);
+        Setlength(cartesCommunes,indexPaquet+1);
         cartesCommunes[indexPaquet]:=compare[i];
         indexPaquet:=indexPaquet+1;
       end;
@@ -465,7 +465,7 @@ var cartesCommunes : TPaquet;
 begin
   presenceCarteCommune:=false;
   comparaisonCartes(compare,comparant,cartesCommunes);
-  if Length(cartesCommunes) = 0 then
+  if length(cartesCommunes) = 0 then
   begin
     write('Aucune carte commune. Rien a montrer.');
     clreol();
@@ -485,7 +485,7 @@ var i, choix, impossible : Integer;
 begin
   repeat
     writeln('Choisissez un temoin parmi les autres joueurs :');
-    for i:=0 to Length(joueurs)-1 do
+    for i:=0 to length(joueurs)-1 do
     begin
       write(i+1, '. ', joueurs[i].nom);
       if joueurs[i].nom=joueurs[joueurActuel].nom then
@@ -519,7 +519,7 @@ var cartesChoisies, cartesCommunes : TPaquet;
 begin
   choixCartesAccusation(paquetPieces, paquetArmes, paquetPersonnages, cartesChoisies);
   comparaisonCartes(cartesChoisies, solution, cartesCommunes);
-  if Length(cartesCommunes)=3 then
+  if length(cartesCommunes)=3 then
     accusation:=True
   else
     accusation:=False

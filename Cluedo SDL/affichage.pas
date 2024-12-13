@@ -2,18 +2,16 @@ unit affichage;
 
 interface
 
-uses SDL2, SDL2_image, SDL2_ttf, SDL2_Mixer, TypeEtCte, sysUtils, TypInfo;
+uses SDL2, SDL2_image, SDL2_ttf, TypeEtCte, sysUtils, TypInfo;
 
 procedure initSDL(var Window: PSDL_Window; var Renderer: PSDL_Renderer);
 function coordonnees(x, y, w, h : Integer): TSDL_Rect;
-function chargerTexture(Renderer: PSDL_Renderer; filename: String): PSDL_Texture;
-procedure afficherImage(Renderer: PSDL_Renderer; filename: string; DestRect: PSDL_Rect);
+function chargerTextureImage(Renderer: PSDL_Renderer; nomDuFichier: String): PSDL_Texture;
+procedure afficherImage(Renderer: PSDL_Renderer; nomDuFichier: string; DestRect: PSDL_Rect);
 procedure afficherImagesCentrees(Renderer: PSDL_Renderer; joueurs : TJoueurs ; joueurActuel : Integer);
 function couleur(r, g, b, a: Integer): TSDL_Color;
 function chargerTextureDepuisTexte(renderer:PSDL_Renderer; police:PTTF_Font; text:String; color: TSDL_Color):PSDL_Texture;
 procedure afficherTexte(Renderer: PSDL_Renderer; text: String; taille, x, y: Integer; couleur: TSDL_Color);
-function chargerTextureDepuisAudio(filename: String): PMix_Chunk;
-procedure lancerAudio(filename: string);
 
 procedure affichageMenu(Renderer : PSDL_Renderer ; selectionActuelle : Integer);
 procedure affichageRegles(Renderer : PSDL_Renderer);
@@ -30,18 +28,19 @@ procedure CleanUp(Window : PSDL_Window ; Renderer : PSDL_Renderer);
 
 implementation
 
+// Initialisation de la SDL
 procedure initSDL(var Window: PSDL_Window; var Renderer: PSDL_Renderer);
 begin
   if SDL_Init(SDL_INIT_VIDEO) < 0 then
   begin
-    Writeln('Erreur d''initialisation SDL : ', SDL_GetError);
+    writeln('Erreur d''initialisation SDL : ', SDL_GetError);
     Halt;
   end;
 
-  Window := SDL_CreateWindow('Cluedo - Déplacement', SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
+  Window := SDL_CreateWindow('Cluedo - Déplacement', SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN); // mettre SDL_WINDOW_BORDERLESS pour la présentation
   if Window = nil then
   begin
-    Writeln('Erreur de création de fenêtre : ', SDL_GetError);
+    writeln('Erreur de création de fenêtre : ', SDL_GetError);
     SDL_Quit;
     Halt;
   end;
@@ -49,51 +48,48 @@ begin
   Renderer := SDL_CreateRenderer(Window, -1, SDL_RENDERER_ACCELERATED);
   if Renderer = nil then
   begin
-    Writeln('Erreur de création de renderer : ', SDL_GetError);
+    writeln('Erreur de création de renderer : ', SDL_GetError);
     SDL_DestroyWindow(Window);
     SDL_Quit;
     Halt;
   end;
-    // Prepare mixer
-  if Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT,
-    MIX_DEFAULT_CHANNELS, 4096) < 0 then Exit;
 end;
 
 function coordonnees(x, y, w, h : Integer): TSDL_Rect;
 begin
-  coordonnees.x:=x;
-  coordonnees.y:=y;
-  coordonnees.w:=w;
-  coordonnees.h:=h;
+  coordonnees.x := x;
+  coordonnees.y := y;
+  coordonnees.w := w;
+  coordonnees.h := h;
 end;
 
-function chargerTexture(Renderer: PSDL_Renderer; filename: String): PSDL_Texture;
+// Charger une texture à partir d'un fichier png
+function chargerTextureImage(Renderer: PSDL_Renderer; nomDuFichier: String): PSDL_Texture;
 var image: PSDL_Texture;
     chemin: AnsiString;
 begin
-  chemin := 'meta/' + filename + '.png';
+  chemin := 'meta/' + nomDuFichier + '.png';
   image := IMG_LoadTexture(Renderer, PChar(chemin));
 
   if image = nil then
     Writeln('Erreur de chargement de l''image "', chemin, '": ', IMG_GetError);
 
-  chargerTexture := image;
+  chargerTextureImage := image;
 end;
 
-procedure afficherImage(Renderer: PSDL_Renderer; filename: string; DestRect: PSDL_Rect);
+procedure afficherImage(Renderer: PSDL_Renderer; nomDuFichier: string; DestRect: PSDL_Rect);
 var texture: PSDL_Texture;
 begin
-  texture := chargerTexture(Renderer, filename);
+  texture := chargerTextureImage(Renderer, nomDuFichier);
 
   if texture = nil then
   begin
-    Writeln('Erreur : Impossible de charger la texture pour ', filename, '. SDL_Error: ', IMG_GetError());
+    Writeln('Erreur : Impossible de charger la texture pour ', nomDuFichier, '. SDL_Error: ', IMG_GetError());
     Exit;
   end;
 
   SDL_RenderCopy(renderer, texture, nil, DestRect);
 
-  // Ne pas détruire la texture si elle est réutilisée
   SDL_DestroyTexture(texture);
 end;
 
@@ -115,7 +111,7 @@ begin
       destRect.w := 300;
       destRect.h := 420;
       afficherImage(Renderer, GetEnumName(TypeInfo(TPersonnage), Ord(joueurs[i].nom)) + 'actuel', @destRect);
-      j:=j+1;
+      j := j + 1;
     end;
 end;
 
@@ -124,7 +120,7 @@ begin
   couleur.r := r;
   couleur.g := g;
   couleur.b := b;
-  couleur.a := a;
+  couleur.a := a; // l'opacité ne fonctionne pas
 end;
 
 function chargerTextureDepuisTexte(renderer:PSDL_Renderer; police:PTTF_Font; text:String; color: TSDL_Color):PSDL_Texture;
@@ -137,7 +133,7 @@ begin
   if surface = nil then
   begin
     Writeln('Erreur lors de la création de la surface de texte.');
-    Exit(nil);
+    Exit;
   end;
 
   texture := SDL_CreateTextureFromSurface(renderer,surface);
@@ -147,8 +143,8 @@ end;
 
 procedure afficherTexte(Renderer: PSDL_Renderer; text: String; taille, x, y: Integer; couleur: TSDL_Color);
 var police : PTTF_Font;
-  texteTexture: PSDL_Texture;
-  textRect: TSDL_Rect;
+    texteTexture: PSDL_Texture;
+    textRect: TSDL_Rect;
 
 begin
   textRect := coordonnees(x, y, 0, 0);
@@ -169,57 +165,23 @@ begin
   SDL_DestroyTexture(texteTexture);
 end;
 
-function chargerTextureDepuisAudio(filename: String): PMix_Chunk;
-var audio: PMix_Chunk;
-    chemin: AnsiString;
-begin
-  chemin := 'meta/audio/' + filename + '.mp3';
-  audio := Mix_LoadWAV(PChar(chemin));
-
-  if audio = nil then
-  begin
-    writeln('Erreur de chargement de l''audio : ', chemin, ' : ', Mix_GetError);
-    Halt;
-  end;
-
-  chargerTextureDepuisAudio := audio;
-end;
-
-procedure lancerAudio(filename: string);
-var audio: PMix_Chunk;
-begin
-  audio := chargerTextureDepuisAudio(filename);
-
-  if Mix_PlayChannel(-1, audio, 0) < 0 then
-  begin
-    writeln('Erreur de lecture de l''audio : ', Mix_GetError);
-    Halt;
-  end;
-
-  Mix_PlayChannel(-1, audio, 0);
-
-  SDL_Delay(3000);
-
-  Mix_FreeChunk(audio);
-end;
-
 procedure afficherDes(Renderer: PSDL_Renderer; DiceTextures: TabTextures; ResultatsDice: TTabInt);
 var
   DestRect: TSDL_Rect;
   Angle : Double;
   texture1, texture2 : PSDL_Texture;
 begin
-  SetLength(ResultatsDice, 2);
-  // Définir le rectangle pour le premier dé
+  Setlength(ResultatsDice, 2);
+  // Emplacement, angle et taille du premier dé
   Angle:=-10.0;
   DestRect := coordonnees(SCREEN_WIDTH div 2 - 35, 60, TILE_SIZE * 3, TILE_SIZE * 3);
-  texture1 := chargerTexture(Renderer, 'dé ' + IntToStr(ResultatsDice[0] + 1));
+  texture1 := chargerTextureImage(Renderer, 'dé ' + IntToStr(ResultatsDice[0] + 1));
   SDL_RenderCopyEx(Renderer, texture1, nil, @DestRect, Angle, nil, SDL_FLIP_NONE);
     
-  // Définir le rectangle pour le deuxième dé
+  //  Emplacement, angle et taille du deuxième dé
   DestRect.x := SCREEN_WIDTH div 2 + 85;
   Angle:=10.0;
-  texture2 := chargerTexture(Renderer, 'dé ' + IntToStr(ResultatsDice[1] + 1));
+  texture2 := chargerTextureImage(Renderer, 'dé ' + IntToStr(ResultatsDice[1] + 1));
   SDL_RenderCopyEx(Renderer, texture2, nil, @DestRect, Angle, nil, SDL_FLIP_NONE);
 
   SDL_DestroyTexture(texture1);
@@ -231,7 +193,7 @@ var
   DestRect: TSDL_Rect;
   i: Integer;
 begin
-  for i := 0 to Length(joueurs) - 1 do
+  for i := 0 to length(joueurs) - 1 do
   begin
     if joueurs[i].nom <> rien then
     begin
@@ -273,7 +235,7 @@ begin
   DestRect := coordonnees(0, SCREEN_HEIGHT-230, 180, 252);
   afficherImage(Renderer, GetEnumName(TypeInfo(TPersonnage), Ord(joueurs[joueurActuel].nom)) + 'actuel', @DestRect);
 
-  SetLength(carteRect, length(joueurs[joueurActuel].main));
+  Setlength(carteRect, length(joueurs[joueurActuel].main));
   for i := 0 to length(joueurs[joueurActuel].main) - 1 do // Parcourt le paquet
   begin
     carteRect[i] := coordonnees(i * 137 + 210, SCREEN_HEIGHT - 195, 135, 189);
@@ -284,15 +246,11 @@ end;
 procedure affichageMenu(Renderer : PSDL_Renderer ; selectionActuelle : Integer);
 var DestRect : TSDL_Rect;
 begin
-  SDL_RenderClear(Renderer); // Nettoyer l'écran
+  SDL_RenderClear(Renderer);
 
-  // Définir le rectangle pour afficher l'image
   DestRect := coordonnees(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
-
-  // Afficher l'image de fond
   afficherImage(Renderer, 'menu', @DestRect);
 
-  // Affichage du menu texte
   if selectionActuelle = 0 then
     afficherTexte(Renderer, '1. Afficher les règles du jeu', 75, SCREEN_WIDTH div 2 - 465, SCREEN_HEIGHT div 2 - 40, couleur(163, 3, 3, 0))
   else
@@ -313,41 +271,41 @@ end;
 
 procedure affichageTour(Renderer : PSDL_Renderer ; selectionActuelle : Integer);
 begin
-   afficherTexte(Renderer, 'Que voulez-vous faire ?', 40, SCREEN_WIDTH - 800, 305, couleur(163, 3, 3, 0));
+  afficherTexte(Renderer, 'Que voulez-vous faire ?', 40, SCREEN_WIDTH - 800, 305, couleur(163, 3, 3, 0));
 
-    if selectionActuelle = 0 then
-      afficherTexte(Renderer, '1. Formuler une hypothèse', 30, SCREEN_WIDTH - 800, 365, couleur(163, 3, 3, 0))
-    else
-      afficherTexte(Renderer, '1. Formuler une hyptohèse', 25, SCREEN_WIDTH - 800, 365, couleur(0, 0, 0, 0));
+  if selectionActuelle = 0 then
+    afficherTexte(Renderer, '1. Formuler une hypothèse', 30, SCREEN_WIDTH - 800, 365, couleur(163, 3, 3, 0))
+  else
+    afficherTexte(Renderer, '1. Formuler une hyptohèse', 25, SCREEN_WIDTH - 800, 365, couleur(0, 0, 0, 0));
 
-    if selectionActuelle = 1 then
-      afficherTexte(Renderer, '2. Formuler une accusation', 30, SCREEN_WIDTH - 800, 405, couleur(163, 3, 3, 0))
-    else
-      afficherTexte(Renderer, '2. Formuler une accusation', 25, SCREEN_WIDTH - 800, 405, couleur(0, 0, 0, 0));
+  if selectionActuelle = 1 then
+    afficherTexte(Renderer, '2. Formuler une accusation', 30, SCREEN_WIDTH - 800, 405, couleur(163, 3, 3, 0))
+  else
+    afficherTexte(Renderer, '2. Formuler une accusation', 25, SCREEN_WIDTH - 800, 405, couleur(0, 0, 0, 0));
 
-      if selectionActuelle = 2 then
-      afficherTexte(Renderer, '3. Rien', 30, SCREEN_WIDTH - 800, 445, couleur(163, 3, 3, 0))
-    else
-      afficherTexte(Renderer, '3. Rien', 25, SCREEN_WIDTH - 800, 445, couleur(0, 0, 0, 0));
+    if selectionActuelle = 2 then
+    afficherTexte(Renderer, '3. Rien', 30, SCREEN_WIDTH - 800, 445, couleur(163, 3, 3, 0))
+  else
+    afficherTexte(Renderer, '3. Rien', 25, SCREEN_WIDTH - 800, 445, couleur(0, 0, 0, 0));
 
-    SDL_RenderPresent(Renderer);
+  SDL_RenderPresent(Renderer);
 end;
 
 procedure affichageAccusation(Renderer : PSDL_Renderer ; selectionActuelle : Integer);
 begin
-afficherTexte(Renderer, 'Voulez-vous formuler une accusation ?', 35, SCREEN_WIDTH - 800, 305, couleur(163, 3, 3, 255));
+  afficherTexte(Renderer, 'Voulez-vous formuler une accusation ?', 35, SCREEN_WIDTH - 800, 305, couleur(163, 3, 3, 255));
 
-    if selectionActuelle = 0 then
-      afficherTexte(Renderer, 'Oui', 50, SCREEN_WIDTH - 600, 365, couleur(163, 3, 3, 0))
-    else
-      afficherTexte(Renderer, 'Oui', 45, SCREEN_WIDTH - 600, 365, couleur(0, 0, 0, 0));
+  if selectionActuelle = 0 then
+    afficherTexte(Renderer, 'Oui', 50, SCREEN_WIDTH - 600, 365, couleur(163, 3, 3, 0))
+  else
+    afficherTexte(Renderer, 'Oui', 45, SCREEN_WIDTH - 600, 365, couleur(0, 0, 0, 0));
 
-    if selectionActuelle = 1 then
-      afficherTexte(Renderer, 'Non', 50, SCREEN_WIDTH - 600, 425, couleur(163, 3, 3, 0))
-    else
-      afficherTexte(Renderer, 'Non', 45, SCREEN_WIDTH - 600, 425, couleur(0, 0, 0, 0));
+  if selectionActuelle = 1 then
+    afficherTexte(Renderer, 'Non', 50, SCREEN_WIDTH - 600, 425, couleur(163, 3, 3, 0))
+  else
+    afficherTexte(Renderer, 'Non', 45, SCREEN_WIDTH - 600, 425, couleur(0, 0, 0, 0));
 
-    SDL_RenderPresent(Renderer);
+  SDL_RenderPresent(Renderer);
 end;
 
 procedure affichageRegles(Renderer : PSDL_Renderer);
@@ -362,12 +320,9 @@ end;
 procedure affichageNarration(Renderer : PSDL_Renderer);
 var DestRect : TSDL_Rect;
 begin
-  SDL_RenderClear(Renderer); // Nettoyer l'écran
+  SDL_RenderClear(Renderer);
 
-  // Définir le rectangle pour afficher l'image
   DestRect := coordonnees(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
-
-   // Afficher l'image de fond
   afficherImage(Renderer, 'narration', @DestRect);
 
   SDL_RenderPresent(Renderer);
@@ -376,12 +331,9 @@ end;
 procedure affichageVictoire(Renderer : PSDL_Renderer);
 var DestRect : TSDL_Rect;
 begin
-  SDL_RenderClear(Renderer); // Nettoyer l'écran
+  SDL_RenderClear(Renderer);
 
-  // Définir le rectangle pour afficher l'image
   DestRect := coordonnees(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
-
-   // Afficher l'image de fond
   afficherImage(Renderer, 'victoire', @DestRect);
 end;
 

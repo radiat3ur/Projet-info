@@ -100,7 +100,7 @@ var
   DestRect : TSDL_Rect;
 begin
   IsRunning := True;
-  SetLength(joueurs, 2);
+  Setlength(joueurs, 2);
 
   DestRect := coordonnees(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
   
@@ -110,7 +110,7 @@ begin
 
     afficherImage(Renderer, 'choixNbJoueurs', @DestRect);
 
-    afficherTexte(Renderer, IntToStr(Length(joueurs)), 180, SCREEN_WIDTH div 2 - 50, 540, Couleur(163, 3, 3, 255));
+    afficherTexte(Renderer, IntToStr(length(joueurs)), 180, SCREEN_WIDTH div 2 - 50, 540, Couleur(163, 3, 3, 255));
 
     SDL_RenderPresent(Renderer);
 
@@ -119,8 +119,8 @@ begin
       if Event.type_ = SDL_KEYDOWN then
       begin
         case Event.key.keysym.sym of
-          SDLK_UP: if Length(joueurs) < 6 then SetLength(joueurs, Length(joueurs)+1);
-          SDLK_DOWN: if Length(joueurs) > 2 then SetLength(joueurs, Length(joueurs)-1);
+          SDLK_UP: if length(joueurs) < 6 then Setlength(joueurs, length(joueurs)+1);
+          SDLK_DOWN: if length(joueurs) > 2 then Setlength(joueurs, length(joueurs)-1);
           SDLK_RETURN: IsRunning := False; // Valider le choix
         end;
       end;
@@ -128,7 +128,7 @@ begin
           Halt;
     end;
   end;
-  SetLength(joueurs,Length(joueurs));
+  Setlength(joueurs,length(joueurs));
 end;
 
 procedure selectionJoueurs(Renderer: PSDL_Renderer; var joueurs: TJoueurs);
@@ -155,7 +155,7 @@ begin
     JoueurRect[i] := coordonnees((i mod 3) * 300 + 535, (i div 3) * 400 + 235, 250, 350);
   end;
 
-  for i := 0 to Length(joueurs) - 1 do
+  for i := 0 to length(joueurs) - 1 do
     joueurs[i].nom := rien;
   
   DestRect := coordonnees(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -182,7 +182,7 @@ begin
               begin
                 if not Selection[i] then
                 begin
-                  if SelectedCount < Length(joueurs) then
+                  if SelectedCount < length(joueurs) then
                   begin
                     Selection[i] := True;
                     joueurs[SelectedCount].nom := TPersonnage(i); // Ajouter le joueur sélectionné
@@ -191,14 +191,14 @@ begin
                 end;
               end;
             end;
-            if SelectedCount = Length(joueurs) then
+            if SelectedCount = length(joueurs) then
               IsRunning := False;
           end;
         SDL_QUITEV: Halt;
       end;
     end;
     // Dessiner les rectangles gris sur les joueurs sélectionnés
-    for i := 0 to Length(joueurs) - 1 do
+    for i := 0 to length(joueurs) - 1 do
     begin
       if joueurs[i].nom = rien then
         continue;
@@ -215,7 +215,7 @@ begin
       afficherImage(Renderer, GetEnumName(TypeInfo(TPersonnage), Ord(TPersonnage(i))), @JoueurRect[i]);
 
     // Afficher le texte d'instruction
-    afficherTexte(Renderer, 'Cliquez pour sélectionner ' + IntToStr(Length(joueurs)) + ' joueurs.', 40, SCREEN_WIDTH div 2 - 325, 70, Couleur(163, 3, 3, 255));
+    afficherTexte(Renderer, 'Cliquez pour sélectionner ' + IntToStr(length(joueurs)) + ' joueurs.', 40, SCREEN_WIDTH div 2 - 325, 70, Couleur(163, 3, 3, 255));
 
     SDL_RenderPresent(Renderer);
   end;
@@ -233,7 +233,7 @@ end;
 
 procedure InitPieces(Renderer : PSDL_Renderer ; var pieces : TPieces);
 begin
-  SetLength(Pieces,9);
+  Setlength(Pieces,9);
   pieces[0] := creerPiece(0,0,6,3,Tillion);
   pieces[1] := creerPiece(8,0,6,6,Labo);
   pieces[2] := creerPiece(16,0,6,5,Gym);
@@ -269,9 +269,9 @@ begin
   for i := 0 to length(joueurs)-1 do
   begin
       if i < joueursAvecNbCartesStandard then
-          SetLength(joueurs[i].main, cartesParJoueur) // Donne le nombre classique de cartes aux deuxpremiers joueurs
+          Setlength(joueurs[i].main, cartesParJoueur) // Donne le nombre classique de cartes aux deuxpremiers joueurs
       else
-          SetLength(joueurs[i].main, cartesParJoueur+1); // Les joueurs suivants reçoivent une carte supplémentaire
+          Setlength(joueurs[i].main, cartesParJoueur+1); // Les joueurs suivants reçoivent une carte supplémentaire
       // Initialise la liste des cartes pour chaque joueur en fonction de la taille assignée
   end;
 end;
@@ -281,15 +281,15 @@ var i : Integer;
 
 begin
     // Crée le paquet des armes
-    SetLength(paquetArmes, 6);
-    for i:=0 to Length(paquetArmes)-1 do
+    Setlength(paquetArmes, 6);
+    for i:=0 to length(paquetArmes)-1 do
     begin
         paquetArmes[i].categorie:=Arme;
         paquetArmes[i].nom:=TCarte(i);
     end;
 
     // Crée le paquet des personnages
-    SetLength(paquetPersonnages, 6);
+    Setlength(paquetPersonnages, 6);
     for i:=0 to length(paquetPersonnages)-1 do
     begin
         paquetPersonnages[i].categorie:=Personnage;
@@ -297,7 +297,7 @@ begin
     end;
 
     // Crée le paquet des pièces
-    SetLength(paquetPieces, 9);
+    Setlength(paquetPieces, 9);
     for i:=0 to length(paquetPieces)-1 do
     begin
         paquetPieces[i].categorie:=Piece;
@@ -311,7 +311,7 @@ var i, randomIndex, indexPaquet : Integer ;
 begin
     // Prend les trois cartes crime au hasard
     Randomize;
-    SetLength(solution, 3);
+    Setlength(solution, 3);
 
     // On sélectionne une carte au hasard dans chaque paquet pour constituer la solution du crime
 
@@ -325,7 +325,7 @@ begin
     randomIndex:=Random(9);
     solution[2]:=paquetPieces[randomIndex];
 
-    SetLength(paquetSansCartesCrime, 18);
+    Setlength(paquetSansCartesCrime, 18);
     indexPaquet:=0;
 
     // Rempli le paquet sans les cartes sélectionnées pour la solution
@@ -408,7 +408,7 @@ procedure LancerDes(Renderer: PSDL_Renderer; DiceTextures: TabTextures; var Resu
 
 begin
   Randomize;
-  SetLength(ResultatsDice,2);
+  Setlength(ResultatsDice,2);
   ResultatsDice[0] := Random(6); // Résultat du premier dé
   ResultatsDice[1] := Random(6); // Résultat du second dé
   afficherDes(Renderer, DiceTextures, ResultatsDice);
@@ -466,7 +466,7 @@ var
 begin
   IsRunning := True; // Initialisation de IsRunning
   temoinChoisi := -1; // Aucun témoin sélectionné au début
-  SetLength(cartesChoisies, 3);
+  Setlength(cartesChoisies, 3);
 
   SDL_RenderClear(Renderer);
   afficherTour(Renderer, joueurs, ResultatsDice, DiceTextures, nbDeplacement, joueurActuel);
@@ -479,7 +479,7 @@ begin
 
       // Affichage des cartes des autres joueurs
       j := 0;
-      for i := 0 to Length(joueurs) - 1 do
+      for i := 0 to length(joueurs) - 1 do
       begin
         if i <> joueurActuel then
         begin
@@ -499,7 +499,7 @@ begin
             begin
               MouseX := Event.button.x;
               MouseY := Event.button.y;
-              for i := 0 to Length(joueurs) - 1 do
+              for i := 0 to length(joueurs) - 1 do
               begin
                 if (MouseX >= JoueursRect[i].x) and (MouseX <= JoueursRect[i].x + JoueursRect[i].w) and
                   (MouseY >= JoueursRect[i].y) and (MouseY <= JoueursRect[i].y + JoueursRect[i].h) then
@@ -612,18 +612,18 @@ var cartesCommunes : TPaquet;
     i, j, indexPaquet : Integer;
 
 begin
-  SetLength(cartesCommunes, 0);
+  Setlength(cartesCommunes, 0);
   indexPaquet := 0;
   for i:=0 to length(compare) - 1 do
     for j:=0 to length(comparant) - 1 do
       if compare[i].nom = comparant[j].nom then
         begin
-          SetLength(cartesCommunes,indexPaquet+1);
+          Setlength(cartesCommunes,indexPaquet+1);
           cartesCommunes[indexPaquet]:=compare[i];
           indexPaquet:=indexPaquet+1;
         end;
   writeln('Cartes communes :');
-  if Length(cartesCommunes)>0 then
+  if length(cartesCommunes)>0 then
     for i:=0 to length(cartesCommunes) - 1 do
       writeln(cartesCommunes[i].nom)
 end;
