@@ -17,7 +17,7 @@ procedure affichagePaquet(paquet: TPaquet);
 
 procedure attributionCouleur(couleur: TCouleur);
 procedure afficherEtiquettes(i, j: Integer);
-procedure initialisationLegendes(var legende: TLegendes);
+procedure initLegendes(var legende: TLegendes);
 procedure affichageLegendes(i: Integer);
 
 procedure affichagePlateau(var plateau: TPlateau; joueurs: TJoueurs; joueurActuel: Integer);
@@ -180,7 +180,7 @@ begin
   TextColor(15);
 end;
 
-procedure initialisationLegendes(var legende: TLegendes);
+procedure initLegendes(var legende: TLegendes);
 begin
   SetLength(legende, 9);
   legende[0].couleur := Blue;
@@ -206,7 +206,7 @@ end;
 procedure affichageLegendes(i: Integer);
 var legende : TLegendes;
 begin
-  initialisationLegendes(legende);
+  initLegendes(legende);
   if (i >= 0) and (i <= Length(legende)) then
   begin
     TextBackground(0);

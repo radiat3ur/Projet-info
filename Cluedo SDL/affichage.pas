@@ -4,22 +4,23 @@ interface
 
 uses SDL2, SDL2_image, SDL2_ttf, SDL2_Mixer, TypeEtCte, sysUtils, TypInfo;
 
-procedure InitSDL(var Window: PSDL_Window; var Renderer: PSDL_Renderer);
+procedure initSDL(var Window: PSDL_Window; var Renderer: PSDL_Renderer);
 function coordonnees(x, y, w, h : Integer): TSDL_Rect;
 function chargerTexture(Renderer: PSDL_Renderer; filename: String): PSDL_Texture;
 procedure afficherImage(Renderer: PSDL_Renderer; filename: string; DestRect: PSDL_Rect);
-function Couleur(r, g, b, a: Integer): TSDL_Color;
+procedure afficherImagesCentrees(Renderer: PSDL_Renderer; joueurs : TJoueurs ; joueurActuel : Integer);
+function couleur(r, g, b, a: Integer): TSDL_Color;
 function chargerTextureDepuisTexte(renderer:PSDL_Renderer; police:PTTF_Font; text:String; color: TSDL_Color):PSDL_Texture;
 procedure afficherTexte(Renderer: PSDL_Renderer; text: String; taille, x, y: Integer; couleur: TSDL_Color);
 function chargerTextureDepuisAudio(filename: String): PMix_Chunk;
-procedure afficherAudio(filename: string);
+procedure lancerAudio(filename: string);
 
 procedure affichageMenu(Renderer : PSDL_Renderer ; selectionActuelle : Integer);
 procedure affichageRegles(Renderer : PSDL_Renderer);
 procedure affichageNarration(Renderer : PSDL_Renderer);
 
-procedure AfficherDes(Renderer: PSDL_Renderer; DiceTextures: TabTextures; ResultatsDice: TTabInt);
-procedure AfficherPions(Renderer : PSDL_Renderer ; joueurs : TJoueurs);
+procedure afficherDes(Renderer: PSDL_Renderer; DiceTextures: TabTextures; ResultatsDice: TTabInt);
+procedure afficherPions(Renderer : PSDL_Renderer ; joueurs : TJoueurs);
 procedure preventionJoueur(Renderer : PSDL_Renderer ; joueurs : TJoueurs ; joueurActuel : Integer ; texte : String);
 procedure afficherTour(Renderer: PSDL_Renderer; joueurs: TJoueurs; ResultatsDice: TTabInt; DiceTextures: TabTextures; nbDeplacement, joueurActuel: Integer);
 procedure affichageTour(Renderer : PSDL_Renderer ; selectionActuelle : Integer);
@@ -29,7 +30,7 @@ procedure CleanUp(Window : PSDL_Window ; Renderer : PSDL_Renderer);
 
 implementation
 
-procedure InitSDL(var Window: PSDL_Window; var Renderer: PSDL_Renderer);
+procedure initSDL(var Window: PSDL_Window; var Renderer: PSDL_Renderer);
 begin
   if SDL_Init(SDL_INIT_VIDEO) < 0 then
   begin
@@ -96,12 +97,34 @@ begin
   SDL_DestroyTexture(texture);
 end;
 
-function Couleur(r, g, b, a: Integer): TSDL_Color;
+procedure afficherImagesCentrees(Renderer: PSDL_Renderer; joueurs : TJoueurs ; joueurActuel : Integer);
+var i, j, n: Integer;
+    totalWidth : Integer;
+    destRect: TSDL_Rect;
+
 begin
-  Couleur.r := r;
-  Couleur.g := g;
-  Couleur.b := b;
-  Couleur.a := a;
+  n:=length(joueurs) - 1;
+  totalWidth := n * 300;
+
+  j:=0;
+  for i := 0 to length(joueurs) - 1 do
+    if i<>joueurActuel then
+    begin
+      destRect.x := (SCREEN_WIDTH - totalWidth) div 2 + j * 300;
+      destRect.y := SCREEN_HEIGHT div 2 - 100;
+      destRect.w := 300;
+      destRect.h := 420;
+      afficherImage(Renderer, GetEnumName(TypeInfo(TPersonnage), Ord(joueurs[i].nom)) + 'actuel', @destRect);
+      j:=j+1;
+    end;
+end;
+
+function couleur(r, g, b, a: Integer): TSDL_Color;
+begin
+  couleur.r := r;
+  couleur.g := g;
+  couleur.b := b;
+  couleur.a := a;
 end;
 
 function chargerTextureDepuisTexte(renderer:PSDL_Renderer; police:PTTF_Font; text:String; color: TSDL_Color):PSDL_Texture;
@@ -162,7 +185,7 @@ begin
   chargerTextureDepuisAudio := audio;
 end;
 
-procedure afficherAudio(filename: string);
+procedure lancerAudio(filename: string);
 var audio: PMix_Chunk;
 begin
   audio := chargerTextureDepuisAudio(filename);
@@ -180,7 +203,7 @@ begin
   Mix_FreeChunk(audio);
 end;
 
-procedure AfficherDes(Renderer: PSDL_Renderer; DiceTextures: TabTextures; ResultatsDice: TTabInt);
+procedure afficherDes(Renderer: PSDL_Renderer; DiceTextures: TabTextures; ResultatsDice: TTabInt);
 var
   DestRect: TSDL_Rect;
   Angle : Double;
@@ -203,7 +226,7 @@ begin
   SDL_DestroyTexture(texture2);
 end;
 
-procedure AfficherPions(Renderer: PSDL_Renderer; joueurs: TJoueurs);
+procedure afficherPions(Renderer: PSDL_Renderer; joueurs: TJoueurs);
 var
   DestRect: TSDL_Rect;
   i: Integer;
@@ -220,11 +243,10 @@ end;
 
 procedure preventionJoueur(Renderer : PSDL_Renderer ; joueurs : TJoueurs ; joueurActuel : Integer ; texte : String);
 var DestRect : TSDL_Rect;
-    Event : TSDL_Event;
 begin
   DestRect := coordonnees(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
   afficherImage(Renderer, 'prevention', @DestRect);
-  afficherTexte(Renderer, texte, 70, 600, 500, Couleur(163, 3, 3, 255));
+  afficherTexte(Renderer, texte, 70, 600, 500, couleur(163, 3, 3, 255));
   DestRect := coordonnees(100, 200, 500, 700);
   afficherImage(Renderer, GetEnumName(TypeInfo(TPersonnage), Ord(joueurs[joueurActuel].nom)), @DestRect);
   SDL_RenderPresent(Renderer);
@@ -244,9 +266,9 @@ begin
   DestRect := coordonnees(0, 0, TILE_SIZE * GRID_WIDTH, TILE_SIZE * GRID_HEIGHT);
   afficherImage(Renderer, 'plateau', @DestRect);
 
-  AfficherPions(Renderer, joueurs);  
-  AfficherDes(Renderer, DiceTextures, ResultatsDice);
-  afficherTexte(Renderer, 'Déplacements restants : ' + IntToStr(nbDeplacement), 25, SCREEN_WIDTH div 2 - 60, 200, Couleur(0, 0, 0, 0));
+  afficherPions(Renderer, joueurs);  
+  afficherDes(Renderer, DiceTextures, ResultatsDice);
+  afficherTexte(Renderer, 'Déplacements restants : ' + IntToStr(nbDeplacement), 25, SCREEN_WIDTH div 2 - 60, 200, couleur(0, 0, 0, 0));
   
   DestRect := coordonnees(0, SCREEN_HEIGHT-230, 180, 252);
   afficherImage(Renderer, GetEnumName(TypeInfo(TPersonnage), Ord(joueurs[joueurActuel].nom)) + 'actuel', @DestRect);
@@ -272,58 +294,58 @@ begin
 
   // Affichage du menu texte
   if selectionActuelle = 0 then
-    afficherTexte(Renderer, '1. Afficher les règles du jeu', 75, SCREEN_WIDTH div 2 - 465, SCREEN_HEIGHT div 2 - 40, Couleur(163, 3, 3, 0))
+    afficherTexte(Renderer, '1. Afficher les règles du jeu', 75, SCREEN_WIDTH div 2 - 465, SCREEN_HEIGHT div 2 - 40, couleur(163, 3, 3, 0))
   else
-    afficherTexte(Renderer, '1. Afficher les règles du jeu', 70, SCREEN_WIDTH div 2 - 440, SCREEN_HEIGHT div 2 - 40, Couleur(0, 0, 0, 0));
+    afficherTexte(Renderer, '1. Afficher les règles du jeu', 70, SCREEN_WIDTH div 2 - 440, SCREEN_HEIGHT div 2 - 40, couleur(0, 0, 0, 0));
 
   if selectionActuelle = 1 then
-    afficherTexte(Renderer, '2. Commencer une nouvelle partie', 75, SCREEN_WIDTH div 2 - 570, SCREEN_HEIGHT div 2 + 80, Couleur(163, 3, 3, 0))
+    afficherTexte(Renderer, '2. Commencer une nouvelle partie', 75, SCREEN_WIDTH div 2 - 570, SCREEN_HEIGHT div 2 + 80, couleur(163, 3, 3, 0))
   else
-    afficherTexte(Renderer, '2. Commencer une nouvelle partie', 70, SCREEN_WIDTH div 2 - 520, SCREEN_HEIGHT div 2 + 80 , Couleur(0, 0, 0, 0));
+    afficherTexte(Renderer, '2. Commencer une nouvelle partie', 70, SCREEN_WIDTH div 2 - 520, SCREEN_HEIGHT div 2 + 80 , couleur(0, 0, 0, 0));
 
   if selectionActuelle = 2 then
-    afficherTexte(Renderer, '3. Quitter', 75, SCREEN_WIDTH div 2 - 170, SCREEN_HEIGHT div 2 + 200 , Couleur(163, 3, 3, 0))
+    afficherTexte(Renderer, '3. Quitter', 75, SCREEN_WIDTH div 2 - 170, SCREEN_HEIGHT div 2 + 200 , couleur(163, 3, 3, 0))
   else
-    afficherTexte(Renderer, '3. Quitter', 70, SCREEN_WIDTH div 2 - 165, SCREEN_HEIGHT div 2 + 200 , Couleur(0, 0, 0, 0));
+    afficherTexte(Renderer, '3. Quitter', 70, SCREEN_WIDTH div 2 - 165, SCREEN_HEIGHT div 2 + 200 , couleur(0, 0, 0, 0));
 
   SDL_RenderPresent(Renderer);
 end;
 
 procedure affichageTour(Renderer : PSDL_Renderer ; selectionActuelle : Integer);
 begin
-   afficherTexte(Renderer, 'Que voulez-vous faire ?', 40, SCREEN_WIDTH - 800, 305, Couleur(163, 3, 3, 0));
+   afficherTexte(Renderer, 'Que voulez-vous faire ?', 40, SCREEN_WIDTH - 800, 305, couleur(163, 3, 3, 0));
 
     if selectionActuelle = 0 then
-      afficherTexte(Renderer, '1. Formuler une hypothèse', 30, SCREEN_WIDTH - 800, 365, Couleur(163, 3, 3, 0))
+      afficherTexte(Renderer, '1. Formuler une hypothèse', 30, SCREEN_WIDTH - 800, 365, couleur(163, 3, 3, 0))
     else
-      afficherTexte(Renderer, '1. Formuler une hyptohèse', 25, SCREEN_WIDTH - 800, 365, Couleur(0, 0, 0, 0));
+      afficherTexte(Renderer, '1. Formuler une hyptohèse', 25, SCREEN_WIDTH - 800, 365, couleur(0, 0, 0, 0));
 
     if selectionActuelle = 1 then
-      afficherTexte(Renderer, '2. Formuler une accusation', 30, SCREEN_WIDTH - 800, 405, Couleur(163, 3, 3, 0))
+      afficherTexte(Renderer, '2. Formuler une accusation', 30, SCREEN_WIDTH - 800, 405, couleur(163, 3, 3, 0))
     else
-      afficherTexte(Renderer, '2. Formuler une accusation', 25, SCREEN_WIDTH - 800, 405, Couleur(0, 0, 0, 0));
+      afficherTexte(Renderer, '2. Formuler une accusation', 25, SCREEN_WIDTH - 800, 405, couleur(0, 0, 0, 0));
 
       if selectionActuelle = 2 then
-      afficherTexte(Renderer, '3. Rien', 30, SCREEN_WIDTH - 800, 445, Couleur(163, 3, 3, 0))
+      afficherTexte(Renderer, '3. Rien', 30, SCREEN_WIDTH - 800, 445, couleur(163, 3, 3, 0))
     else
-      afficherTexte(Renderer, '3. Rien', 25, SCREEN_WIDTH - 800, 445, Couleur(0, 0, 0, 0));
+      afficherTexte(Renderer, '3. Rien', 25, SCREEN_WIDTH - 800, 445, couleur(0, 0, 0, 0));
 
     SDL_RenderPresent(Renderer);
 end;
 
 procedure affichageAccusation(Renderer : PSDL_Renderer ; selectionActuelle : Integer);
 begin
-afficherTexte(Renderer, 'Voulez-vous formuler une accusation ?', 35, SCREEN_WIDTH - 800, 305, Couleur(163, 3, 3, 255));
+afficherTexte(Renderer, 'Voulez-vous formuler une accusation ?', 35, SCREEN_WIDTH - 800, 305, couleur(163, 3, 3, 255));
 
     if selectionActuelle = 0 then
-      afficherTexte(Renderer, 'Oui', 50, SCREEN_WIDTH - 600, 365, Couleur(163, 3, 3, 0))
+      afficherTexte(Renderer, 'Oui', 50, SCREEN_WIDTH - 600, 365, couleur(163, 3, 3, 0))
     else
-      afficherTexte(Renderer, 'Oui', 45, SCREEN_WIDTH - 600, 365, Couleur(0, 0, 0, 0));
+      afficherTexte(Renderer, 'Oui', 45, SCREEN_WIDTH - 600, 365, couleur(0, 0, 0, 0));
 
     if selectionActuelle = 1 then
-      afficherTexte(Renderer, 'Non', 50, SCREEN_WIDTH - 600, 425, Couleur(163, 3, 3, 0))
+      afficherTexte(Renderer, 'Non', 50, SCREEN_WIDTH - 600, 425, couleur(163, 3, 3, 0))
     else
-      afficherTexte(Renderer, 'Non', 45, SCREEN_WIDTH - 600, 425, Couleur(0, 0, 0, 0));
+      afficherTexte(Renderer, 'Non', 45, SCREEN_WIDTH - 600, 425, couleur(0, 0, 0, 0));
 
     SDL_RenderPresent(Renderer);
 end;
@@ -362,7 +384,6 @@ begin
    // Afficher l'image de fond
   afficherImage(Renderer, 'victoire', @DestRect);
 end;
-
 
 procedure CleanUp(Window : PSDL_Window ; Renderer : PSDL_Renderer);
 begin
