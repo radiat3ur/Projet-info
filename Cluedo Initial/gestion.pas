@@ -87,24 +87,19 @@ procedure initialisationPaquets(var paquetPieces, paquetArmes, paquetPersonnages
 var i : Integer;
 
 begin
-  // Crée le paquet des pièces
+  // Crée le paquet de pièces
   SetLength(paquetPieces, 9);
-  for i := 0 to Length(paquetPieces) - 1 do
+  SetLength(paquetArmes, 6);
+  SetLength(paquetPersonnages, 6);
+  for i := 0 to 8 do
   begin
     paquetPieces[i] := TCarte(i);
   end;
 
-  // Crée le paquet des armes
-  SetLength(paquetArmes, 6);
-  for i := 0 to Length(paquetArmes) - 1 do
+  // Crée les paquets d'armes et de personnages
+  for i := 0 to 5 do
   begin
     paquetArmes[i] := TCarte(i + Length(paquetPieces));
-  end;
-
-  // Crée le paquet des personnages
-  SetLength(paquetPersonnages, 6);
-  for i := 0 to Length(paquetPersonnages) - 1 do
-  begin
     paquetPersonnages[i] := TCarte(i + Length(paquetPieces) + Length(paquetArmes));
   end;
 end;
@@ -138,7 +133,7 @@ begin
     if (paquetPieces[i]<>solution[0]) then
     begin
       paquetSansCartesCrime[indexPaquet] := paquetPieces[i];
-      indexPaquet := indexPaquet + 1;
+      Inc(indexPaquet);
     end;
   end;
 
@@ -147,7 +142,7 @@ begin
     if (paquetArmes[i]<>solution[1]) then
     begin
       paquetSansCartesCrime[indexPaquet] := paquetArmes[i];
-      indexPaquet := indexPaquet + 1;
+      Inc(indexPaquet);
     end;
   end;
 
@@ -156,7 +151,7 @@ begin
     if (paquetPersonnages[i]<>solution[2]) then
     begin
       paquetSansCartesCrime[indexPaquet] := paquetPersonnages[i];
-      indexPaquet := indexPaquet + 1;
+      Inc(indexPaquet);
     end;
   end;
 end;

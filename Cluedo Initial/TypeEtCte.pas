@@ -31,6 +31,13 @@ end;
 
 Type TPlateau = array[1..16, 1..21] of TCase;
 
+Type Legende =  record
+    Couleur: TCouleur;
+    Texte: string;
+  end;
+
+TLegendes = array of Legende;
+
 implementation
 
 end.

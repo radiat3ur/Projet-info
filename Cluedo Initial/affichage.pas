@@ -17,7 +17,8 @@ procedure affichagePaquet(paquet: TPaquet);
 
 procedure attributionCouleur(couleur: TCouleur);
 procedure afficherEtiquettes(i, j: Integer);
-procedure affichageLegende(i : Integer);
+procedure initialisationLegendes(var legende: TLegendes);
+procedure affichageLegendes(i: Integer);
 
 procedure affichagePlateau(var plateau: TPlateau; joueurs: TJoueurs; joueurActuel: Integer);
 
@@ -179,86 +180,41 @@ begin
   TextColor(15);
 end;
 
-procedure affichageLegende(i : Integer);
+procedure initialisationLegendes(var legende: TLegendes);
 begin
-case i of
-  1: begin
-      TextBackground(0);
-      write('  Legende :');
-    end;
-  2: write();
-  3: begin
-      TextBackground(0);
-      write('   ');
-      TextBackground(1);
-      write('   ');
-      TextBackground(0);
-      write(' - Amphi Tillion');
-    end;
-  4: begin
-      TextBackground(0);
-      write('    ');
-      TextBackground(4);
-      write('   ');
-      TextBackground(0);
-      write(' - BU');
-      end;
-  5: begin
-      TextBackground(0);
-      write('    ');
-      TextBackground(2);
-      write('   ');
-      TextBackground(0);
-      write(' - Labo');
-    end;
-  6: begin
-      TextBackground(0);
-      write('    ');
-      TextBackground(5);
-      write('   ');
-      TextBackground(0);
-      write(' - Parking visiteurs');
-    end;
-  7: begin
-      TextBackground(0);
-      write('    ');
-      TextBackground(14);
-      write('   ');
-      TextBackground(0);
-      write(' - RU');
-    end;
-  8: begin
-      TextBackground(0);
-      write('   ');
-      TextBackground(1);
-      write('   ');
-      TextBackground(0);
-      write(' - BDE');
-    end;
-  9: begin  
-      TextBackground(0);
-      write('   ');
-      TextBackground(3);
-      write('   ');
-      TextBackground(0);
-      write(' - Residence');
-    end;
-  10: begin
-      TextBackground(0);
-      write('    ');
-      TextBackground(4);
-      write('   ');
-      TextBackground(0);
-      write(' - Infirmerie');
-    end;
-  11: begin
-      TextBackground(0);
-      write('    ');
-      TextBackground(14);
-      write('   ');
-      TextBackground(0);
-      write(' - Cafeteria');
-    end;
+  SetLength(legende, 9);
+  legende[0].couleur := Blue;
+  legende[0].texte := 'Amphi Tillion';
+  legende[1].couleur := Red;
+  legende[1].texte := 'BU';
+  legende[2].couleur := Green;
+  legende[2].texte := 'Labo';
+  legende[3].couleur := Magenta;
+  legende[3].texte := 'Parking visiteurs';
+  legende[4].couleur := Yellow;
+  legende[4].texte := 'RU';
+  legende[5].couleur := Blue;
+  legende[5].texte := 'BDE';
+  legende[6].couleur := Cyan;
+  legende[6].texte := 'Residence';
+  legende[7].couleur := Red;
+  legende[7].texte := 'Infirmerie';
+  legende[8].couleur := Yellow;
+  legende[8].texte := 'Cafeteria';
+end;
+
+procedure affichageLegendes(i: Integer);
+var legende : TLegendes;
+begin
+  initialisationLegendes(legende);
+  if (i >= 0) and (i <= Length(legende)) then
+  begin
+    TextBackground(0);
+    write('    ');
+    attributionCouleur(legende[i].couleur);
+    write('   ');
+    TextBackground(0);
+    write(' - ', legende[i].texte);
   end;
 end;
 
@@ -289,7 +245,7 @@ begin
         write('.'); // Couloirs et pièces marqués par '.'  
           
     end;
-    affichageLegende(i);
+    affichageLegendes(i);
     writeln;
   end;
   TextBackground(0);
