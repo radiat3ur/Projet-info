@@ -13,7 +13,7 @@ begin
   joueurActuel:=nbJoueurs-1;
   // Initialise le jeu
   choixDebutJeu(nbJoueurs, plateau, joueurs); // Lorsque 2 est tapé, on initilialise le jeu
-  initialisationPartie(nbJoueurs, joueurs, paquetPieces, paquetArmes, paquetPersonnages, paquetSansCartesCrime, solution, plateau);
+  initPartie(nbJoueurs, joueurs, paquetPieces, paquetArmes, paquetPersonnages, paquetSansCartesCrime, solution, plateau);
   narration();
 
   for i:=0 to nbJoueurs-1 do
@@ -27,7 +27,7 @@ begin
     finTourJoueur();
   end;
 
-  initialisationPlateau(plateau);
+  initPlateau(plateau);
     
   repeat
     preventionTourJoueur(joueurs, joueurActuel);

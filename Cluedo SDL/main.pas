@@ -9,23 +9,20 @@ var Window: PSDL_Window;
     DiceTextures : TabTextures;
     nbDeplacement, joueurActuel : Integer;
     pieces : TPieces;
-    cartesChoisies, paquetPieces, paquetArmes, paquetPersonnages, solution, paquetSansCartesCrime : TPaquet;
-    IsRunning, presenceCarteCommune : Boolean;
+    paquetPieces, paquetArmes, paquetPersonnages, solution, paquetSansCartesCrime : TPaquet;
+    IsRunning: Boolean;
     Event : TSDL_Event;
-    Rect : TSDL_Rect;
-    carteChoisie : TCarte;
-    audio : PMix_Chunk;
 
 begin
-  InitSDL(Window, Renderer);
+  initSDL(Window, Renderer);
   menu(Renderer);
-  InitPieces(Renderer, pieces);
+  initPieces(Renderer, pieces);
   choixNbJoueurs(Renderer, joueurs);
   selectionJoueurs(Renderer, joueurs);
   SDL_Delay(750);
-  initialisationPartie(Renderer, pieces, joueurs, joueurActuel, paquetPieces, paquetArmes, paquetPersonnages, solution, paquetSansCartesCrime);
+  initPartie(Renderer, pieces, joueurs, joueurActuel, paquetPieces, paquetArmes, paquetPersonnages, solution, paquetSansCartesCrime);
   preventionJoueur(Renderer, joueurs, joueurActuel, 'C''est à toi de jouer !');
-  afficherAudio('Prevention ' + GetEnumName(TypeInfo(TPersonnage), Ord(joueurs[joueurActuel].nom)));
+  lancerAudio('Prevention ' + GetEnumName(TypeInfo(TPersonnage), Ord(joueurs[joueurActuel].nom)));
   IsRunning:=True;
   while IsRunning do
   begin

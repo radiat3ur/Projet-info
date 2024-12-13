@@ -7,15 +7,15 @@ Uses Crt, TypeEtCte, affichage;
 function choixAction(choix : Integer) : Boolean;
 function TPieceToTCarte(piece: TPiece): TCarte;
 procedure menu( var choix, nbJoueurs : Integer ; var joueurs : TJoueurs);
-procedure initialisationPaquets(var paquetPieces, paquetArmes, paquetPersonnages : TPaquet);
+procedure initPaquets(var paquetPieces, paquetArmes, paquetPersonnages : TPaquet);
 procedure selectionCartesCrime(paquetPieces, paquetArmes, paquetPersonnages : TPaquet; var solution, paquetSansCartesCrime : TPaquet);
 procedure melangerPaquet(var paquetSansCartesCrime : TPaquet);
-procedure initialisationJoueurs(var joueurs: TJoueurs; var plateau : TPlateau; nbJoueurs: Integer);
+procedure initJoueurs(var joueurs: TJoueurs; var plateau : TPlateau; nbJoueurs: Integer);
 procedure distributionCartesJoueurs(paquetSansCartesCrime : TPaquet ; nbJoueurs : Integer ; var joueurs : TJoueurs);
-procedure initialisationPiece(var plateau: TPlateau; debutX, finX, debutY, finY: Integer; piece: TPiece; couleur: TCouleur);
-procedure initialisationPlateau(var plateau: TPlateau);
+procedure initPiece(var plateau: TPlateau; debutX, finX, debutY, finY: Integer; piece: TPiece; couleur: TCouleur);
+procedure initPlateau(var plateau: TPlateau);
 procedure choixDebutJeu(var nbJoueurs : Integer ; var plateau : TPlateau ; var joueurs : TJoueurs);
-procedure initialisationPartie(nbJoueurs:integer;  var joueurs : TJoueurs ; var paquetPieces, paquetArmes, paquetPersonnages, paquetSansCartesCrime, solution : TPaquet ; var plateau : TPlateau);
+procedure initPartie(nbJoueurs:integer;  var joueurs : TJoueurs ; var paquetPieces, paquetArmes, paquetPersonnages, paquetSansCartesCrime, solution : TPaquet ; var plateau : TPlateau);
 
 // Mènel :
 procedure choixCarte(paquet: TPaquet; var carteChoisie: TCarte);
@@ -30,7 +30,7 @@ procedure affichageResultatAccusation(paquetPieces, paquetArmes, paquetPersonnag
 procedure placerPionDansPiece(var plateau : TPlateau ; joueurActuel,newX,newY : Integer ; piece : TPiece);
 procedure PlacerDevantPorte(var plateau: TPlateau; var joueurs: TJoueurs; joueurActuel: Integer; var deplacement:integer);
 procedure deplacerJoueur(var joueurs: TJoueurs; joueurActuel: Integer; var plateau: TPlateau; var deplacement: Integer);
-function LancerDes( deplacement:integer) : integer;
+function lancerDes( deplacement:integer) : integer;
 procedure jouerTour(var joueurs: TJoueurs; var plateau: TPlateau; paquetPieces, paquetArmes, paquetPersonnages, solution: TPaquet; joueurActuel:integer);
 
 implementation
@@ -83,7 +83,7 @@ repeat
   until (choix=1) or (choix=2) or (choix=3) ;
 end;
 
-procedure initialisationPaquets(var paquetPieces, paquetArmes, paquetPersonnages : TPaquet);
+procedure initPaquets(var paquetPieces, paquetArmes, paquetPersonnages : TPaquet);
 var i : Integer;
 
 begin
@@ -173,7 +173,7 @@ begin
   end;
 end;
 
-procedure initialisationJoueurs(var joueurs: TJoueurs; var plateau : TPlateau; nbJoueurs: Integer);
+procedure initJoueurs(var joueurs: TJoueurs; var plateau : TPlateau; nbJoueurs: Integer);
 var personnagesDisponibles: array[0..MAX_PERSONNAGES - 1] of Boolean;
     i, j, choixPersonnage, cartesParJoueur, joueursAvecNbCartesStandard: Integer;
 begin
@@ -283,7 +283,7 @@ begin
     end;
 end;
 
-procedure initialisationPiece(var plateau: TPlateau; debutX, finX, debutY, finY: Integer; piece: TPiece; couleur: TCouleur);
+procedure initPiece(var plateau: TPlateau; debutX, finX, debutY, finY: Integer; piece: TPiece; couleur: TCouleur);
 var i, j: Integer;
 
 begin
@@ -312,7 +312,7 @@ begin
   end;
 end;
 
-procedure initialisationPlateau(var plateau: TPlateau);
+procedure initPlateau(var plateau: TPlateau);
 var i, j: Integer;
 
 begin
@@ -335,15 +335,15 @@ begin
     plateau[16, j].typePiece := Mur;
   end;
 
-  initialisationPiece(plateau, 2, 3, 2, 4, Amphi_Tillionn, Blue);
-  initialisationPiece(plateau, 2, 3, 10, 12, Laboo, Green);
-  initialisationPiece(plateau, 2, 3, 18, 20, BUU, Red);
-  initialisationPiece(plateau, 8, 9, 2, 4, RUU, Yellow);
-  initialisationPiece(plateau, 8, 9, 10, 12, Parking_visiteurs, Magenta);
-  initialisationPiece(plateau, 8, 9, 18, 20, Cafeteriaa, Yellow);
-  initialisationPiece(plateau, 14, 15, 2, 4, Infirmeriee, Red);
-  initialisationPiece(plateau, 14, 15, 10, 12, Residencee, Cyan);
-  initialisationPiece(plateau, 14, 15, 18, 20, BDEE, Blue);
+  initPiece(plateau, 2, 3, 2, 4, Amphi_Tillionn, Blue);
+  initPiece(plateau, 2, 3, 10, 12, Laboo, Green);
+  initPiece(plateau, 2, 3, 18, 20, BUU, Red);
+  initPiece(plateau, 8, 9, 2, 4, RUU, Yellow);
+  initPiece(plateau, 8, 9, 10, 12, Parking_visiteurs, Magenta);
+  initPiece(plateau, 8, 9, 18, 20, Cafeteriaa, Yellow);
+  initPiece(plateau, 14, 15, 2, 4, Infirmeriee, Red);
+  initPiece(plateau, 14, 15, 10, 12, Residencee, Cyan);
+  initPiece(plateau, 14, 15, 18, 20, BDEE, Blue);
 
   plateau[4, 3].typePiece:= Couloir;
   plateau[3, 9].typePiece:= Couloir;
@@ -366,18 +366,18 @@ begin
   until (nbJoueurs >= 2) and (nbJoueurs <= MAX_PERSONNAGES); // Vérifie que le nombre est compris entre 2 et 6
 
   SetLength(joueurs,nbJoueurs); // Défini la taille du tableau des joueurs en fonction du nombre de joueurs
-  initialisationJoueurs(joueurs, plateau, nbJoueurs); // (voir la procedure dans gestion.pas)
+  initJoueurs(joueurs, plateau, nbJoueurs); // (voir la procedure dans gestion.pas)
 end;
 
 
-procedure initialisationPartie(nbJoueurs:integer;  var joueurs : TJoueurs ; var paquetPieces, paquetArmes, paquetPersonnages, paquetSansCartesCrime, solution : TPaquet ; var plateau : TPlateau);
+procedure initPartie(nbJoueurs:integer;  var joueurs : TJoueurs ; var paquetPieces, paquetArmes, paquetPersonnages, paquetSansCartesCrime, solution : TPaquet ; var plateau : TPlateau);
 
 begin
-  initialisationPaquets(paquetPieces, paquetArmes, paquetPersonnages);
+  initPaquets(paquetPieces, paquetArmes, paquetPersonnages);
   selectionCartesCrime(paquetPieces, paquetArmes, paquetPersonnages, solution, paquetSansCartesCrime);
   melangerPaquet(paquetSansCartesCrime);
   distributionCartesJoueurs(paquetSansCartesCrime, nbJoueurs, joueurs);
-  initialisationPlateau(plateau);
+  initPlateau(plateau);
 end;
 
 procedure choixCarte(paquet: TPaquet; var carteChoisie: TCarte);
@@ -725,12 +725,12 @@ begin
   end;
 end;
 
-function LancerDes( deplacement:integer) : integer;
+function lancerDes( deplacement:integer) : integer;
   var  des1,des2: integer;
 begin
   des1 := Random(6) + 1; 
   des2 := Random(6) + 1;
-  LancerDes:=deplacement+des1 + des2;
+  lancerDes:=deplacement+des1 + des2;
 end;
 
 procedure jouerTour(var joueurs: TJoueurs; var plateau: TPlateau; paquetPieces, paquetArmes, paquetPersonnages, solution: TPaquet; joueurActuel:integer);
@@ -757,7 +757,7 @@ for joueurActuel := 0 to length(joueurs)-1 do
     PlacerDevantPorte(plateau, joueurs, joueurActuel, deplacement);
     deplacement:=-1;//retire 1 deplacement lors du lancer de dés
   end;
-  deplacement := LancerDes(deplacement);
+  deplacement := lancerDes(deplacement);
   write('Tu as obtenu ',deplacement);
   deplacerJoueur(joueurs, joueurActuel, plateau, deplacement);
   effacerLignes(18,4);
