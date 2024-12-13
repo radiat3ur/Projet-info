@@ -25,6 +25,7 @@ begin
   SDL_Delay(750);
   initialisationPartie(Renderer, pieces, joueurs, joueurActuel, paquetPieces, paquetArmes, paquetPersonnages, solution, paquetSansCartesCrime);
   preventionJoueur(Renderer, joueurs, joueurActuel, 'C''est à toi de jouer !');
+  afficherAudio('Prevention ' + GetEnumName(TypeInfo(TPersonnage), Ord(joueurs[joueurActuel].nom)));
   IsRunning:=True;
   while IsRunning do
   begin

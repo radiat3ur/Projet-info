@@ -585,11 +585,12 @@ begin
   afficherTour(Renderer, joueurs, ResultatsDice, DiceTextures, nbDeplacement, joueurActuel);
 
   cartesChoisies[0] := choixCarte(Renderer, 'Choisissez un suspect :', paquetPersonnages);
-
+  afficherAudio(GetEnumName(TypeInfo(TCarte), Ord(cartesChoisies[0])));
   SDL_RenderClear(Renderer);
   afficherTour(Renderer, joueurs, ResultatsDice, DiceTextures, nbDeplacement, joueurActuel);
 
   cartesChoisies[1] := choixCarte(Renderer, 'Choisissez une arme :', paquetArmes);
+  afficherAudio(GetEnumName(TypeInfo(TCarte), Ord(cartesChoisies[1])));
 
   // Sélection de la pièce
   cartesChoisies[2] := TPieceToTCarte(quellePiece(pieces, x, y).nom);
@@ -621,6 +622,8 @@ end;
 function recupererCarteJoueur(Renderer : PSDL_Renderer ; compare, comparant : TPaquet ; ResultatsDice : TTabInt ; DiceTextures : TabTextures ; joueurs : TJoueurs ; nbDeplacement, joueurActuel, temoinChoisi : Integer) : TCarte;
 var cartesCommunes : TPaquet;
     DestRect : TSDL_Rect;
+    lecture : Boolean;
+    Event : TSDL_Event;
 
 begin
   SDL_RenderClear(Renderer);
@@ -630,12 +633,40 @@ begin
     DestRect := coordonnees(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
     afficherImage(Renderer, 'fond', @DestRect);
     afficherTexte(Renderer, 'Aucune carte commune', 70, SCREEN_WIDTH div 2 - 300, SCREEN_HEIGHT div 2, Couleur(163, 3, 3, 255));
+    afficherAudio('Temoin 0 carte');
+    while lecture do
+  begin
+    while SDL_PollEvent(@Event) <> 0 do
+    begin
+      if Event.type_ = SDL_KEYDOWN then
+      begin
+        if Event.key.keysym.sym = SDLK_RETURN then
+          lecture := False;
+      end
+      else if Event.type_ = SDL_QUITEV then
+        Halt;
+    end;
+  end;
     SDL_RenderPresent(Renderer);
     SDL_Delay(2000); 
   end
   else   
   begin
     preventionJoueur(Renderer, joueurs, temoinChoisi, 'Tu dois montrer une carte à ' + GetEnumName(TypeInfo(TPersonnage), Ord(joueurs[joueurActuel].nom)));
+    afficherAudio('Temoin regarde cartes');
+    while lecture do
+  begin
+    while SDL_PollEvent(@Event) <> 0 do
+    begin
+      if Event.type_ = SDL_KEYDOWN then
+      begin
+        if Event.key.keysym.sym = SDLK_RETURN then
+          lecture := False;
+      end
+      else if Event.type_ = SDL_QUITEV then
+        Halt;
+    end;
+  end;
     afficherTour(Renderer, joueurs, ResultatsDice, DiceTextures, nbDeplacement, temoinChoisi);
     recupererCarteJoueur := choixCarte(Renderer, 'Choisissez une carte à montrer', cartesCommunes);
   end;
@@ -646,6 +677,8 @@ var cartesChoisies, cartesCommunes : TPaquet;
     temoinChoisi : Integer;
     carteChoisie : TCarte;
     DestRect : TSDL_Rect;
+    lecture : Boolean;
+    Event : TSDL_Event;
 begin
   SDL_RenderClear(Renderer);
   choixCartes(Renderer, joueurs, ResultatsDice, DiceTextures, nbDeplacement, joueurActuel, x, y, pieces, paquetArmes, paquetPersonnages, cartesChoisies, temoinChoisi);
@@ -655,6 +688,20 @@ begin
   begin
     SDL_RenderClear(Renderer);
     preventionJoueur(Renderer, joueurs, joueurActuel, 'C''est à toi de regarder l''écran');
+    afficherAudio('Enqueteur peut regarder');
+    while lecture do
+  begin
+    while SDL_PollEvent(@Event) <> 0 do
+    begin
+      if Event.type_ = SDL_KEYDOWN then
+      begin
+        if Event.key.keysym.sym = SDLK_RETURN then
+          lecture := False;
+      end
+      else if Event.type_ = SDL_QUITEV then
+        Halt;
+    end;
+  end;
     afficherTour(Renderer, joueurs, ResultatsDice, DiceTextures, nbDeplacement, joueurActuel);
     afficherTexte(Renderer, 'Voici la carte du témoin', 30, SCREEN_WIDTH - 500, 350, Couleur(163, 3, 3, 255));
     DestRect := coordonnees(SCREEN_WIDTH - 445, 405, 200, 280);
@@ -706,20 +753,7 @@ begin
   begin
     SDL_RenderClear(Renderer);
     afficherTour(Renderer, joueurs, ResultatsDice, DiceTextures, nbDeplacement, joueurActuel);
-
-    afficherTexte(Renderer, 'Voulez-vous formuler une accusation ?', 35, SCREEN_WIDTH - 800, 305, Couleur(163, 3, 3, 255));
-
-    if selectionActuelle = 0 then
-      afficherTexte(Renderer, 'Oui', 50, SCREEN_WIDTH - 600, 365, Couleur(163, 3, 3, 0))
-    else
-      afficherTexte(Renderer, 'Oui', 45, SCREEN_WIDTH - 600, 365, Couleur(0, 0, 0, 0));
-
-    if selectionActuelle = 1 then
-      afficherTexte(Renderer, 'Non', 50, SCREEN_WIDTH - 600, 425, Couleur(163, 3, 3, 0))
-    else
-      afficherTexte(Renderer, 'Non', 45, SCREEN_WIDTH - 600, 425, Couleur(0, 0, 0, 0));
-
-    SDL_RenderPresent(Renderer);
+    affichageAccusation(Renderer, selectionActuelle);
 
     while SDL_PollEvent(@Event) <> 0 do
     begin
@@ -768,6 +802,7 @@ begin
   end;
   joueurActuel := (joueurActuel + 1) mod length(joueurs);
   preventionJoueur(Renderer, joueurs, joueurActuel, 'C''est à toi de jouer !');
+  afficherAudio('Prevention ' + GetEnumName(TypeInfo(TPersonnage), Ord(joueurs[joueurActuel].nom)));
 end;  
 
 // Amanda
@@ -790,25 +825,7 @@ begin
   begin
     SDL_RenderClear(Renderer);
     afficherTour(Renderer, joueurs, ResultatsDice, DiceTextures, nbDeplacement, joueurActuel);
-
-    afficherTexte(Renderer, 'Que voulez-vous faire ?', 40, SCREEN_WIDTH - 800, 305, Couleur(163, 3, 3, 0));
-
-    if selectionActuelle = 0 then
-      afficherTexte(Renderer, '1. Formuler une hypothèse', 30, SCREEN_WIDTH - 800, 365, Couleur(163, 3, 3, 0))
-    else
-      afficherTexte(Renderer, '1. Formuler une hyptohèse', 25, SCREEN_WIDTH - 800, 365, Couleur(0, 0, 0, 0));
-
-    if selectionActuelle = 1 then
-      afficherTexte(Renderer, '2. Formuler une accusation', 30, SCREEN_WIDTH - 800, 405, Couleur(163, 3, 3, 0))
-    else
-      afficherTexte(Renderer, '2. Formuler une accusation', 25, SCREEN_WIDTH - 800, 405, Couleur(0, 0, 0, 0));
-
-      if selectionActuelle = 2 then
-      afficherTexte(Renderer, '3. Rien', 30, SCREEN_WIDTH - 800, 445, Couleur(163, 3, 3, 0))
-    else
-      afficherTexte(Renderer, '3. Rien', 25, SCREEN_WIDTH - 800, 445, Couleur(0, 0, 0, 0));
-
-    SDL_RenderPresent(Renderer);
+    affichageTour(Renderer, selectionActuelle);
 
     while SDL_PollEvent(@Event) <> 0 do
     begin
@@ -862,6 +879,7 @@ begin
   end;
   joueurActuel := (joueurActuel + 1) mod length(joueurs);
   preventionJoueur(Renderer, joueurs, joueurActuel, 'C''est à toi de jouer !');
+  afficherAudio('Prevention ' + GetEnumName(TypeInfo(TPersonnage), Ord(joueurs[joueurActuel].nom)));
 end;
 
 
