@@ -295,31 +295,26 @@ begin
   TextBackground(0);
 end;
 
-procedure annonceTour(joueurActuel: Integer);
-var
-  music: PMix_Music;
-  audioFile: string;
+procedure AnnonceTour(joueurActuel: Integer);
+var music: PMix_Music;
 begin
+  if Mix_OpenAudio(22050, AUDIO_S16, 2, 4096) < 0 then halt;
   case joueurActuel of
-    0: audioFile := 'joueur1.mp3';
-    1: audioFile := 'joueur2.mp3';
-    2: audioFile := 'joueur3.mp3';
-    3: audioFile := 'joueur4.mp3';
-    4: audioFile := 'joueur5.mp3';
-    5: audioFile := 'joueur6.mp3';
+    0: music := Mix_LoadMUS('son/joueur1.wav');
+    1: music := Mix_LoadMUS('son/joueur2.wav');
+    2: music := Mix_LoadMUS('son/joueur3.wav');
+    3: music := Mix_LoadMUS('son/joueur4.wav');
+    4: music := Mix_LoadMUS('son/joueur5.wav');
+    5: music := Mix_LoadMUS('son/joueur6.wav');
   end;
-  if Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0 then exit;
-
-  music := Mix_LoadMUS(PAnsiChar(AnsiString(audioFile)));
 
   if music <> nil then
   begin
-    Mix_PlayMusic(music, 0); // Lecture une seule fois
-    SDL_Delay(3000);         // Pause pour écouter (3 secondes ici)
+    Mix_PlayMusic(music, 0); // 1 lecture
+    SDL_Delay(3000);         
     Mix_FreeMusic(music);
   end;
 
   Mix_CloseAudio;
 end;
-
 end.

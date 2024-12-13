@@ -4,10 +4,9 @@ Uses Crt, affichage, TypeEtCte, gestion,SDL2_image, SDL2, SDL2_mixer;
 
 var
   choix, nbJoueurs, joueurActuel, i : Integer;
-  paquetPieces, paquetArmes, paquetPersonnages, solution, paquetSansCartesCrime, cartesChoisies : TPaquet;
+  paquetPieces, paquetArmes, paquetPersonnages, solution, paquetSansCartesCrime : TPaquet;
   joueurs: TJoueurs;
   plateau : TPlateau;
-  carteChoisie : TCarte;
 
 begin
   menu(choix, nbJoueurs, joueurs);
@@ -33,6 +32,6 @@ begin
   repeat
     preventionTourJoueur(joueurs, joueurActuel);
     affichagePlateau(plateau, joueurs, joueurActuel);
-    jouerTour(joueurs, plateau, paquetPieces, paquetArmes, paquetPersonnages, solution, cartesChoisies, carteChoisie, joueurActuel)
+    jouerTour(joueurs, plateau, paquetPieces, paquetArmes, paquetPersonnages, solution, joueurActuel)
   until False;
 end.
