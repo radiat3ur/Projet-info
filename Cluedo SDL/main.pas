@@ -1,6 +1,6 @@
 program main;
 
-uses crt, SDL2, SDL2_image, SDL2_Mixer, SDL2_ttf, TypeEtCte, affichage, gestion, TypInfo;
+uses crt, SDL2, SDL2_image, SDL2_Mixer, SDL2_ttf, TypeEtCte, affichage, audio, gestion, TypInfo;
 
 var Window: PSDL_Window;
     Renderer: PSDL_Renderer;
@@ -32,7 +32,7 @@ begin
     SDL_Delay(16);
     if Event.type_ = SDL_QUITEV then
     begin
-      IsRunning := False; // Arrêtez la boucle principale
+      IsRunning := False;
       Halt;
     end;
   end;

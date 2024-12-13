@@ -182,7 +182,7 @@ end;
 
 procedure initLegendes(var legende: TLegendes);
 begin
-  SetLength(legende, 9);
+  Setlength(legende, 9);
   legende[0].couleur := Blue;
   legende[0].texte := 'Amphi Tillion';
   legende[1].couleur := Red;
@@ -207,7 +207,7 @@ procedure affichageLegendes(i: Integer);
 var legende : TLegendes;
 begin
   initLegendes(legende);
-  if (i >= 0) and (i <= Length(legende)) then
+  if (i >= 0) and (i <= length(legende)) then
   begin
     TextBackground(0);
     write('    ');
