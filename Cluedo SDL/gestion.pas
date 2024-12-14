@@ -730,6 +730,7 @@ begin
             afficherImage(Renderer, GetEnumName(TypeInfo(TPersonnage), Ord(joueurs[joueurActuel].nom)), @DestRect);
             SDL_RenderPresent(Renderer);
             lancerAudio('Victoire', 2000);
+            lancerAudio('musique fin', 2000);
             cliqueSuivant();
             Halt;
           end
@@ -739,6 +740,7 @@ begin
             afficherImagesCentrees(Renderer, joueurs, joueurActuel);
             SDL_RenderPresent(Renderer);
             lancerAudio('Victoire', 2000);
+            lancerAudio('musique fin', 2000);
             cliqueSuivant();
             Halt;
           end;
@@ -807,6 +809,7 @@ begin
                     afficherImage(Renderer, GetEnumName(TypeInfo(TPersonnage), Ord(joueurs[joueurActuel].nom)), @DestRect);
                     SDL_RenderPresent(Renderer);
                     lancerAudio('Victoire', 2000);
+                    lancerAudio('musique fin', 2000);
                     cliqueSuivant();
                     Halt;
                   end
@@ -816,6 +819,7 @@ begin
                     afficherImagesCentrees(Renderer, joueurs, joueurActuel);
                     SDL_RenderPresent(Renderer);
                     lancerAudio('Victoire', 2000);
+                    lancerAudio('musique fin', 2000);
                     cliqueSuivant();
                     Halt;
                   end;
