@@ -140,7 +140,7 @@ var Event: TSDL_Event;
     SelectedCount: Integer;
     JoueurRect: array[0..5] of TSDL_Rect;
     DestRect : TSDL_Rect;
-    i: Integer;
+    i, j: Integer;
     MouseX, MouseY: Integer;
     Selection: array[0..5] of Boolean;
     sdlRect1: TSDL_Rect;
@@ -163,6 +163,13 @@ begin
     SDL_RenderClear(Renderer);
 
     afficherImage(Renderer, 'selection joueurs', @DestRect);
+    // Afficher les images des joueurs
+    for j := 0 to 5 do
+      afficherImage(Renderer, GetEnumName(TypeInfo(TPersonnage), Ord(TPersonnage(j))), @JoueurRect[j]);
+
+    afficherTexte(Renderer, 'Cliquez pour sélectionner ' + IntToStr(length(joueurs)) + ' joueurs.', 40, SCREEN_WIDTH div 2 - 325, 70, Couleur(163, 3, 3, 255));
+
+    SDL_RenderPresent(Renderer);
 
     while SDL_PollEvent(@Event) <> 0 do
     begin
@@ -182,6 +189,26 @@ begin
                   begin
                     Selection[i] := True;
                     joueurs[SelectedCount].nom := TPersonnage(i); // Ajouter le joueur sélectionné
+                    // Dessiner les rectangles gris sur les joueurs sélectionnés
+                    for j := 0 to length(joueurs) - 1 do
+                    begin
+                      if joueurs[j].nom = rien then
+                        continue;
+                      
+                      sdlRect1 := coordonnees(JoueurRect[Ord(joueurs[j].nom)].x, JoueurRect[Ord(joueurs[j].nom)].y, JoueurRect[Ord(joueurs[j].nom)].w, JoueurRect[Ord(joueurs[j].nom)].h);
+
+                      SDL_SetRenderDrawColor(Renderer, 105, 105, 105, 255);
+                      SDL_RenderFillRect(Renderer, @sdlRect1);
+                      SDL_RenderDrawRect(Renderer, @sdlRect1);
+                    end;
+                    //Afficher les images des joueurs
+                    for j := 0 to 5 do
+                      afficherImage(Renderer, GetEnumName(TypeInfo(TPersonnage), Ord(TPersonnage(j))), @JoueurRect[j]);
+
+                    afficherTexte(Renderer, 'Cliquez pour sélectionner ' + IntToStr(length(joueurs)) + ' joueurs.', 40, SCREEN_WIDTH div 2 - 325, 70, Couleur(163, 3, 3, 255));
+
+                    SDL_RenderPresent(Renderer);
+                    lancerAudio('Presentation ' + GetEnumName(TypeInfo(TPersonnage), ord(joueurs[SelectedCount].nom)), 4000);
                     Inc(SelectedCount);
                   end;
                 end;
@@ -193,26 +220,6 @@ begin
         SDL_QUITEV: Halt;
       end;
     end;
-    // Dessiner les rectangles gris sur les joueurs sélectionnés
-    for i := 0 to length(joueurs) - 1 do
-    begin
-      if joueurs[i].nom = rien then
-        continue;
-      
-      sdlRect1 := coordonnees(JoueurRect[Ord(joueurs[i].nom)].x, JoueurRect[Ord(joueurs[i].nom)].y, JoueurRect[Ord(joueurs[i].nom)].w, JoueurRect[Ord(joueurs[i].nom)].h);
-
-      SDL_SetRenderDrawColor(Renderer, 105, 105, 105, 255);
-      SDL_RenderFillRect(Renderer, @sdlRect1);
-      SDL_RenderDrawRect(Renderer, @sdlRect1);
-    end;
-
-    // Afficher les images des joueurs
-    for i := 0 to 5 do
-      afficherImage(Renderer, GetEnumName(TypeInfo(TPersonnage), Ord(TPersonnage(i))), @JoueurRect[i]);
-
-    afficherTexte(Renderer, 'Cliquez pour sélectionner ' + IntToStr(length(joueurs)) + ' joueurs.', 40, SCREEN_WIDTH div 2 - 325, 70, Couleur(163, 3, 3, 255));
-
-    SDL_RenderPresent(Renderer);
   end;
   SDL_RenderClear(Renderer);
 end;
@@ -553,15 +560,16 @@ begin
   afficherTour(Renderer, joueurs, ResultatsDice, DiceTextures, nbDeplacement, joueurActuel);
 
   cartesChoisies[0] := choixCarte(Renderer, 'Choisissez un suspect :', paquetPersonnages);
-  lancerAudio(GetEnumName(TypeInfo(TCarte), Ord(cartesChoisies[0])));
+  lancerAudio(GetEnumName(TypeInfo(TCarte), Ord(cartesChoisies[0])), 2000);
   SDL_RenderClear(Renderer);
   afficherTour(Renderer, joueurs, ResultatsDice, DiceTextures, nbDeplacement, joueurActuel);
 
   cartesChoisies[1] := choixCarte(Renderer, 'Choisissez une arme :', paquetArmes);
-  lancerAudio(GetEnumName(TypeInfo(TCarte), Ord(cartesChoisies[1])));
+  lancerAudio(GetEnumName(TypeInfo(TCarte), Ord(cartesChoisies[1])), 2000);
 
   // Sélection de la pièce
   cartesChoisies[2] := TPieceToTCarte(quellePiece(pieces, x, y).nom);
+  lancerAudio(GetEnumName(TypeInfo(TCarte), Ord(cartesChoisies[2])), 2000);
 end;
 
 function comparaisonCartes(compare, comparant : TPaquet) : TPaquet;
@@ -594,7 +602,7 @@ begin
     DestRect := coordonnees(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
     afficherImage(Renderer, 'fond', @DestRect);
     afficherTexte(Renderer, 'Aucune carte commune', 70, SCREEN_WIDTH div 2 - 300, SCREEN_HEIGHT div 2, Couleur(163, 3, 3, 255));
-    lancerAudio('Temoin 0 carte');
+    lancerAudio('Temoin 0 carte', 3000);
     cliqueSuivant();
     SDL_RenderPresent(Renderer);
     SDL_Delay(2000); 
@@ -602,7 +610,7 @@ begin
   else   
   begin
     preventionJoueur(Renderer, joueurs, temoinChoisi, 'Tu dois montrer une carte à ' + GetEnumName(TypeInfo(TPersonnage), Ord(joueurs[joueurActuel].nom)));
-    lancerAudio('Temoin regarde cartes');
+    lancerAudio('Temoin regarde cartes', 3000);
     cliqueSuivant();
     afficherTour(Renderer, joueurs, ResultatsDice, DiceTextures, nbDeplacement, temoinChoisi);
     recupererCarteJoueur := choixCarte(Renderer, 'Choisissez une carte à montrer', cartesCommunes);
@@ -625,15 +633,15 @@ begin
   begin
     SDL_RenderClear(Renderer);
     preventionJoueur(Renderer, joueurs, joueurActuel, 'C''est à toi de regarder l''écran');
-    lancerAudio('Enqueteur peut regarder');
+    lancerAudio('Enqueteur peut regarder', 3000);
     cliqueSuivant();
+    afficherTour(Renderer, joueurs, ResultatsDice, DiceTextures, nbDeplacement, joueurActuel);
+    afficherTexte(Renderer, 'Voici la carte du témoin', 30, SCREEN_WIDTH - 500, 350, Couleur(163, 3, 3, 255));
+    DestRect := coordonnees(SCREEN_WIDTH - 445, 405, 200, 280);
+    afficherImage(Renderer, 'cartes/' + GetEnumName(TypeInfo(TCarte), Ord(carteChoisie)), @DestRect);
+    SDL_RenderPresent(Renderer);
+    SDL_Delay(2000);
   end;
-  afficherTour(Renderer, joueurs, ResultatsDice, DiceTextures, nbDeplacement, joueurActuel);
-  afficherTexte(Renderer, 'Voici la carte du témoin', 30, SCREEN_WIDTH - 500, 350, Couleur(163, 3, 3, 255));
-  DestRect := coordonnees(SCREEN_WIDTH - 445, 405, 200, 280);
-  afficherImage(Renderer, 'cartes/' + GetEnumName(TypeInfo(TCarte), Ord(carteChoisie)), @DestRect);
-  SDL_RenderPresent(Renderer);
-  SDL_Delay(2000);
 end;
 
 function accusation(Renderer : PSDL_Renderer ; joueurs : TJoueurs ; ResultatsDice : TTabInt ; DiceTextures : TabTextures ; nbDeplacement, joueurActuel, x, y : Integer ; paquetPersonnages, paquetArmes, paquetPieces, solution : TPaquet ; pieces : TPieces): Boolean;
@@ -644,16 +652,19 @@ begin
 
   Setlength(cartesChoisies, 3);
   cartesChoisies[0] := choixCarte(Renderer, 'Choisissez un suspect :', paquetPersonnages);
+  lancerAudio(GetEnumName(TypeInfo(TCarte), Ord(cartesChoisies[0])), 2000);
 
   SDL_RenderClear(Renderer);
   afficherTour(Renderer, joueurs, ResultatsDice, DiceTextures, nbDeplacement, joueurActuel);
 
   cartesChoisies[1] := choixCarte(Renderer, 'Choisissez une arme :', paquetArmes);
+  lancerAudio(GetEnumName(TypeInfo(TCarte), Ord(cartesChoisies[1])), 2000);
 
   SDL_RenderClear(Renderer);
   afficherTour(Renderer, joueurs, ResultatsDice, DiceTextures, nbDeplacement, joueurActuel);
 
   cartesChoisies[2] := choixCarte(Renderer, 'Choisissez une pièce :', paquetPieces);
+  lancerAudio(GetEnumName(TypeInfo(TCarte), Ord(cartesChoisies[2])), 2000);
 
   cartesCommunes := comparaisonCartes(cartesChoisies, solution);
   if length(cartesCommunes)=3 then
@@ -708,6 +719,7 @@ begin
             DestRect := coordonnees(SCREEN_WIDTH div 2 - 250 , SCREEN_HEIGHT div 2 - 300, 500, 700);
             afficherImage(Renderer, GetEnumName(TypeInfo(TPersonnage), Ord(joueurs[joueurActuel].nom)), @DestRect);
             SDL_RenderPresent(Renderer);
+            lancerAudio('Victoire', 2000);
             SDL_Delay(5000);
             Halt;
           end
@@ -716,6 +728,7 @@ begin
             affichageVictoire(Renderer);
             afficherImagesCentrees(Renderer, joueurs, joueurActuel);
             SDL_RenderPresent(Renderer);
+            lancerAudio('Victoire', 2000);
             SDL_Delay(5000);
             Halt;
           end;
@@ -730,7 +743,7 @@ begin
   end;
   joueurActuel := (joueurActuel + 1) mod length(joueurs);
   preventionJoueur(Renderer, joueurs, joueurActuel, 'C''est à toi de jouer !');
-  lancerAudio('Prevention ' + GetEnumName(TypeInfo(TPersonnage), Ord(joueurs[joueurActuel].nom)));
+  lancerAudio('Prevention ' + GetEnumName(TypeInfo(TPersonnage), Ord(joueurs[joueurActuel].nom)), 5000);
 end;
 
 // Amanda
@@ -782,6 +795,7 @@ begin
                     DestRect := coordonnees(SCREEN_WIDTH div 2 - 250 , SCREEN_HEIGHT div 2 - 300, 500, 700);
                     afficherImage(Renderer, GetEnumName(TypeInfo(TPersonnage), Ord(joueurs[joueurActuel].nom)), @DestRect);
                     SDL_RenderPresent(Renderer);
+                    lancerAudio('Victoire', 2000);
                     SDL_Delay(5000);
                     Halt;
                   end
@@ -790,6 +804,7 @@ begin
                     affichageVictoire(Renderer);
                     afficherImagesCentrees(Renderer, joueurs, joueurActuel);
                     SDL_RenderPresent(Renderer);
+                    lancerAudio('Victoire', 2000);
                     SDL_Delay(5000);
                     Halt;
                   end;
@@ -804,7 +819,7 @@ begin
   end;
   joueurActuel := (joueurActuel + 1) mod length(joueurs);
   preventionJoueur(Renderer, joueurs, joueurActuel, 'C''est à toi de jouer !');
-  lancerAudio('Prevention ' + GetEnumName(TypeInfo(TPersonnage), Ord(joueurs[joueurActuel].nom)));
+  lancerAudio('Prevention ' + GetEnumName(TypeInfo(TPersonnage), Ord(joueurs[joueurActuel].nom)), 5000);
 end;
 
 

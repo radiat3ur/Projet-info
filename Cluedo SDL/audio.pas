@@ -5,7 +5,7 @@ interface
 uses SDL2, SDL2_Mixer, TypeEtCte, sysUtils, TypInfo;
 
 function chargerTextureDepuisAudio(nomDuFichier: String): PMix_Chunk;
-procedure lancerAudio(nomDuFichier: string);
+procedure lancerAudio(nomDuFichier: string; delais : Integer);
 
 implementation
 
@@ -28,7 +28,7 @@ begin
   chargerTextureDepuisAudio := audio;
 end;
 
-procedure lancerAudio(nomDuFichier: string);
+procedure lancerAudio(nomDuFichier: string; delais : Integer);
 var audio: PMix_Chunk;
 begin
   audio := chargerTextureDepuisAudio(nomDuFichier);
@@ -41,7 +41,7 @@ begin
 
   Mix_PlayChannel(-1, audio, 0);
 
-  SDL_Delay(3000);
+  SDL_Delay(delais);
 
   Mix_FreeChunk(audio);
 end;
