@@ -37,7 +37,7 @@ begin
     Halt;
   end;
 
-  Window := SDL_CreateWindow('Cluedo - Déplacement', SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN); // mettre SDL_WINDOW_BORDERLESS pour la présentation
+  Window := SDL_CreateWindow('Cluedo - Déplacement', SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_FULLSCREEN); // mettre SDL_WINDOW_BORDERLESS pour la présentation
   if Window = nil then
   begin
     writeln('Erreur de création de fenêtre : ', SDL_GetError);
