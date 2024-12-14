@@ -1,4 +1,4 @@
-program executer;
+program cluedo;
 
 uses Dos, Crt, sysUtils, Process;
 
