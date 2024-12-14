@@ -115,7 +115,7 @@ begin
 
     afficherImage(Renderer, 'choixNbJoueurs', @DestRect);
 
-    afficherTexte(Renderer, IntToStr(length(joueurs)), 180, SCREEN_WIDTH div 2 - 50, 540, Couleur(163, 3, 3, 255));
+    afficherTexte(Renderer, IntToStr(length(joueurs)), 180, SCREEN_WIDTH div 2 - 50, 513, Couleur(163, 3, 3, 255));
 
     SDL_RenderPresent(Renderer);
 
@@ -730,7 +730,7 @@ begin
             afficherImage(Renderer, GetEnumName(TypeInfo(TPersonnage), Ord(joueurs[joueurActuel].nom)), @DestRect);
             SDL_RenderPresent(Renderer);
             lancerAudio('Victoire', 2000);
-            SDL_Delay(5000);
+            cliqueSuivant();
             Halt;
           end
           else
@@ -739,7 +739,7 @@ begin
             afficherImagesCentrees(Renderer, joueurs, joueurActuel);
             SDL_RenderPresent(Renderer);
             lancerAudio('Victoire', 2000);
-            SDL_Delay(5000);
+            cliqueSuivant();
             Halt;
           end;
          end;
@@ -807,7 +807,7 @@ begin
                     afficherImage(Renderer, GetEnumName(TypeInfo(TPersonnage), Ord(joueurs[joueurActuel].nom)), @DestRect);
                     SDL_RenderPresent(Renderer);
                     lancerAudio('Victoire', 2000);
-                    SDL_Delay(5000);
+                    cliqueSuivant();
                     Halt;
                   end
                   else
@@ -816,7 +816,7 @@ begin
                     afficherImagesCentrees(Renderer, joueurs, joueurActuel);
                     SDL_RenderPresent(Renderer);
                     lancerAudio('Victoire', 2000);
-                    SDL_Delay(5000);
+                    cliqueSuivant();
                     Halt;
                   end;
                 end;

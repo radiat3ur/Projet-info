@@ -37,7 +37,7 @@ begin
     Halt;
   end;
 
-  Window := SDL_CreateWindow('Cluedo - Déplacement', SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_FULLSCREEN); // mettre SDL_WINDOW_BORDERLESS pour la présentation
+  Window := SDL_CreateWindow('Cluedo - Déplacement', SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN); // mettre SDL_WINDOW_BORDERLESS pour la présentation
   if Window = nil then
   begin
     writeln('Erreur de création de fenêtre : ', SDL_GetError);
@@ -209,7 +209,7 @@ begin
   DestRect := coordonnees(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
   afficherImage(Renderer, 'prevention', @DestRect);
   afficherTexte(Renderer, texte, 70, 600, 500, couleur(163, 3, 3, 255));
-  DestRect := coordonnees(100, 200, 500, 700);
+  DestRect := coordonnees(95, 190, 475, 665);
   afficherImage(Renderer, GetEnumName(TypeInfo(TPersonnage), Ord(joueurs[joueurActuel].nom)), @DestRect);
   SDL_RenderPresent(Renderer);
 end;
@@ -232,13 +232,13 @@ begin
   afficherDes(Renderer, DiceTextures, ResultatsDice);
   afficherTexte(Renderer, 'Déplacements restants : ' + IntToStr(nbDeplacement), 25, SCREEN_WIDTH div 2 - 60, 200, couleur(0, 0, 0, 0));
   
-  DestRect := coordonnees(0, SCREEN_HEIGHT-230, 180, 252);
+  DestRect := coordonnees(0, SCREEN_HEIGHT-219, 171, 239);
   afficherImage(Renderer, GetEnumName(TypeInfo(TPersonnage), Ord(joueurs[joueurActuel].nom)) + 'actuel', @DestRect);
 
   Setlength(carteRect, length(joueurs[joueurActuel].main));
   for i := 0 to length(joueurs[joueurActuel].main) - 1 do // Parcourt le paquet
   begin
-    carteRect[i] := coordonnees(i * 137 + 210, SCREEN_HEIGHT - 195, 135, 189);
+    carteRect[i] := coordonnees(i * 130 + 200, SCREEN_HEIGHT - 185, 128, 180);
     afficherImage(Renderer, 'cartes/' + GetEnumName(TypeInfo(TCarte), Ord(joueurs[joueurActuel].main[i])), @carteRect[i]);
   end;
 end;

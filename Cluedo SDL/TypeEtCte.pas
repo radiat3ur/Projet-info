@@ -41,9 +41,9 @@ Type TabTextures = array of PSDL_Texture;
 
 const
   // Constantes pour les dimensions de l'écran et du plateau de jeu
-  SCREEN_WIDTH = 1920;
-  SCREEN_HEIGHT = 1080;
-  TILE_SIZE = 40; // Taille d'une case en pixels
+  SCREEN_WIDTH = 1824;
+  SCREEN_HEIGHT = 1026;
+  TILE_SIZE = 38; // Taille d'une case en pixels
   GRID_WIDTH = 22; // Nombre de colonnes sur la grille
   GRID_HEIGHT = 22; // Nombre de lignes sur la grille
 
