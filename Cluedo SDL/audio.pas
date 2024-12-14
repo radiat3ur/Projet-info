@@ -41,10 +41,10 @@ end;
 
 function obtenirDureeAudio(audio: PMix_Chunk): Integer;
 begin
-  obtenirDureeAudio := (audio^.alen * 8) div (2 * 16 * MIX_DEFAULT_FREQUENCY);
+  obtenirDureeAudio := (audio^.alen div 8) * 1000 div MIX_DEFAULT_FREQUENCY;
 end;
 
-procedure lancerAudio(nomDuFichier: string; delais : Integer);
+procedure lancerAudio(nomDuFichier: string ; delais : Integer);
 var audio: PMix_Chunk;
     duree : Integer;
 begin
@@ -56,8 +56,13 @@ begin
     Halt;
   end;
 
+  Mix_PlayChannel(-1, audio, 0);
+
   duree := obtenirDureeAudio(audio);
+  write(duree);
   SDL_Delay(duree + 500);
+
+  Mix_FreeChunk(audio);
 end;
 
 function chargerTextureDepuisMusique(nomDuFichier: String): PMix_Music;
