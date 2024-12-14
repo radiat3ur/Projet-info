@@ -1,4 +1,4 @@
-Unit affichage; // Amanda
+Unit affichage;
 
 interface 
 
@@ -27,6 +27,7 @@ procedure annonceTour(joueurActuel: Integer);
 
 implementation
 
+// Efface un certain nombre de lignes à partir d'une ligne donnée
 procedure effacerLignes(ligne, nbLignes: Integer);
 var i: Integer;
 begin
@@ -38,10 +39,11 @@ begin
   GotoXY(1,18);
 end;
 
-procedure affichageMenu(); // Affiche le menu au tout début du jeu
+// Affiche le menu au tout début du jeu
+procedure affichageMenu();
 begin
   writeln('==========================');
-  writeln(#27'[1m       MENU PRINCIPAL      '#27'[0m'); // Met en gras
+  writeln(#27'[1m       MENU PRINCIPAL      '#27'[0m'); // Met le titre en gras
   writeln('==========================');
   writeln('+--------------------------------+');
   writeln('|1. Afficher les regles du jeu   |');
@@ -51,10 +53,11 @@ begin
   write('Votre choix : ');
 end;
 
-procedure affichageRegles(); // Affiche les règles
+// Affiche les règles
+procedure affichageRegles();
 begin
   writeln('--- Regles du Jeu ---');
-  writeln('Bienvenue a l''INSA, ou un crime odieux vient d''etre commis!');
+  writeln('Bienvenue a l''INSA, ou un crime odieux vient d''etre commis !');
   writeln('Le professeur d''informatique, Monsieur Lecomte, a ete retrouve mort dans des circonstances mysterieuses.');
 
   writeln('Votre mission : remonter la piste et decouvrir qui est le coupable, avec quelle arme, et dans quelle piece.');
@@ -107,7 +110,8 @@ begin
   writeln('Pret a resoudre le mystere ? L''INSA n''attend que vous... Que l''enquete commence !');
 end;
 
-procedure narration(); // Affiche la narration
+// Affiche la narration
+procedure narration();
 begin
   write('La nuit est tombee sur le campus de l''INSA, et une ombre s''etend sur les batiments normalement empreints de l''effervescence etudiante. Mais ce soir, l''atmosphere est differente... une tension palpable flotte dans l''air. ');
   write('Au petit matin, la terrible nouvelle est tombee comme un couperet : Alexis LECOMTE, figure respectee (et redoutee) de l''ecole, a ete retrouve sans vie, mysterieusement assassine. ');
@@ -118,6 +122,7 @@ begin
   readln();
 end;
 
+// Affiche un message de prevention pour le joueur suivant et attend qu'il appuie sur Entree pour passer
 procedure preventionTourJoueur(joueurs: TJoueurs; var i : Integer);
 begin
   i := (i + 1) mod length(joueurs);
@@ -126,6 +131,7 @@ begin
   ClrScr;
 end;
 
+// Affiche un message pour terminer le tour du joueur et attend qu'il appuie sur Entree pour passer
 procedure finTourJoueur();
 begin
   writeln();
@@ -134,11 +140,13 @@ begin
   ClrScr;
 end;
 
+// Affiche une carte
 procedure affichageCarte(carte: TCarte);
 begin
   writeln(carte);
 end;
 
+// Affiche un paquet de cartes
 procedure affichagePaquet(paquet: TPaquet);
 var  i: Integer;
 
@@ -147,6 +155,7 @@ begin
     affichageCarte(paquet[i]);
 end;
 
+// Attribue une couleur
 procedure attributionCouleur(couleur: TCouleur);
 begin
   case couleur of
@@ -161,6 +170,7 @@ begin
   end;
 end;
 
+// Afficher les etiquettes (légendes sur les murs pour les pièces qui possèdent la même couleur qu'une autre)
 procedure afficherEtiquettes(i, j: Integer);
 begin
   if (j = 21) then
@@ -180,6 +190,7 @@ begin
   TextColor(15);
 end;
 
+// Initialise les textes et couleurs des légendes des pièces
 procedure initLegendes(var legende: TLegendes);
 begin
   Setlength(legende, 9);
@@ -203,21 +214,23 @@ begin
   legende[8].texte := 'Cafeteria';
 end;
 
+// Affiche les légendes des pièces
 procedure affichageLegendes(i: Integer);
 var legende : TLegendes;
 begin
   initLegendes(legende);
   if (i >= 0) and (i < length(legende)) then
   begin
-    TextBackground(0);
+    attributionCouleur(Black);
     GoToXY(27,i+2);
     attributionCouleur(legende[i].couleur);
     write('   ');
-    TextBackground(0);
+    attributionCouleur(Black);
     write(' - ', legende[i].texte);
   end;
 end;
 
+// Affiche le plateau de jeu avec les pions
 procedure affichagePlateau(var plateau: TPlateau; joueurs: TJoueurs; joueurActuel: Integer);
 var
   i, j: Integer;
@@ -239,38 +252,17 @@ begin
 
       if plateau[i, j].joueurID > 0 then
         write(plateau[i, j].joueurID) // Afficher le numéro du joueur
-      else if plateau[i, j].typePiece = Mur then
+      else if plateau[i, j].typePiece = Mur then // Si plateau[i, j].joueurID = 0, il n'y a pas de joueur présent donc afficher le plateau
         write(' ') 
       else
-        write('.'); // Couloirs et pièces marqués par '.'  
+        write('.'); // Couloirs et pièces sont marqués par '.'  
           
     end;
     affichageLegendes(i-1);
     writeln;
   end;
-  TextBackground(0);
+  attributionCouleur(Black);
 end;
 
-procedure AnnonceTour(joueurActuel: Integer);
-var music: PMix_Music;
-begin
-  if Mix_OpenAudio(22050, AUDIO_S16, 2, 4096) < 0 then halt;
-  case joueurActuel of
-    0: music := Mix_LoadMUS('son/joueur1.wav');
-    1: music := Mix_LoadMUS('son/joueur2.wav');
-    2: music := Mix_LoadMUS('son/joueur3.wav');
-    3: music := Mix_LoadMUS('son/joueur4.wav');
-    4: music := Mix_LoadMUS('son/joueur5.wav');
-    5: music := Mix_LoadMUS('son/joueur6.wav');
-  end;
 
-  if music <> nil then
-  begin
-    Mix_PlayMusic(music, 0); // 1 lecture
-    SDL_Delay(3000);         
-    Mix_FreeMusic(music);
-  end;
-
-  Mix_CloseAudio;
-end;
 end.
