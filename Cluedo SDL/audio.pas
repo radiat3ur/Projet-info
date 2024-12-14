@@ -19,7 +19,7 @@ begin
   if Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT,
     MIX_DEFAULT_CHANNELS, 4096) < 0 then Exit;
 
-  chemin := 'meta/audio/' + nomDuFichier + '.mp3';
+  chemin := 'Cluedo SDL/meta/audio/' + nomDuFichier + '.mp3';
   audio := Mix_LoadWAV(PChar(chemin));
 
   if audio = nil then
@@ -63,7 +63,7 @@ begin
   if Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT,
     MIX_DEFAULT_CHANNELS, 4096) < 0 then Exit;
 
-  chemin := 'meta/audio/' + nomDuFichier + '.mp3';
+  chemin := 'Cluedo SDL/meta/audio/' + nomDuFichier + '.mp3';
   musique := Mix_LoadMUS(PChar(chemin));
 
   if musique = nil then

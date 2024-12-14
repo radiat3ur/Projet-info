@@ -68,7 +68,7 @@ function chargerTextureImage(Renderer: PSDL_Renderer; nomDuFichier: String): PSD
 var image: PSDL_Texture;
     chemin: AnsiString;
 begin
-  chemin := 'meta/' + nomDuFichier + '.png';
+  chemin := 'Cluedo SDL/meta/' + nomDuFichier + '.png';
   image := IMG_LoadTexture(Renderer, PChar(chemin));
 
   if image = nil then
