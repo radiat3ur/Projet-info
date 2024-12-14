@@ -12,10 +12,20 @@ var Window: PSDL_Window;
     paquetPieces, paquetArmes, paquetPersonnages, solution, paquetSansCartesCrime : TPaquet;
     IsRunning: Boolean;
     Event : TSDL_Event;
+    musico : PMix_Music;
 
 begin
   initSDL(Window, Renderer);
-  menu(Renderer);
+  musico := chargerTextureDepuisMusique('musique narration');
+  if musico <> nil then
+  begin
+    lancerMusique(musico);
+  end
+  else
+  begin
+    writeln('Erreur : la musique ne s''est pas lancée');
+  end;
+  menu(Renderer, musico);
   initPieces(Renderer, pieces);
   choixNbJoueurs(Renderer, joueurs);
   selectionJoueurs(Renderer, joueurs);

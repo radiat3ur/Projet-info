@@ -7,8 +7,8 @@ uses SDL2, SDL2_Mixer, TypeEtCte, sysUtils, TypInfo;
 function chargerTextureDepuisAudio(nomDuFichier: String): PMix_Chunk;
 function obtenirDureeAudio(audio: PMix_Chunk): Integer;
 procedure lancerAudio(nomDuFichier: string; delais : Integer);
-function chargerTextureDepuisMusique(nomDuFichier: String): PMix_Chunk;
-procedure lancerMusique(nomDuFichier: string);
+function chargerTextureDepuisMusique(nomDuFichier: String): PMix_Music;
+procedure lancerMusique(musique : PMix_Music);
 
 implementation
 
@@ -54,6 +54,38 @@ begin
   SDL_Delay(duree + 500);
 
   Mix_FreeChunk(audio);
+end;
+
+function chargerTextureDepuisMusique(nomDuFichier: String): PMix_Music;
+var musique: PMix_Music;
+    chemin: AnsiString;
+begin
+  if Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT,
+    MIX_DEFAULT_CHANNELS, 4096) < 0 then Exit;
+
+  chemin := 'meta/audio/' + nomDuFichier + '.mp3';
+  musique := Mix_LoadMUS(PChar(chemin));
+
+  if musique = nil then
+  begin
+    writeln('Erreur de chargement de l''audio : ', chemin, ' : ', Mix_GetError);
+    Halt;
+  end;
+
+  chargerTextureDepuisMusique := musique;
+end;
+
+procedure lancerMusique(musique : PMix_Music);
+begin
+  if Mix_PlayMusic(musique, 0) < 0 then
+  begin
+    writeln('Erreur de lecture de l''audio : ', Mix_GetError);
+    Halt;
+  end;
+
+  Mix_PlayMusic(musique, 0);
+
+  Mix_FreeMusic(musique);
 end;
 
 end.

@@ -2,10 +2,10 @@ unit gestion;
 
 interface
 
-uses SDL2, TypeEtCte, affichage, audio, sysUtils, TypInfo;
+uses SDL2, SDL2_Mixer, TypeEtCte, affichage, audio, sysUtils, TypInfo;
 
 procedure cliqueSuivant();
-procedure menu(Renderer: PSDL_Renderer);
+procedure menu(Renderer: PSDL_Renderer ; musico : PMix_Music);
 procedure choixNbJoueurs(Renderer: PSDL_Renderer; var joueurs: TJoueurs);
 procedure selectionJoueurs(Renderer: PSDL_Renderer; var joueurs: TJoueurs);
 function creerPiece(x,y,w,h:Integer;nom:TNomPiece):TPiece;
@@ -52,7 +52,7 @@ begin
   end;
 end;
 
-procedure menu(Renderer: PSDL_Renderer);
+procedure menu(Renderer: PSDL_Renderer ; musico : PMix_Music);
 var Event : TSDL_Event;
     selectionActuelle: Integer;
     IsRunning, lecture : Boolean;
@@ -86,7 +86,7 @@ begin
                  end;
               1: begin
                   affichageNarration(Renderer);
-                  lancerMusique('musique narration');
+                  lancerMusique(musico);
                   cliqueSuivant();
                   IsRunning := False;
                  end;
