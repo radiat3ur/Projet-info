@@ -2,7 +2,7 @@ Unit gestion;
 
 interface
 
-Uses Crt, TypeEtCte, affichage;
+Uses Crt, TypeEtCte, affichage, audio;
 
 function choixAction(choix : Integer) : Boolean;
 function TPieceToTCarte(piece: TPiece): TCarte;

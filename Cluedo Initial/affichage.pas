@@ -2,7 +2,7 @@ Unit affichage;
 
 interface 
 
-Uses Crt, TypeEtCte, SDL2, SDL2_mixer;
+Uses Crt, TypeEtCte;
 
 procedure effacerLignes(ligne, nbLignes: Integer);
 procedure affichageMenu();
@@ -21,8 +21,6 @@ procedure initLegendes(var legende: TLegendes);
 procedure affichageLegendes(i: Integer);
 
 procedure affichagePlateau(var plateau: TPlateau; joueurs: TJoueurs; joueurActuel: Integer);
-
-procedure annonceTour(joueurActuel: Integer);
 
 
 implementation
