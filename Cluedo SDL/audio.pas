@@ -33,7 +33,6 @@ end;
 
 function obtenirDureeAudio(audio: PMix_Chunk): Integer;
 begin
-  // Assuming audio is in 16-bit stereo format
   obtenirDureeAudio := (audio^.alen div 4) * 1000 div MIX_DEFAULT_FREQUENCY;
 end;
 
