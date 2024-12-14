@@ -4,11 +4,13 @@ interface
 
 uses SDL2, SDL2_Mixer, TypeEtCte, sysUtils, TypInfo;
 
+procedure initisationMusiqueEtSon();
 function chargerTextureDepuisAudio(nomDuFichier: String): PMix_Chunk;
 function obtenirDureeAudio(audio: PMix_Chunk): Integer;
 procedure lancerAudio(nomDuFichier: string; delais : Integer);
 function chargerTextureDepuisMusique(nomDuFichier: String): PMix_Music;
 procedure lancerMusique(musique : PMix_Music);
+procedure arreterMusique();
 
 implementation
 
@@ -39,7 +41,7 @@ end;
 
 function obtenirDureeAudio(audio: PMix_Chunk): Integer;
 begin
-  obtenirDureeAudio := (audio^.alen div 4) * 1000 div MIX_DEFAULT_FREQUENCY;
+  obtenirDureeAudio := (audio^.alen * 8) div (2 * 16 * MIX_DEFAULT_FREQUENCY);
 end;
 
 procedure lancerAudio(nomDuFichier: string; delais : Integer);
@@ -54,12 +56,8 @@ begin
     Halt;
   end;
 
-  Mix_PlayChannel(-1, audio, 0);
-
   duree := obtenirDureeAudio(audio);
   SDL_Delay(duree + 500);
-
-  Mix_FreeChunk(audio);
 end;
 
 function chargerTextureDepuisMusique(nomDuFichier: String): PMix_Music;
@@ -85,10 +83,11 @@ begin
     writeln('Erreur de lecture de l''audio : ', Mix_GetError);
     Halt;
   end;
+end;
 
-  Mix_PlayMusic(musique, 0);
-
-  Mix_FreeMusic(musique);
+procedure arreterMusique();
+begin
+  Mix_HaltMusic();
 end;
 
 end.

@@ -86,7 +86,7 @@ begin
                  end;
               1: begin
                   affichageNarration(Renderer);
-                  //lancerMusique(musico);
+                  lancerMusique(musico);
                   cliqueSuivant();
                   IsRunning := False;
                  end;
@@ -98,6 +98,7 @@ begin
       end;
     end;
   end;
+  arreterMusique();
 end; 
 
 procedure choixNbJoueurs(Renderer: PSDL_Renderer; var joueurs: TJoueurs);

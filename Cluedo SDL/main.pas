@@ -16,15 +16,8 @@ var Window: PSDL_Window;
 
 begin
   initSDL(Window, Renderer);
-  musico := chargerTextureDepuisMusique('Amphi');
-  if musico <> nil then
-  begin
-   lancerMusique(musico);
-  end
-  else
-  begin
-   writeln('Erreur : la musique ne s''est pas lancée');
-  end;
+  initisationMusiqueEtSon();
+  musico := chargerTextureDepuisMusique('musique narration');
   menu(Renderer, musico);
   initPieces(Renderer, pieces);
   choixNbJoueurs(Renderer, joueurs);
