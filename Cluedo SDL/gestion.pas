@@ -136,14 +136,14 @@ end;
 
 procedure selectionJoueurs(Renderer: PSDL_Renderer; var joueurs: TJoueurs);
 var Event: TSDL_Event;
-    IsRunning: Boolean;
-    SelectedCount: Integer;
-    JoueurRect: array[0..5] of TSDL_Rect;
-    DestRect : TSDL_Rect;
-    i, j: Integer;
-    MouseX, MouseY: Integer;
-    Selection: array[0..5] of Boolean;
-    sdlRect1: TSDL_Rect;
+  IsRunning: Boolean;
+  SelectedCount: Integer;
+  JoueurRect: array[0..5] of TSDL_Rect;
+  DestRect : TSDL_Rect;
+  i, j: Integer;
+  MouseX, MouseY: Integer;
+  Selection: array[0..5] of Boolean;
+  sdlRect1: TSDL_Rect;
 begin
   IsRunning := True;
   SelectedCount := 0;
@@ -163,13 +163,6 @@ begin
     SDL_RenderClear(Renderer);
 
     afficherImage(Renderer, 'selection joueurs', @DestRect);
-    // Afficher les images des joueurs
-    for j := 0 to 5 do
-      afficherImage(Renderer, GetEnumName(TypeInfo(TPersonnage), Ord(TPersonnage(j))), @JoueurRect[j]);
-
-    afficherTexte(Renderer, 'Cliquez pour sélectionner ' + IntToStr(length(joueurs)) + ' joueurs.', 40, SCREEN_WIDTH div 2 - 325, 70, Couleur(163, 3, 3, 255));
-
-    SDL_RenderPresent(Renderer);
 
     while SDL_PollEvent(@Event) <> 0 do
     begin
@@ -181,7 +174,7 @@ begin
             for i := 0 to 5 do
             begin
               if (MouseX >= JoueurRect[i].x) and (MouseX <= JoueurRect[i].x + JoueurRect[i].w) and
-                (MouseY >= JoueurRect[i].y) and (MouseY <= JoueurRect[i].y + JoueurRect[i].h) then
+                 (MouseY >= JoueurRect[i].y) and (MouseY <= JoueurRect[i].y + JoueurRect[i].h) then
               begin
                 if not Selection[i] then
                 begin
@@ -189,27 +182,22 @@ begin
                   begin
                     Selection[i] := True;
                     joueurs[SelectedCount].nom := TPersonnage(i); // Ajouter le joueur sélectionné
-                    // Dessiner les rectangles gris sur les joueurs sélectionnés
-                    for j := 0 to length(joueurs) - 1 do
+                    Inc(SelectedCount);
+                    for j := 0 to 5 do
                     begin
-                      if joueurs[j].nom = rien then
-                        continue;
-                      
-                      sdlRect1 := coordonnees(JoueurRect[Ord(joueurs[j].nom)].x, JoueurRect[Ord(joueurs[j].nom)].y, JoueurRect[Ord(joueurs[j].nom)].w, JoueurRect[Ord(joueurs[j].nom)].h);
-
-                      SDL_SetRenderDrawColor(Renderer, 105, 105, 105, 255);
-                      SDL_RenderFillRect(Renderer, @sdlRect1);
-                      SDL_RenderDrawRect(Renderer, @sdlRect1);
+                      if Selection[j] then
+                      begin
+                        sdlRect1 := coordonnees(JoueurRect[j].x, JoueurRect[j].y, JoueurRect[j].w, JoueurRect[j].h);
+                        SDL_SetRenderDrawColor(Renderer, 105, 105, 105, 255);
+                        SDL_RenderFillRect(Renderer, @sdlRect1);
+                        SDL_RenderDrawRect(Renderer, @sdlRect1);
+                      end;
                     end;
-                    //Afficher les images des joueurs
+
+                    // Afficher les images des joueurs
                     for j := 0 to 5 do
                       afficherImage(Renderer, GetEnumName(TypeInfo(TPersonnage), Ord(TPersonnage(j))), @JoueurRect[j]);
-
-                    afficherTexte(Renderer, 'Cliquez pour sélectionner ' + IntToStr(length(joueurs)) + ' joueurs.', 40, SCREEN_WIDTH div 2 - 325, 70, Couleur(163, 3, 3, 255));
-
-                    SDL_RenderPresent(Renderer);
-                    lancerAudio('Presentation ' + GetEnumName(TypeInfo(TPersonnage), ord(joueurs[SelectedCount].nom)), 4000);
-                    Inc(SelectedCount);
+                    lancerAudio('Presentation ' + GetEnumName(TypeInfo(TPersonnage), ord(joueurs[SelectedCount-1].nom)), 4000);
                   end;
                 end;
               end;
@@ -220,6 +208,26 @@ begin
         SDL_QUITEV: Halt;
       end;
     end;
+
+    for i := 0 to 5 do
+    begin
+      if Selection[i] then
+      begin
+        sdlRect1 := coordonnees(JoueurRect[i].x, JoueurRect[i].y, JoueurRect[i].w, JoueurRect[i].h);
+        SDL_SetRenderDrawColor(Renderer, 105, 105, 105, 255);
+        SDL_RenderFillRect(Renderer, @sdlRect1);
+        SDL_RenderDrawRect(Renderer, @sdlRect1);
+      end;
+    end;
+
+    // Afficher les images des joueurs
+    for i := 0 to 5 do
+      afficherImage(Renderer, GetEnumName(TypeInfo(TPersonnage), Ord(TPersonnage(i))), @JoueurRect[i]);
+
+    // Afficher le texte d'instruction
+    afficherTexte(Renderer, 'Cliquez pour sélectionner ' + IntToStr(Length(joueurs)) + ' joueurs.', 40, SCREEN_WIDTH div 2 - 325, 70, Couleur(163, 3, 3, 255));
+
+    SDL_RenderPresent(Renderer);
   end;
   SDL_RenderClear(Renderer);
 end;
@@ -546,6 +554,7 @@ begin
                 begin
                   temoinChoisi := i;
                   IsRunning := False;
+                  lancerAudio('Temoin ' + GetEnumName(TypeInfo(TPersonnage), ord(joueurs[temoinChoisi].nom)), 2000);
                   Break;
                 end;
               end;
@@ -744,6 +753,7 @@ begin
   joueurActuel := (joueurActuel + 1) mod length(joueurs);
   preventionJoueur(Renderer, joueurs, joueurActuel, 'C''est à toi de jouer !');
   lancerAudio('Prevention ' + GetEnumName(TypeInfo(TPersonnage), Ord(joueurs[joueurActuel].nom)), 5000);
+  cliqueSuivant();
 end;
 
 // Amanda
@@ -820,6 +830,7 @@ begin
   joueurActuel := (joueurActuel + 1) mod length(joueurs);
   preventionJoueur(Renderer, joueurs, joueurActuel, 'C''est à toi de jouer !');
   lancerAudio('Prevention ' + GetEnumName(TypeInfo(TPersonnage), Ord(joueurs[joueurActuel].nom)), 5000);
+  cliqueSuivant();
 end;
 
 

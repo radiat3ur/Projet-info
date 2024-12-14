@@ -23,6 +23,7 @@ begin
   initPartie(Renderer, pieces, joueurs, joueurActuel, paquetPieces, paquetArmes, paquetPersonnages, solution, paquetSansCartesCrime);
   preventionJoueur(Renderer, joueurs, joueurActuel, 'C''est à toi de jouer !');
   lancerAudio('Prevention ' + GetEnumName(TypeInfo(TPersonnage), Ord(joueurs[joueurActuel].nom)), 5000);
+  cliqueSuivant();
   IsRunning:=True;
   while IsRunning do
   begin

@@ -5,6 +5,7 @@ interface
 uses SDL2, SDL2_Mixer, TypeEtCte, sysUtils, TypInfo;
 
 function chargerTextureDepuisAudio(nomDuFichier: String): PMix_Chunk;
+function obtenirDureeAudio(audio: PMix_Chunk): Integer;
 procedure lancerAudio(nomDuFichier: string; delais : Integer);
 
 implementation
@@ -28,8 +29,15 @@ begin
   chargerTextureDepuisAudio := audio;
 end;
 
+function obtenirDureeAudio(audio: PMix_Chunk): Integer;
+begin
+  // Assuming audio is in 16-bit stereo format
+  obtenirDureeAudio := (audio^.alen div 4) * 1000 div MIX_DEFAULT_FREQUENCY;
+end;
+
 procedure lancerAudio(nomDuFichier: string; delais : Integer);
 var audio: PMix_Chunk;
+    duree : Integer;
 begin
   audio := chargerTextureDepuisAudio(nomDuFichier);
 
@@ -41,7 +49,8 @@ begin
 
   Mix_PlayChannel(-1, audio, 0);
 
-  SDL_Delay(delais);
+  duree := obtenirDureeAudio(audio);
+  SDL_Delay(duree);
 
   Mix_FreeChunk(audio);
 end;
