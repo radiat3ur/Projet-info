@@ -86,6 +86,7 @@ begin
                  end;
               1: begin
                   affichageNarration(Renderer);
+                  lancerMusique('musique narration');
                   cliqueSuivant();
                   IsRunning := False;
                  end;

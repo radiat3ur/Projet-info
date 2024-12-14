@@ -7,6 +7,8 @@ uses SDL2, SDL2_Mixer, TypeEtCte, sysUtils, TypInfo;
 function chargerTextureDepuisAudio(nomDuFichier: String): PMix_Chunk;
 function obtenirDureeAudio(audio: PMix_Chunk): Integer;
 procedure lancerAudio(nomDuFichier: string; delais : Integer);
+function chargerTextureDepuisMusique(nomDuFichier: String): PMix_Chunk;
+procedure lancerMusique(nomDuFichier: string);
 
 implementation
 
