@@ -125,8 +125,8 @@ end;
 
 function chargerTextureDepuisTexte(renderer:PSDL_Renderer; police:PTTF_Font; text:String; color: TSDL_Color):PSDL_Texture;
 var surface: PSDL_Surface;
-  texture: PSDL_Texture;
-  text_compa: AnsiString;
+    texture: PSDL_Texture;
+    text_compa: AnsiString;
 begin
   text_compa := text;
   surface := TTF_RenderUTF8_Blended(police,PChar(text_compa),color);
@@ -137,8 +137,16 @@ begin
   end;
 
   texture := SDL_CreateTextureFromSurface(renderer,surface);
-  chargerTextureDepuisTexte := texture;
+  if texture = nil then
+  begin
+    Writeln('Erreur lors de la création de la texture. SDL Error: ', SDL_GetError());
+    SDL_FreeSurface(surface);
+    Exit(nil);
+  end;
+
   SDL_FreeSurface(surface);
+
+  chargerTextureDepuisTexte := texture;
 end;
 
 procedure afficherTexte(Renderer: PSDL_Renderer; text: String; taille, x, y: Integer; couleur: TSDL_Color);
@@ -151,7 +159,7 @@ begin
 
   if TTF_INIT = -1 then halt;
 
-  police := TTF_OpenFont('Roboto-Black.ttf',taille);
+  police := TTF_OpenFont('Cluedo SDL/Roboto-Black.ttf',taille);
 
   texteTexture := chargerTextureDepuisTexte(Renderer,police,text,couleur);
 
