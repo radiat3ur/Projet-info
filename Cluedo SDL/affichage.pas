@@ -24,7 +24,7 @@ procedure afficherTour(Renderer: PSDL_Renderer; joueurs: TJoueurs; ResultatsDice
 procedure affichageTour(Renderer : PSDL_Renderer ; selectionActuelle : Integer);
 procedure affichageAccusation(Renderer : PSDL_Renderer ; selectionActuelle : Integer);
 procedure affichageVictoire(Renderer : PSDL_Renderer);
-procedure CleanUp(Window : PSDL_Window ; Renderer : PSDL_Renderer);
+procedure nettoyer(Window : PSDL_Window ; Renderer : PSDL_Renderer);
 
 implementation
 
@@ -180,6 +180,7 @@ var
   texture1, texture2 : PSDL_Texture;
 begin
   Setlength(ResultatsDice, 2);
+  SetLength(ResultatsDice, 2);
   // Emplacement, angle et taille du premier dé
   Angle:=-10.0;
   DestRect := coordonnees(SCREEN_WIDTH div 2 - 35, 60, TILE_SIZE * 3, TILE_SIZE * 3);
@@ -345,7 +346,7 @@ begin
   afficherImage(Renderer, 'victoire', @DestRect);
 end;
 
-procedure CleanUp(Window : PSDL_Window ; Renderer : PSDL_Renderer);
+procedure nettoyer(Window : PSDL_Window ; Renderer : PSDL_Renderer);
 begin
   SDL_DestroyRenderer(Renderer);
   SDL_DestroyWindow(Window);

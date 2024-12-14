@@ -11,7 +11,6 @@ var Window: PSDL_Window;
     pieces : TPieces;
     paquetPieces, paquetArmes, paquetPersonnages, solution, paquetSansCartesCrime : TPaquet;
     IsRunning: Boolean;
-    Event : TSDL_Event;
     musico : PMix_Music;
 
 begin
@@ -23,6 +22,8 @@ begin
   choixNbJoueurs(Renderer, joueurs);
   selectionJoueurs(Renderer, joueurs);
   SDL_Delay(750);
+  joueurActuel := 0;
+  DiceTextures := Default(TabTextures);
   initPartie(Renderer, pieces, joueurs, joueurActuel, paquetPieces, paquetArmes, paquetPersonnages, solution, paquetSansCartesCrime);
   preventionJoueur(Renderer, joueurs, joueurActuel, 'C''est à toi de jouer !');
   lancerAudio('Prevention ' + GetEnumName(TypeInfo(TPersonnage), Ord(joueurs[joueurActuel].nom)), 5000);
@@ -34,12 +35,7 @@ begin
     afficherTour(Renderer, joueurs, ResultatsDice, DiceTextures, nbDeplacement, joueurActuel);
     SDL_RenderPresent(Renderer);
     SDL_Delay(16);
-    if Event.type_ = SDL_QUITEV then
-    begin
-      IsRunning := False;
-      Halt;
-    end;
   end;
 
-  CleanUp(Window, Renderer);
+  nettoyer(Window, Renderer);
 end.

@@ -284,8 +284,6 @@ begin
           Setlength(joueurs[i].main, cartesParJoueur+1); // Les joueurs suivants reçoivent une carte supplémentaire
       // Initialise la liste des cartes pour chaque joueur en fonction de la taille assignée
   end;
-
-  joueurActuel := 0;
 end;
 
 procedure initPaquets(var paquetPieces, paquetArmes, paquetPersonnages : TPaquet);

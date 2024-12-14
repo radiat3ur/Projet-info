@@ -2,8 +2,7 @@ program cluedo;
 
 uses Dos, Crt, sysUtils, Process;
 
-var Aprocess : TProcess;
-    choix : Integer;
+var choix : Integer;
 
 begin
     repeat
@@ -18,9 +17,4 @@ begin
     writeln(DosError);
     if choix=2 then
        Exec('Cluedo SDL/main', '');
-
-    // Aprocess := TProcess.Create(nil);
-    // Aprocess.Executable := 'Cluedo SDL/main';
-    // Aprocess.Options := AProcess.Options + [poWaitOnExit];
-    // AProcess.Execute;
 end.
