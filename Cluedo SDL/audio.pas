@@ -12,13 +12,19 @@ procedure lancerMusique(musique : PMix_Music);
 
 implementation
 
+procedure initisationMusiqueEtSon();
+begin
+  if Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0 then
+    begin
+      WriteLn('Erreur d''initialisation de SDL_mixer: ', Mix_GetError);
+      Exit;
+    end;
+end;
+
 function chargerTextureDepuisAudio(nomDuFichier: String): PMix_Chunk;
 var audio: PMix_Chunk;
     chemin: AnsiString;
 begin
-  if Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT,
-    MIX_DEFAULT_CHANNELS, 4096) < 0 then Exit;
-
   chemin := 'Cluedo SDL/meta/audio/' + nomDuFichier + '.mp3';
   audio := Mix_LoadWAV(PChar(chemin));
 
@@ -60,9 +66,6 @@ function chargerTextureDepuisMusique(nomDuFichier: String): PMix_Music;
 var musique: PMix_Music;
     chemin: AnsiString;
 begin
-  if Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT,
-    MIX_DEFAULT_CHANNELS, 4096) < 0 then Exit;
-
   chemin := 'Cluedo SDL/meta/audio/' + nomDuFichier + '.mp3';
   musique := Mix_LoadMUS(PChar(chemin));
 

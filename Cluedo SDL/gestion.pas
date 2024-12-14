@@ -55,7 +55,7 @@ end;
 procedure menu(Renderer: PSDL_Renderer ; musico : PMix_Music);
 var Event : TSDL_Event;
     selectionActuelle: Integer;
-    IsRunning, lecture : Boolean;
+    IsRunning : Boolean;
     DestRect : TSDL_Rect;
 begin
   selectionActuelle := 0;
@@ -601,8 +601,6 @@ end;
 function recupererCarteJoueur(Renderer : PSDL_Renderer ; compare, comparant : TPaquet ; ResultatsDice : TTabInt ; DiceTextures : TabTextures ; joueurs : TJoueurs ; nbDeplacement, joueurActuel, temoinChoisi : Integer) : TCarte;
 var cartesCommunes : TPaquet;
     DestRect : TSDL_Rect;
-    lecture : Boolean;
-    Event : TSDL_Event;
 
 begin
   SDL_RenderClear(Renderer);
@@ -632,8 +630,6 @@ var cartesChoisies, cartesCommunes : TPaquet;
     temoinChoisi : Integer;
     carteChoisie : TCarte;
     DestRect : TSDL_Rect;
-    lecture : Boolean;
-    Event : TSDL_Event;
 begin
   SDL_RenderClear(Renderer);
   choixCartes(Renderer, joueurs, ResultatsDice, DiceTextures, nbDeplacement, joueurActuel, x, y, pieces, paquetArmes, paquetPersonnages, cartesChoisies, temoinChoisi);
@@ -691,7 +687,6 @@ var IsRunning, victoire : Boolean;
     DestRect : TSDL_Rect;
     ResultatsDice : TTabInt;
     DiceTextures : TabTextures;
-    i, j, numJoueurs: Integer;
     joueurRect: TSDL_Rect;
 
 begin

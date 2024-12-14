@@ -255,7 +255,7 @@ begin
       else if plateau[i, j].typePiece = Mur then // Si plateau[i, j].joueurID = 0, il n'y a pas de joueur présent donc afficher le plateau
         write(' ') 
       else
-        write('.'); // Couloirs et pièces sont marqués par '.'  
+        write('.'); // Couloirs et pièces sont marqués par des points 
           
     end;
     affichageLegendes(i-1);
@@ -263,6 +263,5 @@ begin
   end;
   attributionCouleur(Black);
 end;
-
 
 end.
