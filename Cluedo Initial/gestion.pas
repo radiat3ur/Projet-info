@@ -27,7 +27,8 @@ procedure hypothese(paquetPieces, paquetArmes, paquetPersonnages: TPaquet; joueu
 function accusation(paquetPieces, paquetArmes, paquetPersonnages, solution : TPaquet; joueurActuel : TJoueur):Boolean;
 procedure affichageResultatHypothese(paquetPieces, paquetArmes, paquetPersonnages: TPaquet; joueurs : TJoueurs; cartesChoisies : TPaquet; carteChoisie : TCarte; var presenceCarteCommune:boolean;joueurActuel:integer;plateau:TPlateau);
 procedure affichageResultatAccusation(paquetPieces, paquetArmes, paquetPersonnages, solution : TPaquet; joueurActuel : TJoueur);
-procedure placerPionDansPiece(var plateau : TPlateau ; joueurActuel,newX,newY : Integer ; piece : TPiece);
+procedure majPosition(var plateau: TPlateau;var joueurs: TJoueurs; newX, newY: Integer; joueurActuel: Integer);
+procedure placerPionDansPiece(var plateau : TPlateau ; var joueurs:TJoueurs;joueurActuel,newX,newY : Integer ; piece : TPiece);
 procedure PlacerDevantPorte(var plateau: TPlateau; var joueurs: TJoueurs; joueurActuel: Integer; var deplacement:integer);
 procedure deplacerJoueur(var joueurs: TJoueurs; joueurActuel: Integer; var plateau: TPlateau; var deplacement: Integer);
 function lancerDes( deplacement:integer) : integer;
@@ -550,20 +551,40 @@ begin
     writeln('L''arme du crime etait : ',solution[1]);
 end;
 
-procedure placerPionDansPiece(var plateau : TPlateau; JoueurActuel ,newX,newY: Integer ; piece : TPiece);
+procedure majPosition(var plateau: TPlateau;var joueurs: TJoueurs; newX, newY: Integer; joueurActuel: Integer);
+var oldX, oldY: Integer;
+begin
+  oldX := joueurs[joueurActuel].x;
+  oldY := joueurs[joueurActuel].y;
+
+  // Ancienne position retirée 
+  plateau[oldX, oldY].estOccupee := False;
+  plateau[oldX, oldY].joueurID := 0;
+  //affichage
+  GotoXY(oldY, oldX + 1);
+  attributionCouleur(plateau[oldX, oldY].couleur);
+  write('.');
+
+  // Maj coordonnées du joueur
+  joueurs[joueurActuel].x := newX;
+  joueurs[joueurActuel].y := newY;
+
+  // Nouvelle position
+  plateau[newX, newY].estOccupee := True;
+  plateau[newX, newY].joueurID := joueurActuel+1;
+  //affichage
+  GotoXY(newY, newX + 1);
+  attributionCouleur(plateau[newX, newY].couleur);
+  write(joueurActuel+1);
+
+  attributionCouleur(Black);
+end;
+
+procedure placerPionDansPiece(var plateau : TPlateau;var joueurs:TJoueurs; JoueurActuel ,newX,newY: Integer ; piece : TPiece);
 var i,j : Integer;
     positionTrouvee : Boolean;
 begin
   positionTrouvee := False;
- 
-  // Libérer l'ancienne position
-  plateau[newX,newY].estOccupee := False;
-  plateau[newX,newY].joueurID := 0;
-
-  // Effacer l'affichage de l'ancienne position
-  GotoXY(newY,newX + 1);
-  attributionCouleur(plateau[newX,newY].couleur);
-  write('.');
   
   for i := 1 to 16 do
   begin
@@ -572,15 +593,7 @@ begin
       if (plateau[i, j].typePiece = piece) and not plateau[i, j].estOccupee and  not positionTrouvee then
       begin
         positionTrouvee := True;
-        // Place le joueur sur la case libre trouvée
-        plateau[i, j].estOccupee := True;
-        plateau[i, j].joueurID := JoueurActuel;
-        positionTrouvee := True;
-
-        // Afficher la nouvelle position
-        GotoXY(j, i + 1);
-        attributionCouleur(plateau[i, j].couleur);
-        write(JoueurActuel);
+        majPosition(plateau, joueurs, i, j, joueurActuel);
         attributionCouleur(Black);
       end;
     end;
@@ -588,7 +601,7 @@ begin
 end;
 
 procedure PlacerDevantPorte(var plateau: TPlateau; var joueurs: TJoueurs; joueurActuel: Integer; var deplacement:integer);
-var oldx,oldy,i, j, nbPortes, choix: Integer;
+var i, j, nbPortes, choix: Integer;
     portesX, portesY: array[1..2] of integer;
 
 begin
@@ -630,28 +643,8 @@ begin
     readln(choix);
   until (choix >= 1) and (choix <= nbPortes);
   
-  oldx:=joueurs[joueurActuel].x;
-  oldy:=joueurs[joueurActuel].y;
-
-   // Effacer l'ancienne position
-  plateau[joueurs[joueurActuel].x, joueurs[joueurActuel].y].estOccupee := False;
-  plateau[joueurs[joueurActuel].x, joueurs[joueurActuel].y].joueurID := 0;
-
-  // Maj de la nouvelle position
-  joueurs[joueurActuel].x := portesX[choix];
-  joueurs[joueurActuel].y := portesY[choix];
-
-  plateau[joueurs[joueurActuel].x, joueurs[joueurActuel].y].estOccupee := True;
-  plateau[joueurs[joueurActuel].x, joueurs[joueurActuel].y].joueurID := joueurActuel+1;
-
-  // Maj de l'affichage
-  GotoXY(oldY,oldx+1);
-  attributionCouleur(plateau[oldX,oldY].couleur);
-  write('.');
-      
-  GotoXY(portesY[choix], portesX[choix] + 1); //+1 car écriture "plateau de jeu"
-  attributionCouleur(plateau[joueurs[joueurActuel].x, joueurs[joueurActuel].y].couleur);
-  write(joueurActuel+1);
+  //Déplacer le joueur
+  majPosition(plateau, joueurs, portesX[choix], portesY[choix], joueurActuel);
 
   // Réinitialiser "dansPiece"
   joueurs[joueurActuel].dansPiece := False;
@@ -659,10 +652,9 @@ begin
 end;
 
 procedure deplacerJoueur(var joueurs: TJoueurs; joueurActuel: Integer; var plateau: TPlateau; var deplacement: Integer);
-var
-  oldX,oldY,newX, newY: Integer;
-  key: Char;
-  piece:TPiece;
+var newX, newY: Integer;
+    key: Char;
+    piece:TPiece;
 begin
   while deplacement >=0 do
   begin
@@ -671,8 +663,6 @@ begin
     // Calculer la nouvelle position en fonction de la touche
     newX := joueurs[joueurActuel].x;
     newY := joueurs[joueurActuel].y;
-    oldX := newX;
-    oldY := newY;
 
     case key of
       #72: Dec(newX); // Haut
@@ -684,43 +674,21 @@ begin
     // Vérifier si la nouvelle position est valide
     if (plateau[newX, newY].typePiece <> Mur) and (not plateau[newX, newY].estOccupee) then
     begin
-      // Libérer l'ancienne position
-      plateau[joueurs[joueurActuel].x, joueurs[joueurActuel].y].estOccupee := False;
-      plateau[joueurs[joueurActuel].x, joueurs[joueurActuel].y].joueurID := 0;
-
-      // Déplacer le joueur
-      joueurs[joueurActuel].x := newX;
-      joueurs[joueurActuel].y := newY;
-
-      // Occuper la nouvelle position
-      plateau[newX, newY].estOccupee := True;
-      plateau[newX, newY].joueurID := joueurActuel + 1; // ID de joueur commence à 1
-
-      GotoXY(oldY,oldX+1);
-      attributionCouleur(plateau[oldX,oldY].couleur);
-      write('.');
-
-      GotoXY(newY,newX+1);
-      attributionCouleur(plateau[newX,newY].couleur);
-      write(joueurActuel+1);
-
-      GotoXY(1,20);
+      majPosition(plateau, joueurs, newX, newY, joueurActuel);
       attributionCouleur(Black);
-      ClrEol();
-      GotoXY(1,21);
-      ClrEol();
+      effacerLignes(20,3);
       GotoXY(1,20);
       writeln('Deplacements restants:', deplacement); 
       Dec(deplacement); // Réduire le nombre de déplacements restants
       
       //si le joueur entre dans une pièce, le placer
       if (plateau[newX, newY].typePiece <> Couloir) then
-      begin
-      deplacement:=-1;
-      joueurActuel:=plateau[newX, newY].joueurID;
-      piece:=plateau[newX, newY].typePiece;
-      PlacerPionDansPiece(plateau,joueurActuel,newX,newY, piece);
-      end;
+       begin
+       deplacement:=-1;
+       joueurActuel:=plateau[newX, newY].joueurID;
+       piece:=plateau[newX, newY].typePiece;
+       PlacerPionDansPiece(plateau,joueurs,joueurActuel-1,newX,newY, piece);
+       end;
     end;
   end;
 end;
@@ -756,7 +724,7 @@ for joueurActuel := 0 to length(joueurs)-1 do
     begin
     PlacerDevantPorte(plateau, joueurs, joueurActuel, deplacement);
     deplacement:=-1;//retire 1 deplacement lors du lancer de dés
-  end;
+    end;
   deplacement := lancerDes(deplacement);
   write('Tu as obtenu ',deplacement);
   deplacerJoueur(joueurs, joueurActuel, plateau, deplacement);

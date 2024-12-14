@@ -207,10 +207,10 @@ procedure affichageLegendes(i: Integer);
 var legende : TLegendes;
 begin
   initLegendes(legende);
-  if (i >= 0) and (i <= length(legende)) then
+  if (i >= 0) and (i < length(legende)) then
   begin
     TextBackground(0);
-    write('    ');
+    GoToXY(27,i+2);
     attributionCouleur(legende[i].couleur);
     write('   ');
     TextBackground(0);
@@ -245,7 +245,7 @@ begin
         write('.'); // Couloirs et pièces marqués par '.'  
           
     end;
-    affichageLegendes(i);
+    affichageLegendes(i-1);
     writeln;
   end;
   TextBackground(0);
