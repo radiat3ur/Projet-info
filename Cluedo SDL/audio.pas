@@ -50,7 +50,7 @@ begin
   Mix_PlayChannel(-1, audio, 0);
 
   duree := obtenirDureeAudio(audio);
-  SDL_Delay(duree);
+  SDL_Delay(duree + 500);
 
   Mix_FreeChunk(audio);
 end;

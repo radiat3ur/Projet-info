@@ -611,14 +611,14 @@ begin
     DestRect := coordonnees(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
     afficherImage(Renderer, 'fond', @DestRect);
     afficherTexte(Renderer, 'Aucune carte commune', 70, SCREEN_WIDTH div 2 - 300, SCREEN_HEIGHT div 2, Couleur(163, 3, 3, 255));
+    SDL_RenderPresent(Renderer);
     lancerAudio('Temoin 0 carte', 3000);
     cliqueSuivant();
-    SDL_RenderPresent(Renderer);
-    SDL_Delay(2000); 
   end
   else   
   begin
     preventionJoueur(Renderer, joueurs, temoinChoisi, 'Tu dois montrer une carte à ' + GetEnumName(TypeInfo(TPersonnage), Ord(joueurs[joueurActuel].nom)));
+    SDL_RenderPresent(Renderer);
     lancerAudio('Temoin regarde cartes', 3000);
     cliqueSuivant();
     afficherTour(Renderer, joueurs, ResultatsDice, DiceTextures, nbDeplacement, temoinChoisi);
@@ -642,6 +642,7 @@ begin
   begin
     SDL_RenderClear(Renderer);
     preventionJoueur(Renderer, joueurs, joueurActuel, 'C''est à toi de regarder l''écran');
+    SDL_RenderPresent(Renderer);
     lancerAudio('Enqueteur peut regarder', 3000);
     cliqueSuivant();
     afficherTour(Renderer, joueurs, ResultatsDice, DiceTextures, nbDeplacement, joueurActuel);
@@ -649,7 +650,7 @@ begin
     DestRect := coordonnees(SCREEN_WIDTH - 445, 405, 200, 280);
     afficherImage(Renderer, 'cartes/' + GetEnumName(TypeInfo(TCarte), Ord(carteChoisie)), @DestRect);
     SDL_RenderPresent(Renderer);
-    SDL_Delay(2000);
+    cliqueSuivant();
   end;
 end;
 
@@ -886,7 +887,7 @@ begin
             end;
             SDLK_DOWN: if not (caseActuelle in [4, 5, 6, 12]) and (nbDeplacement>0) then
             begin
-              if not (estDansPiece(pieces,newX,newY+1)) then
+             if not (estDansPiece(pieces,newX,newY+1)) then
                 Dec(nbDeplacement);
               Inc(NewY);
               joueurs[joueurActuel].y := NewY;
